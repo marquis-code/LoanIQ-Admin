@@ -12,15 +12,32 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "@kevinmarrec/nuxt-pwa": "^0.17.0",
     "autoprefixer": "^10.4.15",
     "nuxt": "^v3.7.3",
     "postcss": "^8.4.29",
     "tailwindcss": "^3.3.3"
   },
   "dependencies": {
-    "@nuxtjs/pwa": "^3.3.5",
-    "aos": "^3.0.0-beta.6",
-    "vue3-toastify": "^0.2.1"
-  }
+    "@heroicons/vue": "v1",
+    "@mediapipe/face_detection": "^0.4.1646425229",
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@tensorflow-models/face-detection": "^1.0.3",
+    "@tensorflow/tfjs-backend-webgl": "^4.22.0",
+    "@tensorflow/tfjs-converter": "^4.22.0",
+    "@tensorflow/tfjs-core": "^4.22.0",
+    "@vueuse/core": "^11.2.0",
+    "axios": "^1.7.7",
+    "chart.js": "^4.4.4",
+    "crypto-js": "^4.2.0",
+    "date-fns": "^4.1.0",
+    "firebase": "^11.0.1",
+    "moment": "^2.30.1",
+    "naija-state-local-government": "^1.1.2",
+    "postcss-nesting": "^10.0.0",
+    "socket.io": "^4.8.0",
+    "socket.io-client": "^4.8.0",
+    "sweetalert2": "^11.7.32",
+    "vue-toastification": "^1.7.14"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
