@@ -10,5 +10,9 @@ export default defineNuxtConfig({
     },
   },
   plugins: [],
-  modules: []
+  modules: ["@nuxtjs/tailwindcss"],
+  css: ["/assets/css/main.css", "/assets/css/custom.css"],
+  tailwindcss: {
+    cssPath: "@/assets/css/main.css",
+  },
 });

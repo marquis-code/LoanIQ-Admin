@@ -1,6 +1,6 @@
 <template>
     <div class="space-y-10 divide-y divide-gray-900/10">
-      <div :class="[showSideDescription ? 'md:grid-cols-2' : 'md:grid-cols-3']" class="grid grid-cols-1 gap-x-8 gap-y-8">
+      <div class="grid grid-cols-1 gap-x-8 gap-y-8">
         <form @submit.prevent="createInvestmentProduct" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
           <div class="px-4 py-6 sm:p-8">
             <div class="space-y-3">
@@ -146,18 +146,6 @@
   import { ref, computed, watch } from 'vue';
   const { createInvestmentProduct, loading, payload } = useCreateInvestmentProduct()
   
-  const props = defineProps({
-    showSideDescription: {
-      type: Boolean,
-      default: true
-    },
-    user: {
-      type: Object
-    }
-  });
-  
-  
-  const isEditMode = computed(() => Object.keys(props.user).length > 0);
-  
+
   </script>
   

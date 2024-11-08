@@ -18,7 +18,7 @@
                   </div>
                   <div class="mt-8">
                     <h3 class="text-lg font-medium">
-                      <NuxtLink to="/admin/dashboard/user-management/agents" class="focus:outline-none">
+                      <NuxtLink to="/dashboard/user-management/agents" class="focus:outline-none">
                         <!-- Extend touch target to entire panel -->
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         Agents
@@ -42,7 +42,7 @@
                   </div>
                   <div class="mt-8">
                     <h3 class="text-lg font-medium">
-                      <NuxtLink  to="/admin/dashboard/investment" class="focus:outline-none">
+                      <NuxtLink  to="/dashboard/investment" class="focus:outline-none">
                         <!-- Extend touch target to entire panel -->
                         <span class="absolute inset-0" aria-hidden="true"></span>
                        Investments
@@ -66,7 +66,7 @@
                   </div>
                   <div class="mt-8">
                     <h3 class="text-lg font-medium">
-                      <NuxtLink to="/admin/dashboard/settings" class="focus:outline-none">
+                      <NuxtLink to="/dashboard/settings" class="focus:outline-none">
                         <!-- Extend touch target to entire panel -->
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         System Settings
@@ -90,7 +90,7 @@
                   </div>
                   <div class="mt-8">
                     <h3 class="text-lg font-medium">
-                      <NuxtLink  to="/admin/dashboard/user-management/customers" class="focus:outline-none">
+                      <NuxtLink  to="/dashboard/user-management/customers" class="focus:outline-none">
                         <!-- Extend touch target to entire panel -->
                         <span class="absolute inset-0" aria-hidden="true"></span>
                        Customers
@@ -114,7 +114,7 @@
                   </div>
                   <div class="mt-8">
                     <h3 class="text-lg font-medium">
-                      <NuxtLink  to="/admin/dashboard/reports" class="focus:outline-none">
+                      <NuxtLink  to="/dashboard/reports" class="focus:outline-none">
                         <!-- Extend touch target to entire panel -->
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         Reports

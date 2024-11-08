@@ -25,6 +25,10 @@ export const useFetchRoles = () => {
         }
     };
 
+    onMounted(() => {
+        fetchRoles()
+    })
+
     return {
         fetchRoles,
         loading,

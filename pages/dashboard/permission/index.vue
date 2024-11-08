@@ -1,10 +1,9 @@
 <template>
 <main class="">
-  <!-- {{ investmentProducts }} -->
-  <ModulesInvestmentList :loading="loading" :products="investmentProducts" @selected="handleSelected" />
-    <CoreDrawer :showFooter="false" title="Inestment Details" description="Below are investment details" :show="openDrawer" @close="closeDrawer">
+    <AdminDashboardInvestmentList :products="investmentProducts" @selected="handleSelected" />
+    <CoreDrawer :show="openDrawer" @close="closeDrawer">
         <template #content>
-            <ModulesInvestmentDetails :investment="selectedInvestment" />
+            <AdminDashboardCustomersProfile :agent="selectedAgent" />
         </template>
     </CoreDrawer>
 </main>
@@ -19,10 +18,10 @@ const { loading,
   })
 
   const openDrawer = ref(false)
-  const selectedInvestment = ref({})
+  const selectedAgent = ref({})
 
   const handleSelected = (data: any) => {
-    selectedInvestment.value = data
+    selectedAgent.value = data
     openDrawer.value = true
   }
 
