@@ -10,7 +10,7 @@ export const roles_api = {
   },
   $_edit_roles: (id: string, payload: Record<string, any>) => {
     let url = `/role/${id}`;
-    return GATEWAY_ENDPOINT.get(url, payload);
+    return GATEWAY_ENDPOINT.put(url, payload);
   },
   $_delete_roles: (id: string) => {
     let url = `/role/${id}`;

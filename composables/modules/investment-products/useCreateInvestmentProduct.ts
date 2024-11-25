@@ -8,19 +8,17 @@ const payload = ref({
   image: "",
   description:
     "",
-  benefits: [
-    // "No lock-in period",
-    // "Interest is calculated daily",
-    // "No early liquidation penalty",
-    // "Minimum balance of N10,000",
-  ],
+  benefits: [],
   minInvestment: "",
   interestRate: "",
-  tenor: "",
+  minTenor: "",
+  maxTenor: "",
   flexible: true,
   canTopUp: true,
   canWithdrawEarly: true,
   preLiquidationFee: "",
+  interestPaymentSchedule: [], // upfront, monthly, after-maturity
+  automatedFrequency: [] // one-off, daily, weekly, monthly
 });
 
 export const useCreateInvestmentProduct = () => {

@@ -7,7 +7,7 @@ const credential = {
   email: ref(""),
 };
 
-export const use_auth_login = () => {
+export const useLogin = () => {
   const router = useRouter();
   const loading = ref(false);
   const { showToast } = useCustomToast();
@@ -21,12 +21,13 @@ export const use_auth_login = () => {
   const login = async () => {
     loading.value = true;
     const res = (await auth_api.$_login({
-      passcode: credential.passcode.value,
+      password: credential.passcode.value,
       email: credential.email.value,
     })) as any;
+    console.log(res, 'res')
     loading.value = false;
-    if (res.type !== "ERROR") {
-      useUser().createUser(res.data);
+    if (res.status == 201) {
+      useUser().createUser(res.data.data);
       showToast({
         title: "Success",
         message: "Login successful",

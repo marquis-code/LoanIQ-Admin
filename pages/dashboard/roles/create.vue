@@ -7,8 +7,8 @@
         </button>
     </div>
    <div>
-    <h5 class="font-semibold text-lg pb-4">Create Investment</h5>
-    <AdminDashboardCreateInvestmentForm class="w-6/12"/>
+    <h5 class="font-semibold text-lg pb-4">Create Roles</h5>
+    <ModulesRolesCreate class="w-6/12"/>
    </div>
    </main>
 </template>

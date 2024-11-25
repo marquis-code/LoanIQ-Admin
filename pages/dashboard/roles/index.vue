@@ -1,9 +1,9 @@
 <template>
 <main class="">
-    <AdminDashboardInvestmentList :loading="loading" :roles="roles" @selected="handleSelected" />
-    <CoreDrawer :show="openDrawer" @close="closeDrawer">
+    <ModulesRolesList :loading="loading" :roles="roles" @selected="handleSelected" />
+    <CoreDrawer title="Role deatsils" :show="openDrawer" @close="closeDrawer">
         <template #content>
-            <AdminDashboardCustomersProfile :agent="selectedAgent" />
+            <ModulesRolesDetails :role="selectedRole" />
         </template>
     </CoreDrawer>
 </main>
@@ -18,10 +18,10 @@ const { loading,
   })
 
   const openDrawer = ref(false)
-  const selectedAgent = ref({})
+  const selectedRole = ref({})
 
   const handleSelected = (data: any) => {
-    selectedAgent.value = data
+    selectedRole.value = data
     openDrawer.value = true
   }
 

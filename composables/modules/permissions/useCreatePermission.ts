@@ -3,11 +3,15 @@ import { permissions_api } from '@/api_factory/modules/permissions';
 import { useCustomToast } from '@/composables/core/useCustomToast'
 const { showToast } = useCustomToast();
 
+const payload = ref({
+    name: ""
+})
+
 export const useCreatePermission = () => {
     const loading = ref(false);
     const { $_create_permissions } = permissions_api;
 
-    const createPermission = async (payload: Record<string, any>) => {
+    const createPermission = async () => {
         loading.value = true;
         try {
             await $_create_permissions(payload);
@@ -32,5 +36,6 @@ export const useCreatePermission = () => {
     return {
         createPermission,
         loading,
+        payload 
     };
 };

@@ -1,27 +1,27 @@
 <template>
 <main class="">
-    <AdminDashboardInvestmentList :products="investmentProducts" @selected="handleSelected" />
+    <ModulesPermissionsList :loading="loading" :permissions="permissions" @selected="handleSelected" />
     <CoreDrawer :show="openDrawer" @close="closeDrawer">
         <template #content>
-            <AdminDashboardCustomersProfile :agent="selectedAgent" />
+            <ModulesPermissionsDetails :permission="selectedPermission" />
         </template>
     </CoreDrawer>
 </main>
 </template>
 
 <script setup lang="ts">
-import { useFetchInvestmentProducts } from '@/composables/modules/investment-products/useFetchInvestmentProducts'
+import { useFetchPermissions } from '@/composables/modules/permissions/useFetchPermissions'
 const { loading,
-  investmentProducts } = useFetchInvestmentProducts()
+  permissions } = useFetchPermissions()
   definePageMeta({
       layout: 'admin-dashboard'
   })
 
   const openDrawer = ref(false)
-  const selectedAgent = ref({})
+  const selectedPermission = ref({})
 
   const handleSelected = (data: any) => {
-    selectedAgent.value = data
+    selectedPermission.value = data
     openDrawer.value = true
   }
 

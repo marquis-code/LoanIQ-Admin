@@ -10,10 +10,14 @@ export const permissions_api = {
   },
   $_edit_permissions: (id: string, payload: Record<string, any>) => {
     let url = `/permission/${id}`;
-    return GATEWAY_ENDPOINT.get(url, payload);
+    return GATEWAY_ENDPOINT.put(url, payload);
   },
   $_delete_permissions: (id: string) => {
     let url = `/permission/${id}`;
     return GATEWAY_ENDPOINT.delete(url);
+  },
+  $_assign_permission_to_role: (payload: Record<string, any>) => {
+    let url = '/admin/permission/super-admin';
+    return GATEWAY_ENDPOINT.post(url, payload);
   },
 };

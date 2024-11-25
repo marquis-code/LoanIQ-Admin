@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 <div class="min-h-full p-6 pt-32">
     <main class="-mt-24 pb-8">
       <div class="">
@@ -19,7 +19,6 @@
                   <div class="mt-8">
                     <h3 class="text-lg font-medium">
                       <NuxtLink to="/dashboard/user-management/agents" class="focus:outline-none">
-                        <!-- Extend touch target to entire panel -->
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         Agents
                       </NuxtLink>
@@ -43,7 +42,7 @@
                   <div class="mt-8">
                     <h3 class="text-lg font-medium">
                       <NuxtLink  to="/dashboard/investment" class="focus:outline-none">
-                        <!-- Extend touch target to entire panel -->
+
                         <span class="absolute inset-0" aria-hidden="true"></span>
                        Investments
                       </NuxtLink>
@@ -67,7 +66,7 @@
                   <div class="mt-8">
                     <h3 class="text-lg font-medium">
                       <NuxtLink to="/dashboard/settings" class="focus:outline-none">
-                        <!-- Extend touch target to entire panel -->
+       
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         System Settings
                       </NuxtLink>
@@ -91,7 +90,7 @@
                   <div class="mt-8">
                     <h3 class="text-lg font-medium">
                       <NuxtLink  to="/dashboard/user-management/customers" class="focus:outline-none">
-                        <!-- Extend touch target to entire panel -->
+=
                         <span class="absolute inset-0" aria-hidden="true"></span>
                        Customers
                       </NuxtLink>
@@ -115,7 +114,7 @@
                   <div class="mt-8">
                     <h3 class="text-lg font-medium">
                       <NuxtLink  to="/dashboard/reports" class="focus:outline-none">
-                        <!-- Extend touch target to entire panel -->
+
                         <span class="absolute inset-0" aria-hidden="true"></span>
                         Reports
                       </NuxtLink>
@@ -155,7 +154,7 @@
             </section>
           </div>
   
-          <!-- Right column -->
+
           <div class="grid grid-cols-1 gap-4">
             <section aria-labelledby="announcements-title">
               <div class="overflow-hidden rounded-lg bg-white shadow">
@@ -167,7 +166,7 @@
                         <div class="relative focus-within:ring-2 focus-within:ring-cyan-500">
                           <h3 class="text-sm font-semibold text-gray-800">
                             <a href="#" class="hover:underline focus:outline-none">
-                              <!-- Extend touch target to entire panel -->
+    
                               <span class="absolute inset-0" aria-hidden="true"></span>
                               Office closed on July 2nd
                             </a>
@@ -179,7 +178,7 @@
                         <div class="relative focus-within:ring-2 focus-within:ring-cyan-500">
                           <h3 class="text-sm font-semibold text-gray-800">
                             <a href="#" class="hover:underline focus:outline-none">
-                              <!-- Extend touch target to entire panel -->
+       
                               <span class="absolute inset-0" aria-hidden="true"></span>
                               New password policy
                             </a>
@@ -191,7 +190,7 @@
                         <div class="relative focus-within:ring-2 focus-within:ring-cyan-500">
                           <h3 class="text-sm font-semibold text-gray-800">
                             <a href="#" class="hover:underline focus:outline-none">
-                              <!-- Extend touch target to entire panel -->
+
                               <span class="absolute inset-0" aria-hidden="true"></span>
                               Office closed on July 2nd
                             </a>
@@ -289,4 +288,88 @@
 definePageMeta({
     layout: 'admin-dashboard'
 })
+</script> -->
+
+<template>
+  <div class="container mx-auto p-4 space-y-8">
+    <!-- User Profile Card -->
+    <div class="flex items-center bg-gray-100 rounded-lg p-4 shadow-sm">
+      <div class="flex-1">
+        <img src="@/assets/img/avatar.png" alt="Profile" class="w-16 h-16 rounded-full bg-gray-300" />
+      </div>
+      <div class="ml-4">
+        <h2 class="text-lg font-semibold">Stanley Ugo</h2>
+        <p class="text-gray-500">stanleyugo@loaniq.ng</p>
+      </div>
+    </div>
+
+    <!-- Investment Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
+      <div v-for="card in summaryCards" :key="card.title" class="bg-white border-[0.5px] space-y-4 border-gray-100 rounded-lg shadow-smpavarae p-4">
+        <h3 class="text-[#2F6D67] font-semibold">{{ card.title }}</h3>
+        
+        <div class="flex gap-3 my-2 flex-wrap">
+          <button
+            v-for="filter in card.filters"
+            :key="filter"
+            :class="{ 'bg-[#2F6D67] text-white': filter === 'Today' }"
+            class="px-3 py-1 rounded border border-[#2F6D67] text-gray-700 text-sm"
+          >
+            {{ filter }}
+          </button>
+        </div>
+
+        <p class="text-gray-500">{{ card.description }}</p>
+        <p class="text-2xl font-bold">₦ 0.00</p>
+        <p class="text-gray-500">{{ card.subtitle }}</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const summaryCards = ref([
+  {
+    title: 'Active Investments',
+    description: 'Active Investments',
+    subtitle: '0 Active Investments',
+    filters: ['Today', 'MTD', 'YTD'],
+  },
+  {
+    title: 'Investments Awaiting Approval',
+    description: 'Investments Awaiting Approval',
+    subtitle: '0 Investments Awaiting Approval',
+    filters: ['Today', 'MTD', 'YTD'],
+  },
+  {
+    title: 'Liquidated Investments',
+    description: 'Liquidated Investments',
+    subtitle: '0 Liquidated Investments',
+    filters: ['Today', 'MTD', 'YTD'],
+  },
+  {
+    title: 'Investment Due to Mature',
+    description: 'Investment Due to Mature',
+    subtitle: '0 Investment due to Mature',
+    filters: ['Today', 'Next Day', 'Next 7 Days', 'Next 30 Days'],
+  },
+  {
+    title: 'Matured Investments',
+    description: 'Matured Investment',
+    subtitle: '0 Matured Investment',
+    filters: ['Today', 'MTD', 'YTD'],
+  },
+]);
+
+definePageMeta({
+    layout: 'admin-dashboard'
+})
 </script>
+
+<style scoped>
+.container {
+  max-width: 1200px;
+}
+</style>
