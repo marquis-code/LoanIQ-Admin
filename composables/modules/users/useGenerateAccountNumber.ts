@@ -3,7 +3,7 @@ import { users_api } from "@/api_factory/modules/users";
 import { useCustomToast } from "@/composables/core/useCustomToast";
 const { showToast } = useCustomToast();
 
-export default function useGenerateAccountNumber() {
+export const useGenerateAccountNumber = () => {
     const loading = ref(false);
 
     const generateAccountNumber = async (id: string) => {

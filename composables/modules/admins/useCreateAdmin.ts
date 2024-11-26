@@ -13,17 +13,19 @@ const payload = ref({
 export const useCreateAdmin = () => {
   const loading = ref(false);
   const { $_create_admin } = admin_api;
+  const router = useRouter()
 
   const createAdmin = async () => {
     loading.value = true;
     const response = (await $_create_admin(payload.value)) as any;
-    if (response.type !== "ERROR") {
+    if (response.statusText === "OK") {
       showToast({
         title: "Success",
         message: "Admin created successfully.",
         toastType: "success",
         duration: 3000,
       });
+      router.push('/dashboard/admin')
     } else {
       showToast({
         title: "Error",

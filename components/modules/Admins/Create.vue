@@ -66,7 +66,7 @@
             <button
              type="submit"
              :disabled="loading"
-             class="bg-[#2F6D67] text-white rounded-md text-center w-full py-3.5 font-semibold flex justify-center items-center"
+             class="bg-[#2F6D67] text-white rounded-md disabled:cursor-not-allowed disabled:opacity-25 text-center w-full py-3.5 font-semibold flex justify-center items-center"
         >
           {{ loading ? "processing..." : "Submit" }}
 

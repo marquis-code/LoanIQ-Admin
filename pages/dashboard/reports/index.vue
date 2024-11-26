@@ -10,9 +10,10 @@
 </template>
 
 <script setup lang="ts">
-  definePageMeta({
-      layout: 'admin-dashboard'
-  })
+   definePageMeta({
+          layout: 'admin-dashboard',
+           middleware: 'auth'
+      })
 
   const openDrawer = ref(false)
   const selectedAgent = ref({})

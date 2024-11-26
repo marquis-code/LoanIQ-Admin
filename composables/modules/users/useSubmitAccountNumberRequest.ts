@@ -9,7 +9,7 @@ const payload = ref({
     trackingId:""
 })
 
-export default function useSubmitAccountNumberRequest() {
+export const useSubmitAccountNumberRequest = () => {
     const loading = ref(false);
 
     const submitAccountNumberRequest = async () => {

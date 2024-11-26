@@ -13,7 +13,8 @@
 
 <script setup lang="ts">
 const router = useRouter()
- definePageMeta({
-    layout: 'admin-dashboard'
- })
+definePageMeta({
+          layout: 'admin-dashboard',
+           middleware: 'auth'
+      })
 </script>

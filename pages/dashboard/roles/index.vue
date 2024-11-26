@@ -14,8 +14,9 @@ import { useFetchRoles } from '@/composables/modules/roles/useFetchRoles'
 const { loading,
   roles } = useFetchRoles()
   definePageMeta({
-      layout: 'admin-dashboard'
-  })
+          layout: 'admin-dashboard',
+           middleware: 'auth'
+      })
 
   const openDrawer = ref(false)
   const selectedRole = ref({})

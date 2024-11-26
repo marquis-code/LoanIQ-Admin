@@ -21,14 +21,14 @@
     </div>
     <div v-if="admins.length && !loading" class="">
       <div class="mt-8 flow-root">
-        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <div class="-my-2 overflow-x-auto">
+          <div class="inline-block min-w-full w-full py-2 align-middle border-[0.5px] rounded-lg">
             <table class="min-w-full divide-y divide-gray-300">
               <thead>
                 <tr>
                   <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name
                   </th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Phone</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
                   <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Blocked</th>
                   <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Deleted</th>
                   <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
@@ -43,7 +43,7 @@
                     <div class="flex items-center">
                       <div class="h-11 w-11 shrink-0">
                         <img v-if="!admin.avatar" class="h-11 w-11 rounded-full"
-                          src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          src="@/assets/icons/avatar.svg"
                           alt="">
                           <img v-else class="h-11 w-11 rounded-full"
                           :src="admin.avatar"
@@ -56,7 +56,7 @@
                     </div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                    <div class="text-gray-900">{{ admin.phone ?? 'Nil' }}</div>
+                    <div class="text-gray-900">{{ admin.roleId ?? 'Nil' }}</div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                     <span

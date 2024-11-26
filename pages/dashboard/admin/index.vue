@@ -1,9 +1,9 @@
 <template>
     <main class="">
       <ModulesAdminsList :loading="loading" :admins="admins" @selected="handleSelected" />
-        <CoreDrawer :showFooter="false" title="User Details" description="Below are investment details" :show="openDrawer" @close="closeDrawer">
+        <CoreDrawer :showFooter="false" title="Admin Details" description="Below are admin details" :show="openDrawer" @close="closeDrawer">
             <template #content>
-                <ModulesAdminsDetails :user="selectedAdmin" />
+                <ModulesAdminsDetails :admin="selectedAdmin" />
             </template>
         </CoreDrawer>
     </main>
@@ -14,14 +14,14 @@
     const { loading,
       admins} = useGetAdmins()
       definePageMeta({
-          layout: 'admin-dashboard'
+          layout: 'admin-dashboard',
+           middleware: 'auth'
       })
     
       const openDrawer = ref(false)
       const selectedAdmin = ref({})
     
       const handleSelected = (data: any) => {
-        console.log(data, 'selected user')
         selectedAdmin.value = data
         openDrawer.value = true
       }

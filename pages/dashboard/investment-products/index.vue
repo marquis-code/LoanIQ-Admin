@@ -15,8 +15,9 @@ import { useFetchInvestmentProducts } from '@/composables/modules/investment-pro
 const { loading,
   investmentProducts } = useFetchInvestmentProducts()
   definePageMeta({
-      layout: 'admin-dashboard'
-  })
+          layout: 'admin-dashboard',
+           middleware: 'auth'
+      })
 
   const openDrawer = ref(false)
   const selectedInvestment = ref({})

@@ -14,8 +14,9 @@ import { useFetchPermissions } from '@/composables/modules/permissions/useFetchP
 const { loading,
   permissions } = useFetchPermissions()
   definePageMeta({
-      layout: 'admin-dashboard'
-  })
+          layout: 'admin-dashboard',
+           middleware: 'auth'
+      })
 
   const openDrawer = ref(false)
   const selectedPermission = ref({})

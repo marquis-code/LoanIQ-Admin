@@ -26,7 +26,7 @@ export const useLogin = () => {
     })) as any;
     console.log(res, 'res')
     loading.value = false;
-    if (res.status == 201) {
+    if (res.status == 201 || res.status == 200) {
       useUser().createUser(res.data.data);
       showToast({
         title: "Success",

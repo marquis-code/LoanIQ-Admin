@@ -11,15 +11,16 @@
         </p>
       </div>
       <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+        <button @click="openAddUserModal = true" class="text-sm text-white bg-black rounded-md py-2.5 px-5">Add User</button>
       </div>
     </div>
-    <div v-if="users.length && !loading" class="px-4 sm:px-6 lg:px-8">
+    <div v-if="users.length && !loading" class="">
       <div class="mt-8 flow-root">
-        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <table class="min-w-full divide-y divide-gray-300">
-              <thead>
-                <tr>
+        <div class="-my-2 overflow-x-auto">
+          <div class="inline-block min-w-full w-full py-2 align-middle border-[0.5px] rounded-lg">
+            <table class="min-w-full w-full divide-y divide-gray-300">
+              <thead class="">
+                <tr class="">
                   <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name
                   </th>
                   <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Phone</th>
@@ -32,13 +33,13 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <tr  v-for="(user, index) in users"
+                <tr class="pl-6" v-for="(user, index) in users"
                 :key="index">
                   <td class="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0">
                     <div class="flex items-center">
                       <div class="h-11 w-11 shrink-0">
                         <img v-if="!user.avatar" class="h-11 w-11 rounded-full"
-                          src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                          src="@/assets/icons/avatar.svg"
                           alt="">
                           <img v-else class="h-11 w-11 rounded-full"
                           :src="user.avatar"
@@ -51,7 +52,7 @@
                     </div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                    <div class="text-gray-900">{{ user.phone ?? 'Nil' }}</div>
+                    <div class="text-gray-900">{{ user.phoneNumber ?? 'Nil' }}</div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                     <span
@@ -108,6 +109,54 @@
                     >
                       <li>
                         <a
+                            @click="selectOption('request', user)"
+                            href="#"
+                            class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#4a4a4a"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                          </svg>
+                         request account number
+                        </a>
+                      </li>
+  
+                      <!-- <li>
+                        <a
+                            @click="selectOption('view', user)"
+                            href="#"
+                            class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#4a4a4a"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                          </svg>
+                          Generate account number
+                        </a>
+                      </li> -->
+ 
+                      <li>
+                        <a
                          @click="selectOption('view', user)"
                           href="#"
                           class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
@@ -133,7 +182,7 @@
                       </li>
                       <li>
                         <a
-                          @click="selectOption('block-status-update', user)"
+                          @click="selectOption('generate', user)"
                           href="#"
                           class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
                         >
@@ -151,7 +200,7 @@
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                           </svg>
-                           {{user.blockStatus ? 'Un-Block' : 'Block'}}
+                           Generate account number
                         </a>
                       </li>
                       <li>
@@ -203,12 +252,36 @@
 
     <ModalsConfirm @close="isBlockingModalOpen = false" @continue="confirmBlockingAction(selectedUser)"
       :loading="users.blockStatus ? unblocking : blocking" title="Confirm Action" :description="`Are you sure you want to ${users.blockStatus ? 'Un-Block' : 'Block'} ${selectedUser.firstName ?? 'Nil'} ${selectedUser.lastName ?? 'Nil' } account`" :show="isBlockingModalOpen" />
+
+      <CoreBaseModal :show="openAddUserModal" @update:show="openAddUserModal = false">
+          <ModulesUsersCreate @success="openAddUserModal = false" />
+      </CoreBaseModal>
+
+      <ModalsConfirm
+      @close="isRequestModalOpen = false"
+      @continue="proceedToRequestAccountNumber"
+      :loading="loading"
+      title="Confirm Request"
+      :description="`Are you sure you want to proceed to request account number for ${selectedUser?.firstName} ${selectedUser?.lastName}`"
+      :show="isRequestModalOpen"
+    />
+
+    <ModalsConfirm
+      @close="isGenerateAccount = false"
+      @continue="proceedToGenerateAccountNumber"
+      :loading="generating"
+      title="Confirm!"
+      :description="`Are you sure you want to proceed to generate account number for ${selectedUser?.firstName} ${selectedUser?.lastName}`"
+      :show="isGenerateAccount"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+import { useGenerateAccountNumber } from '@/composables/modules/users/useGenerateAccountNumber'
 import { useBlockUser } from '@/composables/modules/users/useBlockUser'
 const { blockUser, loading: blocking, } = useBlockUser()
+const { generateAccountNumber, loading: generating } = useGenerateAccountNumber ()
 
 
 import { useUnblockUser } from '@/composables/modules/users/useUnblockUser'
@@ -251,10 +324,19 @@ const confirmBlockingAction = async (item: any) => {
   }
 }
 
+const proceedToGenerateAccountNumber = () => {
+  if(selectedUser.value){
+    generateAccountNumber(selectedUser?.value?.id)
+  }
+}
+
 const selectedUser = ref({});
+const openAddUserModal = ref(false)
 
 const isFlaggingModalOpen = ref(false);
 const isBlockingModalOpen = ref(false);
+const isRequestModalOpen = ref(false)
+const isGenerateAccount = ref(false)
 
 const openDropdown = ref<number | null>(null);
 const emit = defineEmits(["selected"]);
@@ -290,6 +372,7 @@ onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
 });
 
+
 const selectOption = (option: string, item?: any) => {
   console.log(item, 'item')
   selectedUser.value = item
@@ -305,6 +388,14 @@ const selectOption = (option: string, item?: any) => {
   if (option === 'block-status-update') {
     isBlockingModalOpen.value = true
     // emit('selected', item)
+  }
+
+  if(option === 'request'){
+    isRequestModalOpen.value = true
+  }
+
+  if(option === 'generate'){
+    isGenerateAccount.value = true
   }
 };
 </script>

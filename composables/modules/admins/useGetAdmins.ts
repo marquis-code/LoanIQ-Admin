@@ -4,34 +4,15 @@ import { useCustomToast } from "@/composables/core/useCustomToast";
 const { showToast } = useCustomToast();
 export const useGetAdmins = () => {
   const loading = ref(false);
-  const admins = ref([
-    {
-      id: "900f092b-2e6b-4e35-aac2-fee1909de2e8",
-      email: "aderinolasegun9@gmail.com",
-      firstName: "Segun",
-      lastName: "James",
-      roleId: "super-admin",
-      permissions: [
-        {
-          moduleId: "user-management",
-          permissions: ["view", "delete", "edit", "create"],
-        },
-        {
-          moduleId: "investment-product",
-          permissions: ["view", "delete", "edit", "create"],
-        },
-      ],
-      block: false,
-      deleted: false,
-    },
-  ]);
+  const admins = ref([]);
   const { $_get_admins } = admin_api;
 
   const getAdmins = async () => {
     loading.value = true;
     const response = (await $_get_admins()) as any;
-    if (response.type !== "ERROR") {
-      admins.value = response.data;
+    console.log(response, 'tes')
+    if (response.statusText === "OK") {
+      admins.value = response?.data?.data || [];
       showToast({
         title: "Success",
         message: "Admins retrieved successfully.",

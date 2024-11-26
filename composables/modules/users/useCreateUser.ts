@@ -8,7 +8,7 @@ const payload = ref({
     bvn: ""
 })
 
-export default function useCreateUser() {
+export const useCreateUser = () => {
     const loading = ref(false);
 
     const createUser = async () => {
@@ -41,9 +41,15 @@ export default function useCreateUser() {
         loading.value = false;
     };
 
+    const setPayload = (data: any) => {
+      payload.value.email = data.email
+      payload.value.bvn = data.bvn
+    }
+
     return {
         loading,
         payload,
         createUser,
+        setPayload
     };
 }

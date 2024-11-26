@@ -14,7 +14,8 @@
     const { loading,
      users} = useGetUsers()
       definePageMeta({
-          layout: 'admin-dashboard'
+          layout: 'admin-dashboard',
+          middleware: 'auth'
       })
     
       const openDrawer = ref(false)

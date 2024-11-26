@@ -5,12 +5,14 @@ const user = ref(null);
 const runtimeData = {
   auth: ref(),
   user: ref({} as any),
+  permission: ref([] as any),
   token: ref(""),
 };
 const localStorageData = {
   auth: ref(),
   user: useStorage("user", {} as any),
   token: useStorage("token", ""),
+  permission: useStorage('permission', [] as any)
 };
 
 watch(
@@ -29,6 +31,7 @@ watch(
   runtimeData.auth.value = localStorageData.auth.value;
   runtimeData.user.value = localStorageData.user.value;
   runtimeData.token.value = localStorageData.token.value;
+  runtimeData.permission.value = localStorageData.permission.value;
 })();
 
 export const useUser = () => {
@@ -63,9 +66,12 @@ export const useUser = () => {
     localStorageData.token.value = token;
   };
   const createUser = (user: any) => {
-    runtimeData.user.value = user?.user;
-    localStorageData.token.value = user?.accessToken;
-    runtimeData.token.value = user?.accessToken;
+    localStorageData.token.value = user?.token;
+    localStorageData.permission.value = user?.permission;
+    localStorageData.user.value = user?.admin;
+    runtimeData.user.value = user?.admin;
+    runtimeData.token.value = user?.token;
+    runtimeData.permission.value = user?.permission;
   };
 
   const updateUser = (user: any) => {

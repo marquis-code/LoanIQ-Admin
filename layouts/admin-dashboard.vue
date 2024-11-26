@@ -355,6 +355,10 @@ function toggleUserDropdown() {
 }
 
 const openInvestmentsTabs = ref(false)
+
+definePageMeta({
+    middleware: 'auth'
+  })
 </script>
 
 <style scoped>

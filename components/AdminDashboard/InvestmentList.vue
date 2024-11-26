@@ -259,8 +259,7 @@
       class="fixed inset-0 z-40 bg-black opacity-25"
     ></div>
 
-    <CorePagination class="sticky bottom-0" />
-    <ModalsConfirm
+    <CorePagination class=    <ModalsConfirm
       @close="isDeleteModalOpen = false"
       @continue="deleteInvestmentProduct"
       :loading="loading"
@@ -269,7 +268,8 @@
         selectedInvestment.name ?? 'Nil'
       } account`"
       :show="isDeleteModalOpen"
-    />
+    />"sticky bottom-0" />
+
     <CoreDrawer
       :showSideDescription="false"
       title="Investmnent Product Details"

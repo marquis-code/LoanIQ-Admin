@@ -134,8 +134,9 @@ const filteredInvestments = computed(() => {
 });
 
 definePageMeta({
-  layout: 'admin-dashboard'
-})
+          layout: 'admin-dashboard',
+           middleware: 'auth'
+      })
 </script>
 
 <style scoped>
