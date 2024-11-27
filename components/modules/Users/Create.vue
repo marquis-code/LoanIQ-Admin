@@ -1,7 +1,10 @@
 <template>
     <div class="flex items-center justify-center bg-gray-100">
-      <div class="bg-white p-6 w-full max-w-md">
-        <h1 class="text-xl font-semibold text-gray-800 mb-6 text-center">Create User</h1>
+      <div class="bg-white w-full max-w-md">
+       <div class="flex justify-center items-center flex-col pb-6">
+         <h1 class="text-xl font-semibold text-gray-800 text-center">Create User</h1>
+         <p class="text-sm text-gray-400 text-center -mt-3">Fill in the information below to create a user</p>
+       </div>
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <!-- Email Field -->
           <div>
@@ -35,9 +38,9 @@
             <button
               type="submit"
               :disabled="loading"
-              class="w-full bg-black text-white disabled:cursor-not-allowed disabled:opacity-25 font-medium py-3.5 text-sm px-4 rounded-lg shadow-md "
+              class="w-full bg-[#2F6D67] text-white disabled:cursor-not-allowed disabled:opacity-25 font-medium py-3.5 text-sm px-4 rounded-lg shadow-md "
             >
-              {{  loading ? 'procrssing' : 'Submit' }}
+              {{  loading ? 'processing..' : 'Submit' }}
             </button>
           </div>
         </form>

@@ -16,10 +16,10 @@ export const useSubmitAccountNumberRequest = () => {
         loading.value = true;
         try {
             const response = await users_api.$_submit_account_number_request(payload.value) as any
-            if (response.type !== "ERROR") {
+            if (response.statusText === "OK") {
                 showToast({
                     title: "Success",
-                    message: "Account number request was submitted successfully.",
+                    message: response?.data?.message,
                     toastType: "success",
                     duration: 3000,
                 });
@@ -42,9 +42,18 @@ export const useSubmitAccountNumberRequest = () => {
         loading.value = false;
     };
 
+    const userObj = JSON.parse(localStorage.getItem('createUserObj')) as any
+
+    const setPayload = (data: any) => {
+        payload.value.otp = data.otp
+        payload.value.userId = userObj.userId
+        payload.value.trackingId = userObj.trackingId
+    }
+
     return {
         loading,
         submitAccountNumberRequest,
-        payload
+        payload,
+        setPayload
     };
 }

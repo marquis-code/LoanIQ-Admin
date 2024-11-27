@@ -10,13 +10,16 @@ export const useGenerateAccountNumber = () => {
         loading.value = true;
         try {
             const response = await users_api.$_generate_account_number(id) as any
-            if (response.type !== "ERROR") {
+            console.log(response, 'res here')
+            if (response.statusText === "OK") {
                 showToast({
                     title: "Success",
-                    message: "Account number was generatd successfully.",
+                    message: response?.data?.message,
                     toastType: "success",
                     duration: 3000,
                 });
+                localStorage.setItem('createUserObj', JSON.stringify(response?.data?.data));
+                return response?.data?.status
             } else {
                 showToast({
                     title: "Error",

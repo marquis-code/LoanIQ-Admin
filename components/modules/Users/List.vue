@@ -109,77 +109,75 @@
                     >
                       <li>
                         <a
-                            @click="selectOption('request', user)"
-                            href="#"
-                            class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
-                        >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="22"
-                            height="22"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#4a4a4a"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                          </svg>
-                         request account number
-                        </a>
-                      </li>
-  
-                      <!-- <li>
-                        <a
                             @click="selectOption('view', user)"
                             href="#"
                             class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
                         >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="22"
-                            height="22"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#4a4a4a"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                          </svg>
-                          Generate account number
-                        </a>
-                      </li> -->
- 
-                      <li>
-                        <a
-                         @click="selectOption('view', user)"
-                          href="#"
-                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
-                        >
                           <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="22"
-                            height="22"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#4a4a4a"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="22"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#4a4a4a"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
                           >
                             <path
-                              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+                                d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
                             ></path>
                             <circle cx="12" cy="12" r="3"></circle>
                           </svg>
                           View
                         </a>
                       </li>
+                      <li>
+                        <a
+                            @click="selectOption('flag-status-update', user)"
+                            href="#"
+                            class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
+                        >
+                          <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="22"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#4a4a4a"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                          >
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                          </svg>
+                          {{user.flagStatus ? 'Un-Flag' : 'Flag'}}
+                        </a>
+                      </li>
+<!--                      <li>-->
+<!--                        <a-->
+<!--                            @click="selectOption('request', user)"-->
+<!--                            href="#"-->
+<!--                            class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"-->
+<!--                        >-->
+<!--                        <svg-->
+<!--                            xmlns="http://www.w3.org/2000/svg"-->
+<!--                            width="22"-->
+<!--                            height="22"-->
+<!--                            viewBox="0 0 24 24"-->
+<!--                            fill="none"-->
+<!--                            stroke="#4a4a4a"-->
+<!--                            stroke-width="1.5"-->
+<!--                            stroke-linecap="round"-->
+<!--                            stroke-linejoin="round"-->
+<!--                          >-->
+<!--                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>-->
+<!--                            <polyline points="22 4 12 14.01 9 11.01"></polyline>-->
+<!--                          </svg>-->
+<!--                         request account number-->
+<!--                        </a>-->
+<!--                      </li>-->
                       <li>
                         <a
                           @click="selectOption('generate', user)"
@@ -201,29 +199,6 @@
                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                           </svg>
                            Generate account number
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          @click="selectOption('flag-status-update', user)"
-                          href="#"
-                          class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="22"
-                            height="22"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#4a4a4a"
-                            stroke-width="1.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                          </svg>
-                           {{user.flagStatus ? 'Un-Flag' : 'Flag'}}
                         </a>
                       </li>
                     </ul>
@@ -266,6 +241,7 @@
       :show="isRequestModalOpen"
     />
 
+
     <ModalsConfirm
       @close="isGenerateAccount = false"
       @continue="proceedToGenerateAccountNumber"
@@ -274,14 +250,33 @@
       :description="`Are you sure you want to proceed to generate account number for ${selectedUser?.firstName} ${selectedUser?.lastName}`"
       :show="isGenerateAccount"
     />
+
+    <CoreBaseModal :show="openConfirmAccountNumberOTPModal" @update:show="openConfirmAccountNumberOTPModal = false">
+<!--      <ModulesUsersCreate @success="openConfirmAccountNumberOTPModal = false" />-->
+      <!-- Timer duration in seconds (4 minutes) -->
+      <CoreOtpInput
+          title="Verify Your Email"
+          description="We have sent a verification code to john@example.com."
+          :otpBoxes="6"
+          :loader="loading"
+          :timerDuration="240"
+          :onTimerExpire="handleTimerExpire"
+          @otp="handleOtp"
+          @clear="handleClear"
+      />
+    </CoreBaseModal>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useSubmitAccountNumberRequest } from '@/composables/modules/users/useSubmitAccountNumberRequest'
 import { useGenerateAccountNumber } from '@/composables/modules/users/useGenerateAccountNumber'
 import { useBlockUser } from '@/composables/modules/users/useBlockUser'
+import { useCustomToast } from "@/composables/core/useCustomToast";
+const { showToast } = useCustomToast();
 const { blockUser, loading: blocking, } = useBlockUser()
 const { generateAccountNumber, loading: generating } = useGenerateAccountNumber ()
+const { submitAccountNumberRequest, loading, setPayload } = useSubmitAccountNumberRequest()
 
 
 import { useUnblockUser } from '@/composables/modules/users/useUnblockUser'
@@ -304,6 +299,14 @@ const props = defineProps({
   },
 });
 
+const openAddUserModal = ref(false)
+const isFlaggingModalOpen = ref(false);
+const isBlockingModalOpen = ref(false);
+const isRequestModalOpen = ref(false)
+const isGenerateAccount = ref(false)
+const openConfirmAccountNumberOTPModal = ref(false)
+const otpComponent = ref();
+
 const confirmFlagingAction = async (item: any) => {
   if(item.flagStatus){
     await unflagUserAccount(item.id)
@@ -324,19 +327,18 @@ const confirmBlockingAction = async (item: any) => {
   }
 }
 
-const proceedToGenerateAccountNumber = () => {
+const proceedToGenerateAccountNumber = async () => {
   if(selectedUser.value){
-    generateAccountNumber(selectedUser?.value?.id)
+    const response = await generateAccountNumber(selectedUser?.value?.id)
+    console.log(response, 'response here 0000')
+    if(response && response === 'success'){
+      isGenerateAccount.value = false
+      openConfirmAccountNumberOTPModal.value = true
+    }
   }
 }
 
 const selectedUser = ref({});
-const openAddUserModal = ref(false)
-
-const isFlaggingModalOpen = ref(false);
-const isBlockingModalOpen = ref(false);
-const isRequestModalOpen = ref(false)
-const isGenerateAccount = ref(false)
 
 const openDropdown = ref<number | null>(null);
 const emit = defineEmits(["selected"]);
@@ -397,5 +399,33 @@ const selectOption = (option: string, item?: any) => {
   if(option === 'generate'){
     isGenerateAccount.value = true
   }
+  closeDropdown()
 };
+
+const handleOtp = async (otpCode: string) => {
+  // console.log("OTP Entered:", otpCode);
+  const payload = {
+    otp: otpCode
+  }
+  setPayload(payload)
+  await submitAccountNumberRequest()
+  openConfirmAccountNumberOTPModal.value = false
+};
+
+const handleClear = () => {
+  console.log("Clearing OTP fields...");
+  otpComponent.value.clearOtp(); // Call the `clearOtp` method in the child component
+};
+
+const handleTimerExpire = async () => {
+  handleClear()
+  await proceedToGenerateAccountNumber()
+  showToast({
+    title: "Error",
+    message: "The OTP has expired, a new OTP has been sent successfully..",
+    toastType: "error",
+    duration: 3000,
+  });
+};
+
 </script>

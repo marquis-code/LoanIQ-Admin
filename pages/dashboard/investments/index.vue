@@ -3,7 +3,7 @@
     <!-- Header Section -->
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-2xl font-semibold text-[#2F6D67]">Investments</h1>
-      <NuxtLink to="/dashboard/invest/create" class="bg-[#2F6D67] text-sm text-white px-4 py-3 rounded-lg">Add New</NuxtLink>
+      <NuxtLink to="/dashboard/investments/create" class="bg-[#2F6D67] text-sm text-white px-4 py-3 rounded-lg">Add New</NuxtLink>
     </div>
   
     <!-- Tabs -->

@@ -3,7 +3,7 @@
   <div class="flex min-h-full flex-col justify-center px-6 pt-24 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img class="mx-auto h-10 w-auto" src="@/assets/img/logo.png" alt="Your Company">
-      <h2 class="mt-4 text-center text-xl font-bold leading-9 tracking-tight text-gray-900">Plesse check your email</h2>
+      <h2 class="mt-4 text-center text-xl font-bold leading-9 tracking-tight text-gray-900">Please check your email</h2>
       <p class="text-sm text-gray-400 text-center">We have sent the code to elon@gmail.com</p>
     </div>
 

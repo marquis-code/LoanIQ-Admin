@@ -22,6 +22,10 @@ export const useForgotPassword = () => {
       return;
     }
 
+    const resetObj = JSON.parse(localStorage.getItem("resetObj") || "{}");
+    resetObj.email = credential.email.value
+    localStorage.setItem("resetObj", JSON.stringify(resetObj));
+   // localStorage.setItem('userEmail', credential.email.value);
     loading.value = true;
 
     try {

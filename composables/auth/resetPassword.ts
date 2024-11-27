@@ -15,16 +15,19 @@ export const useResetPassword = () => {
     newPassword: ref("")
   };
 
+  const userEmail = localStorage.getItem("userEmail") as any
+
   const resetPassword = async () => {
-    if (!credential.email.value || !credential.otp.value || !credential.newPassword.value) {
-      showToast({
-        title: "Error",
-        message: "Please fill in all required fields.",
-        toastType: "error",
-        duration: 3000,
-      });
-      return;
-    }
+    // if (!credential.email.value || !credential.otp.value || !credential.newPassword.value) {
+    //   showToast({
+    //     title: "Error",
+    //     message: "Please fill in all required fields.",
+    //     toastType: "error",
+    //     duration: 3000,
+    //   });
+    //   return;
+    // }
+    console.log(credential, 'credential from composabne')
 
     loading.value = true;
 
@@ -65,5 +68,11 @@ export const useResetPassword = () => {
     }
   };
 
-  return { credential, resetPassword, loading, errorMessage };
+  const setPayload = (data: any) => {
+    credential.email.value = data.email
+    credential.newPassword.value = data.password
+    credential.otp.value = data.otp
+  }
+
+  return { credential, resetPassword, loading, errorMessage, setPayload };
 };

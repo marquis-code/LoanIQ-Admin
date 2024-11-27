@@ -7,7 +7,7 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div v-for="report in reports" :key="report.title" class="bg-white rounded-lg shadow-md p-4 flex flex-col items-center">
           <div class="flex items-center space-x-2 mb-4">
-            <img src="/report-icon.svg" alt="Report Icon" class="w-6 h-6" />
+<!--            <img src="/report-icon.svg" alt="Report Icon" class="w-6 h-6" />-->
             <h3 class="text-gray-700 font-semibold">{{ report.title }}</h3>
           </div>
           <button class="bg-orange-500 text-white px-4 py-2 rounded-lg">View Report</button>
