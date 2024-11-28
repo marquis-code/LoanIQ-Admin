@@ -41,19 +41,37 @@
                       scope="col"
                       class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Minimum Investment
+                      Min Investment
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Interest Rate
+                      Interest Rate (%)
                     </th>
                     <th
                       scope="col"
                       class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                     >
-                      Tenor
+                      Min Tenor(months)
+                    </th>
+                    <th
+                        scope="col"
+                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Max Tenor(months)
+                    </th>
+                    <th
+                        scope="col"
+                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Pre Liquidation Fee
+                    </th>
+                    <th
+                        scope="col"
+                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                    >
+                      Status
                     </th>
                     <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
                       <span class="sr-only">Edit</span>
@@ -70,27 +88,27 @@
                       class="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0"
                     >
                       <div class="flex items-center">
-                        <div class="h-11 w-11 shrink-0">
-                          <img
-                            v-if="product.image"
-                            class="h-11 w-11 rounded-full"
-                            :src="product.image"
-                            alt=""
-                          />
-                          <img
-                            v-else
-                            class="h-11 w-11 rounded-full"
-                            src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                            alt=""
-                          />
-                        </div>
+<!--                        <div class="h-11 w-11 shrink-0">-->
+<!--                          <img-->
+<!--                            v-if="product.image"-->
+<!--                            class="h-11 w-11 rounded-full"-->
+<!--                            :src="product.image"-->
+<!--                            alt=""-->
+<!--                          />-->
+<!--                          <img-->
+<!--                            v-else-->
+<!--                            class="h-11 w-11 rounded-full"-->
+<!--                            src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"-->
+<!--                            alt=""-->
+<!--                          />-->
+<!--                        </div>-->
                         <div class="ml-4">
                           <div class="font-medium text-gray-900">
                             {{ product?.name || "Nil" }}
                           </div>
                           <div class="mt-1 text-gray-500">
                             {{
-                              `${product?.description?.slice(0, 10)}...` ||
+                              `${product?.description?.slice(0, 20)}...` ||
                               "Nil"
                             }}
                           </div>
@@ -101,7 +119,7 @@
                       class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
                     >
                       <div class="text-gray-900">
-                        {{ product?.minInvestment || "Nil" }}
+                        {{ formatCurrency(product?.minInvestment) || "Nil" }}
                       </div>
                     </td>
                     <td
@@ -112,7 +130,22 @@
                     <td
                       class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
                     >
-                      {{ product?.tenor || "Nil" }}
+                      {{ product?.minTenor || "Nil" }}
+                    </td>
+                    <td
+                        class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
+                    >
+                      {{ product?.maxTenor || "Nil" }}
+                    </td>
+                    <td
+                        class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
+                    >
+                      {{ formatCurrency(product?.preLiquidationFee) || "Nil" }}
+                    </td>
+                    <td
+                        class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
+                    >
+                      <span class="rounded-full text-xs px-5 py-1.5" :class="[product?.status === 'active' ? 'text-green-900 bg-green-200' : 'text-red-900 bg-red-200']">{{ product?.status || "Nil" }}</span>
                     </td>
                     <td
                   class="py-4 px-5 relative whitespace-nowrap text-sm text-[#667185]"
@@ -248,6 +281,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatCurrency } from '@/utils/currencyUtils';
 import { useDeleteInvestmentProduct } from '@/composables/modules/investment-products/useDeleteInvestmentProduct' 
 const { deleteInvestmentProduct,
   loading:deleting } = useDeleteInvestmentProduct()

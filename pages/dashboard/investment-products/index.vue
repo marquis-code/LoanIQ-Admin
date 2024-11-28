@@ -2,7 +2,7 @@
 <main class="">
   <!-- {{ investmentProducts }} -->
   <ModulesInvestmentList :loading="loading" :products="investmentProducts" @selected="handleSelected" />
-    <CoreDrawer :showFooter="false" title="Inestment Details" description="Below are investment details" :show="openDrawer" @close="closeDrawer">
+    <CoreDrawer :showFooter="false" title="Investment Details" description="Below are investment details" :show="openDrawer" @close="closeDrawer">
         <template #content>
             <ModulesInvestmentDetails :investment="selectedInvestment" />
         </template>

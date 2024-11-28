@@ -14,7 +14,7 @@
         <button @click="openAddUserModal = true" class="text-sm text-white bg-black rounded-md py-2.5 px-5">Add User</button>
       </div>
     </div>
-    <div v-if="users.length && !loading" class="">
+    <div class="">
       <div class="mt-8 flow-root">
         <div class="-my-2 overflow-x-auto">
           <div class="inline-block min-w-full w-full py-2 align-middle border-[0.5px] rounded-lg">
@@ -211,16 +211,6 @@
         </div>
       </div>
     </div>
-    <div v-else-if="!users.length && !loading"
-      class="flex border-[0.5px] mt-5 flex-col items-center justify-center h-64 bg-white rounded-lg">
-      <div class="flex items-center justify-center p-6 mb-4">
-        <img :src="dynamicIcons('illustration')" />
-      </div>
-      <p class="text-[#1D2739] font-medium pt-0 mt-0 text-sm">
-        No Investment Product Available
-      </p>
-    </div>
-    <CoreLoader v-else class="mt-6" />
     <div v-if="activeDropdown !== null" @click="closeDropdown" class="fixed inset-0 z-40 bg-black opacity-25"></div>
     <ModalsConfirm @close="isFlaggingModalOpen = false" @continue="confirmFlagingAction(selectedUser)"
       :loading="users.flagStatus ? unflagging : flagging" title="Confirm Action" :description="`Are you sure you want to ${users.flagStatus ? 'Un-Flag' : 'Flag'} ${selectedUser.firstName ?? 'Nil'} ${selectedUser.lastName ?? 'Nil' } account`" :show="isFlaggingModalOpen" />

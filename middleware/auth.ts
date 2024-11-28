@@ -12,6 +12,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   // If the user is not logged in and tries to access any page other than login, redirect to login
   if (!isLoggedIn.value && to.path !== "/") {
-    // return router.push("/"); // Assuming '/' is the login page
+    return router.push("/"); // Assuming '/' is the login page
   }
 });

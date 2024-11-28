@@ -5,89 +5,49 @@
       <h1 class="text-2xl font-semibold text-[#2F6D67]">Investments</h1>
       <NuxtLink to="/dashboard/investments/create" class="bg-[#2F6D67] text-sm text-white px-4 py-3 rounded-lg">Add New</NuxtLink>
     </div>
-  
+
     <!-- Tabs -->
-    <div class="flex space-x-4 mb-4 border rounded-lg p-2">
-      <button
+<section class="lg:flex justify-between items-center">
+  <div class="flex space-x-4 mb-4 border rounded-lg p-2">
+    <button
         v-for="status in statuses"
         :key="status"
         :class="{'bg-teal-600 text-white': activeTab === status}"
         class="px-6 py-2 text-sm rounded-md focus:outline-none"
-        @click="activeTab = status"
-      >
-        {{ status }}
-      </button>
-    </div>
-  
-    <!-- Search and Pagination Controls -->
-    <div class="flex justify-between items-center mb-4">
-      <div class="flex items-center">
-        <input
+        @click="handleTabChange(status)"
+    >
+      {{ status }}
+    </button>
+  </div>
+  <div class="flex justify-between items-center mb-4">
+    <div class="flex items-center">
+      <input
           type="text"
           placeholder="Enter Keyword"
           v-model="searchQuery"
           class="p-2 border input-field"
-        />
-        <button class="bg-black text-white p-2 rounded-r">
-          <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </button>
-      </div>
+      />
+      <button class="bg-black text-white p-2 rounded-r">
+        <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
     </div>
-  
-    <!-- Investment Table -->
-    <div class="bg-white border-[0.5px] border-gray-100 rounded-lg overflow-x-auto">
-      <table class="min-w-full text-left text-gray-700">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="py-2 text-sm px-4">Code</th>
-            <th class="py-2 text-sm px-4">Investor</th>
-            <th class="py-2 text-sm px-4">Amount Invested (₦)</th>
-            <th class="py-2 text-sm px-4">Date Created</th>
-            <th class="py-2 text-sm px-4">End Date</th>
-            <th class="py-2 text-sm px-4">Days to Maturity</th>
-            <th class="py-2 text-sm px-4">Interest Accrued (₦)</th>
-            <th class="py-2 text-sm px-4">Status</th>
-            <th class="py-2 text-sm px-4">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="investment in filteredInvestments"
-            :key="investment.id"
-            class="border-b hover:bg-gray-50"
-          >
-            <td class="py-4 text-sm px-4 text-orange-600">{{ investment.code }}</td>
-            <td class="py-4 text-sm px-4">{{ investment.investor }}</td>
-            <td class="py-4 text-sm px-4">{{ investment.amountInvested.toLocaleString() }}</td>
-            <td class="py-4 text-sm px-4">{{ investment.dateCreated }}</td>
-            <td class="py-4 text-sm px-4">{{ investment.endDate }}</td>
-            <td class="py-4 text-sm px-4">{{ investment.daysToMaturity }} days</td>
-            <td class="py-4 text-sm px-4">{{ investment.interestAccrued.toLocaleString() }}</td>
-            <td class="py-4 text-sm px-4">
-              <span
-                class="px-4 text-sm py-1 rounded-full text-sm font-semibold"
-                :class="{
-                  'bg-yellow-200 text-yellow-800': investment.status === 'Active',
-                  'bg-red-200 text-red-800': investment.status === 'Terminated',
-                  'bg-gray-200 text-gray-800': investment.status === 'Deactivated'
-                }"
-              >
-                {{ investment.status }}
-              </span>
-            </td>
-            <td class="py-4 text-sm px-4">
-              <button @click="openModal(investment)" class="bg-yellow-500 text-white px-3 py-1 rounded-lg text-sm">Details</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  </div>
+</section>
+
+    <!-- Search and Pagination Controls -->
+
+    <!-- Investment List Component -->
+    <ModulesUserInvestmentList
+        :loading="computedLoader"
+        :investments="filteredInvestments"
+        @selected="handleSelected"
+    />
 
     <!-- Investment Details Modal -->
     <ModalsInvestmentDetails
-      :isOpen="isModalOpen"
-      :investment="selectedInvestment"
-      @close="closeModal"
+        :isOpen="isModalOpen"
+        :investment="selectedInvestment"
+        @close="closeModal"
     />
   </div>
 </template>
@@ -97,21 +57,16 @@ import { useCompletedInvestments } from '@/composables/modules/investments/useCo
 import { useActiveInvestments } from '@/composables/modules/investments/useActiveInvestments'
 import { useDeactivatedInvestments } from '@/composables/modules/investments/useDeactivatedInvestments'
 import { ref, computed } from 'vue';
-const { completedInvestments, loading } = useCompletedInvestments()
-const { activeInvestments, loading: fetchingActiveInvestments } = useActiveInvestments()
-const { deactivatedInvestments, loading: fetchingDeactivatedInvestments } = useDeactivatedInvestments()
 
-// Sample statuses and data
-const statuses = ['Pool', 'Active', 'Terminated', 'Deactivated'];
+const { completedInvestments, loading: loadingCompleted } = useCompletedInvestments()
+const { activeInvestments, loading: loadingActive } = useActiveInvestments()
+const { deactivatedInvestments, loading: loadingDeactivated } = useDeactivatedInvestments()
+
+// Sample statuses
+const statuses = ['Active', 'Completed', 'Deactivated'];
 const activeTab = ref('Active');
 
-// Sample investment data
-const investments = ref([
-  { id: 1, code: 'INV-0026', investor: 'ADEBIMPE ADEDEJI', amountInvested: 25000000, dateCreated: '08/11/2024', endDate: '05/01/2025', daysToMaturity: 55, interestAccrued: 44262.29, status: 'Active' },
-  // Add more sample data as needed
-]);
-
-// Search and pagination state
+// State for search query and pagination
 const searchQuery = ref('');
 const itemsPerPage = ref(10);
 
@@ -119,7 +74,47 @@ const itemsPerPage = ref(10);
 const isModalOpen = ref(false);
 const selectedInvestment = ref(null);
 
-// Functions to open and close the modal
+// Reactive investment data
+const investments = computed(() => {
+  switch (activeTab.value) {
+    case 'Active':
+      return activeInvestments.value;
+    case 'Completed':
+      return completedInvestments.value;
+    case 'Deactivated':
+      return deactivatedInvestments.value;
+    default:
+      return [];
+  }
+});
+
+const computedLoader = computed(() => {
+  switch (activeTab.value) {
+    case 'Active':
+      return loadingActive.value;
+    case 'Completed':
+      return loadingCompleted.value;
+    case 'Deactivated':
+      return loadingDeactivated.value;
+    default:
+      return false;
+  }
+});
+
+// Filtered investments based on search query
+const filteredInvestments = computed(() => {
+  if(investments.value.length > 0) {
+    return investments.value.filter(inv =>
+        inv.investor.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+  }
+});
+
+// Functions to handle tab change and modal
+const handleTabChange = (status: string) => {
+  activeTab.value = status;
+};
+
 const openModal = (investment) => {
   selectedInvestment.value = investment;
   isModalOpen.value = true;
@@ -130,17 +125,10 @@ const closeModal = () => {
   selectedInvestment.value = null;
 };
 
-// Filtered investments based on tab and search query
-const filteredInvestments = computed(() => {
-  return investments.value
-    .filter(inv => (activeTab.value === 'All' || inv.status === activeTab.value))
-    .filter(inv => inv.investor.toLowerCase().includes(searchQuery.value.toLowerCase()));
-});
-
 definePageMeta({
-          layout: 'admin-dashboard',
-           middleware: 'auth'
-      })
+  layout: 'admin-dashboard',
+  middleware: 'auth'
+})
 </script>
 
 <style scoped>
