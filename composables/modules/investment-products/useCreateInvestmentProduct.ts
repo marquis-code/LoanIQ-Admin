@@ -28,25 +28,24 @@ export const useCreateInvestmentProduct = () => {
 
   const createInvestmentProduct = async () => {
     loading.value = true;
-    try {
-      await $_create_investment_product(payload.value);
+    const res = await $_create_investment_product(payload.value) as any
+    if(res.type !== 'ERROR'){
       showToast({
         title: "Success",
         message: "Investment product was created successfully.",
         toastType: "success",
         duration: 3000,
       });
-      router.push('/dashboard/investment')
-    } catch (error) {
+      router.push('/dashboard/investment-products')
+    } else {
       showToast({
         title: "Error",
-        message: `Error creating investment product, ${error}`,
+        message: res?.data?.message,
         toastType: "error",
         duration: 3000,
       });
-    } finally {
-      loading.value = false;
     }
+    loading.value = false;
   };
 
   return {

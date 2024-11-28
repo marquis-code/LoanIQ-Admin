@@ -1,15 +1,19 @@
 <template>
   <div class="max-w-6xl mx-auto p-4">
     <!-- Header Section -->
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl text-[#2F6D67] font-medium">New Investment</h2>
-      <button class="text-gray-500 text-lg">&times;</button>
+    <div class="mb-4">
+        <button @click="router.back()" class="bg-gray-100 rounded-full border p-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a4a4a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
+        </button>
     </div>
-
     <!-- Form Section -->
     <div class="bg-white rounded-lg">
-      <form class="max-w-3xl border-[0.5px] space-y-7 border-gray-100 p-6 rounded-lg" @submit.prevent="handleSubmit">
-        <div class="space-y-5">
+      <form class="max-w-3xl border-[0.5px] space-y-7 border-gray-100 rounded-lg" @submit.prevent="handleSubmit">
+        <div class="flex justify-between items-center mb-6 border-b px-6 py-4">
+      <h2 class="text-xl text-[#2F6D67] font-medium">New Investment</h2>
+      <!-- <button class="text-gray-500 text-lg">&times;</button> -->
+    </div>
+        <div class="space-y-5 px-6">
           <!-- Email -->
           <div class="flex items-center gap-x-6 w-full">
             <div class="w-full">
@@ -92,7 +96,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center p-6">
           <button type="button" class="text-yellow-600 underline">Preview Investment Certificate</button>
           <button type="submit" class="bg-[#2F6D67] text-sm text-white px-4 py-3 rounded-lg">Submit Application</button>
         </div>
@@ -102,20 +106,23 @@
 </template>
 
 <script setup lang="ts">
+import { useCreateInvestment } from '@/composables/modules/investments/useCreateInvestment'
+const { createInvestment, loading} = useCreateInvestment()
 import { ref } from 'vue';
+const router = useRouter()
 
-const formData = ref({
-  email: '',
-  firstName: '',
-  lastName: '',
-  phone: '',
-  altPhone: '',
-  address: '',
-  bank: '',
-  accountNumber: '',
-  investmentType: '',
-  amount: 0,
-});
+// const formData = ref({
+//   email: '',
+//   firstName: '',
+//   lastName: '',
+//   phone: '',
+//   altPhone: '',
+//   address: '',
+//   bank: '',
+//   accountNumber: '',
+//   investmentType: '',
+//   amount: 0,
+// });
 
 const handleSubmit = () => {
   console.log('Submitted Data:', formData.value);

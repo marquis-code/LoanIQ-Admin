@@ -7,7 +7,7 @@
     </div>
   
     <!-- Tabs -->
-    <div class="flex space-x-4 mb-4 border-b pb-2">
+    <div class="flex space-x-4 mb-4 border rounded-lg p-2">
       <button
         v-for="status in statuses"
         :key="status"
@@ -26,12 +26,10 @@
           type="text"
           placeholder="Enter Keyword"
           v-model="searchQuery"
-          class="p-2 border rounded-l"
+          class="p-2 border input-field"
         />
-        <button class="bg-orange-500 text-white p-2 rounded-r">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4h8M4 8h16M4 12h16m-6 4h6" />
-          </svg>
+        <button class="bg-black text-white p-2 rounded-r">
+          <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </button>
       </div>
     </div>
@@ -95,7 +93,13 @@
 </template>
 
 <script setup lang="ts">
+import { useCompletedInvestments } from '@/composables/modules/investments/useCompletedInvestments'
+import { useActiveInvestments } from '@/composables/modules/investments/useActiveInvestments'
+import { useDeactivatedInvestments } from '@/composables/modules/investments/useDeactivatedInvestments'
 import { ref, computed } from 'vue';
+const { completedInvestments, loading } = useCompletedInvestments()
+const { activeInvestments, loading: fetchingActiveInvestments } = useActiveInvestments()
+const { deactivatedInvestments, loading: fetchingDeactivatedInvestments } = useDeactivatedInvestments()
 
 // Sample statuses and data
 const statuses = ['Pool', 'Active', 'Terminated', 'Deactivated'];
