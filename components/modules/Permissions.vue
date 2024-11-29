@@ -1,6 +1,5 @@
 <template>
   <section>
-    {{ roleObj }}
     <div  v-if="modules.length && !loadingModules" class="bg-white border-[0.5px] rounded">
       <table class="min-w-full border-t-[0.5px] divide-y divide-gray-300">
         <thead>
