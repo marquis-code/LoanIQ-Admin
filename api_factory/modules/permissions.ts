@@ -16,8 +16,8 @@ export const permissions_api = {
     let url = `/permission/${id}`;
     return GATEWAY_ENDPOINT.delete(url);
   },
-  $_assign_permission_to_role: (payload: Record<string, any>) => {
-    let url = '/admin/permission/super-admin';
+  $_assign_permission_to_role: (roleId: string, payload: Record<string, any>) => {
+    let url = `/permission/${roleId}`;
     return GATEWAY_ENDPOINT.post(url, payload);
   },
 };

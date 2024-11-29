@@ -1,5 +1,7 @@
 <template>
 <section>
+  <!-- {{ modules }} -->
+    <!-- {{ rolesList }} -->
   <div  class="rounded-lg border-[0.5px] border-gray-100">
  <div class="flex justify-between items-center px-6">
    <h1 class="text-lg font-semibold ">Role Management</h1>
@@ -10,7 +12,7 @@
 <!--     Add Role-->
 <!--   </button>-->
  </div>
-    <section class="">
+    <section  v-if="rolesList.length && !loading" class="">
       <table class="min-w-full divide-y divide-gray-100 border-t">
         <thead>
         <tr>
@@ -20,9 +22,9 @@
         </tr>
         </thead>
         <tbody class="bg-white">
-        <tr v-for="role in roles" :key="role.name" class="even:bg-gray-50">
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ role.name }}</td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ role.members }}</td>
+        <tr v-for="role in rolesList" :key="role.name" class="even:bg-gray-50">
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ role?.name }}</td>
+          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ role?.members ?? '0' }}</td>
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <button
                 @click="openPermissionsModal(role)"
@@ -43,6 +45,16 @@
         </tbody>
       </table>
     </section>
+    <div v-else-if="!rolesList.length && !loading"
+           class="flex border-[0.5px] mt-5 flex-col items-center justify-center h-64 bg-white rounded-lg">
+        <div class="flex items-center justify-center p-6 mb-4">
+          <img :src="dynamicIcons('illustration')" />
+        </div>
+        <p class="text-[#1D2739] font-medium pt-0 mt-0 text-sm">
+          No Roles Available
+        </p>
+      </div>
+      <CoreLoader v-else class="mt-6" />
   </div>
   <!-- Permissions Modal -->
 <!--  <ModulesPermissions-->
@@ -53,9 +65,14 @@
 <!--  />-->
   <CoreDrawer :title="`Role & Permissions (${selectedRole?.name})`" :description="`Below are the permissions attached to the ${selectedRole?.name} role`"  :showFooter="false" :show="!!selectedRole" @close="selectedRole = null">
     <template #content>
-      <ModulesPermissions
+      <!-- <ModulesPermissions
           v-if="showPermissionsModal"
           :role="selectedRole"
+          @close="closePermissionsModal"
+          @save="updatePermissions"
+      /> -->
+      <ModulesPermissions
+          v-if="showPermissionsModal"
           @close="closePermissionsModal"
           @save="updatePermissions"
       />
@@ -84,6 +101,10 @@
 </template>
 
 <script setup lang="ts">
+import { useFetchRoles } from '@/composables/modules/roles/useFetchRoles'
+import { useFetchModules } from '@/composables/modules/app/useFetchAppModule'
+const { loading, roles: rolesList } = useFetchRoles()
+const {  loading: loadingModules, modules } = useFetchModules()
 import { ref } from "vue";
 
 interface Role {
@@ -92,6 +113,7 @@ interface Role {
   permissions: Record<string, string[]>;
 }
 
+const router = useRouter()
 const roles = ref<Role[]>([
   {
     name: "Admin",
@@ -130,8 +152,11 @@ const showPermissionsModal = ref(false);
 const showAddEditModal = ref(false);
 const selectedRole = ref<Role | null>(null);
 
+const emit = defineEmits(['role'])
+
 // Methods
 function openPermissionsModal(role: Role) {
+  emit('role', role)
   selectedRole.value = role;
   showPermissionsModal.value = true;
 }
@@ -139,6 +164,7 @@ function openPermissionsModal(role: Role) {
 function closePermissionsModal() {
   showPermissionsModal.value = false;
   selectedRole.value = null;
+  
 }
 
 function updatePermissions(updatedPermissions: Record<string, string[]>) {

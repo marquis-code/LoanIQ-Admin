@@ -3,13 +3,14 @@
   <div class="sm:flex sm:items-center">
     <div class="sm:flex-auto">
       <h1 class="text-base font-semibold text-gray-900">Roles</h1>
+      <!-- {{ rolesList }} -->
       <p class="mt-2 text-sm text-gray-700">A list of all the roles.</p>
     </div>
     <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
       <button @click="createRoleModal = true" class="block rounded-md bg-black px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black">Add role</button>
     </div>
   </div>
-  <div v-if="roles.length && !loading" class="mt-8 flow-root">
+  <div v-if="rolesList.length && !loading" class="mt-8 flow-root">
     <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
       <div class="inline-block min-w-full py-2 align-middle">
         <table class="min-w-full border-separate border-spacing-0">
@@ -25,7 +26,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(role, index) in roles" :key="role.id">
+            <tr v-for="(role, index) in rolesList" :key="role.id">
               <td class="whitespace-nowrap border-b border-gray-200 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">{{ role.name || 'Nil' }}</td>
               <td class="whitespace-nowrap border-b border-gray-200 px-3 py-4 text-sm text-gray-500 sm:table-cell">{{ role.slug || 'Nil' }}</td>
               <td class=" whitespace-nowrap border-b border-gray-200 px-3 py-4 text-sm text-gray-500 lg:table-cell">{{ role.description || 'Nil' }}</td>
@@ -190,6 +191,10 @@ import { useDeleteRole } from '@/composables/modules/roles/useDeleteRole'
 const { deleteRole, loading } = useDeleteRole()
 const props = defineProps({
   roles: {
+    type: Array,
+    default: () => []
+  },
+  rolesList: {
     type: Array,
     default: () => []
   },

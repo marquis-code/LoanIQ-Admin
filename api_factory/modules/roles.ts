@@ -15,5 +15,5 @@ export const roles_api = {
   $_delete_roles: (id: string) => {
     let url = `/role/${id}`;
     return GATEWAY_ENDPOINT.delete(url);
-  },
+  }
 };

@@ -1,9 +1,11 @@
 <template>
   <div class="p-4">
     <!-- Role List Component -->
+     <!-- {{ rolesList }} -->
     <ModulesRoleList
         :roles="roles"
         @edit-role="openEditModal"
+        @role="handleSelectedRole"
         @permissions="openPermissionsModal"
     />
 
@@ -11,6 +13,7 @@
     <ModulesPermissions
         v-if="showPermissionsModal && selectedRole"
         :role="selectedRole"
+        :roleObj="selectedRoleObj"
         @close="closePermissionsModal"
         @save="updatePermissions"
     />
@@ -26,9 +29,6 @@
 </template>
 
 <script setup lang="ts">
-import { useFetchRoles } from '@/composables/modules/roles/useFetchRoles'
-// const { loading,
-//   roles } = useFetchRoles()
 import { ref } from "vue";
 
 interface Role {
@@ -41,6 +41,8 @@ definePageMeta({
   layout: "admin-dashboard",
   middleware: "auth",
 });
+
+const router = useRouter()
 
 // Role Data
 const roles = ref<Role[]>([
@@ -67,6 +69,7 @@ const roles = ref<Role[]>([
 const showPermissionsModal = ref(false);
 const showAddEditModal = ref(false);
 const selectedRole = ref<Role | null>(null);
+const selectedRoleObj = ref({})
 
 // Methods
 function openPermissionsModal(role: Role) {
@@ -79,11 +82,18 @@ function closePermissionsModal() {
   selectedRole.value = null; // Reset selectedRole to avoid issues
 }
 
+const handleSelectedRole = (item: any) => {
+  // console.log(item, 'item here')
+  localStorage.setItem('selected-role', item.slug)
+  selectedRoleObj.value = item
+  selectedRole.value = item
+}
+
 function updatePermissions(updatedPermissions: Record<string, string[]>) {
   if (selectedRole.value) {
     selectedRole.value.permissions = updatedPermissions;
   }
-  closePermissionsModal();
+  // closePermissionsModal();
 }
 
 function openEditModal(role: Role | null) {
