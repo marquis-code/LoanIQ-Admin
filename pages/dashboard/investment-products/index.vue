@@ -16,7 +16,8 @@ const { loading,
   investmentProducts } = useFetchInvestmentProducts()
   definePageMeta({
           layout: 'admin-dashboard',
-           middleware: 'auth'
+           middleware: ['auth', 'permission'],
+           moduleId: 'investment-product'
       })
 
   const openDrawer = ref(false)
