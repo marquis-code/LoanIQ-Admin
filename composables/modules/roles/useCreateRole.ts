@@ -34,9 +34,14 @@ export const useCreateRole = () => {
     }
   };
 
+  const isFormEmpty = computed(() => {
+     return payload.value.name && payload.value.description
+  })
+
   return {
     createRole,
     loading,
-    payload
+    payload,
+    isFormEmpty
   };
 };

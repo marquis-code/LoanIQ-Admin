@@ -3,7 +3,6 @@
     <!-- Role List Component -->
      <!-- {{ rolesList }} -->
     <ModulesRoleList
-        :roles="roles"
         @edit-role="openEditModal"
         @role="handleSelectedRole"
         @permissions="openPermissionsModal"
@@ -44,26 +43,6 @@ definePageMeta({
 
 const router = useRouter()
 
-// Role Data
-const roles = ref<Role[]>([
-  {
-    name: "Admin",
-    members: 4,
-    permissions: {
-      Dashboard: ["create", "update", "delete", "view"],
-      Items: ["create", "update", "delete", "view"],
-      "Dining Tables": ["create", "update", "delete", "view"],
-      POS: ["create", "update", "delete", "view"],
-    },
-  },
-  {
-    name: "Customer",
-    members: 6890,
-    permissions: {
-      "Online Orders": ["create", "view"],
-    },
-  },
-]);
 
 // Modals
 const showPermissionsModal = ref(false);

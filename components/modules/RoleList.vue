@@ -1,42 +1,37 @@
 <template>
 <section>
   <!-- {{ modules }} -->
-    <!-- {{ rolesList }} -->
+    <!-- {{ rolesList[0] }} -->
   <div  class="rounded-lg border-[0.5px] border-gray-100">
  <div class="flex justify-between items-center px-6">
    <h1 class="text-lg font-semibold ">Role Management</h1>
-<!--   <button-->
-<!--       @click="showAddEditModal = true"-->
-<!--       class="bg-[#2F6D67] text-white text-sm px-6 py-2 rounded-lg "-->
-<!--   >-->
-<!--     Add Role-->
-<!--   </button>-->
+   <button @click="showAddEditModal = true" class="bg-[#2F6D67] text-white text-sm px-6 py-2 rounded-lg ">Add Role</button>
  </div>
     <section  v-if="rolesList.length && !loading" class="">
       <table class="min-w-full divide-y divide-gray-100 border-t">
         <thead>
         <tr>
           <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
-          <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Members</th>
+          <!-- <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Members</th> -->
           <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Actions</th>
         </tr>
         </thead>
         <tbody class="bg-white">
         <tr v-for="role in rolesList" :key="role.name" class="even:bg-gray-50">
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ role?.name }}</td>
-          <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ role?.members ?? '0' }}</td>
+          <!-- <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ role?.members ?? '0' }}</td> -->
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <button
                 @click="openPermissionsModal(role)"
                 type="button"
-                class="px-2 py-2 rounded-lg outline-none bg-[#2F6D67] text-white"
+                class="px-2 text-sm px-3 py-2.5 rounded-lg outline-none bg-[#2F6D67] text-white"
             >
               Permissions
             </button>
             <button
                 @click="openEditModal(role)"
                 type="button"
-                class="ml-2 text-green-500 border border-green-500 px-2 py-2 rounded-lg hover:bg-green-500 hover:text-white"
+                class="ml-2 text-green-500 border py-2.5 border-green-500 px-2 py-2 rounded-lg hover:bg-green-500 hover:text-white"
             >
               Edit
             </button>
@@ -56,25 +51,13 @@
       </div>
       <CoreLoader v-else class="mt-6" />
   </div>
-  <!-- Permissions Modal -->
-<!--  <ModulesPermissions-->
-<!--      v-if="showPermissionsModal"-->
-<!--      :role="selectedRole"-->
-<!--      @close="closePermissionsModal"-->
-<!--      @save="updatePermissions"-->
-<!--  />-->
   <CoreDrawer :title="`Role & Permissions (${selectedRole?.name})`" :description="`Below are the permissions attached to the ${selectedRole?.name} role`"  :showFooter="false" :show="!!selectedRole" @close="selectedRole = null">
     <template #content>
-      <!-- <ModulesPermissions
-          v-if="showPermissionsModal"
-          :role="selectedRole"
-          @close="closePermissionsModal"
-          @save="updatePermissions"
-      /> -->
       <ModulesPermissions
-          v-if="showPermissionsModal"
           @close="closePermissionsModal"
+          :role="selectedRole"
           @save="updatePermissions"
+          :rolesList="rolesList"
       />
     </template>
   </CoreDrawer>
@@ -86,17 +69,6 @@
       @close="closeAddEditModal"
       @save="saveRole"
   />
-<!--  <ModulesAddRoleModal-->
-<!--      v-if="showAddRoleModal"-->
-<!--      @close="showAddRoleModal = false"-->
-<!--      @add-role="addRole"-->
-<!--  />-->
-<!--  <ModulesEditRoleModal-->
-<!--      v-if="showEditRoleModal"-->
-<!--      :role="editingRole"-->
-<!--      @close="showEditRoleModal = false"-->
-<!--      @update-role="updateRole"-->
-<!--  />-->
 </section>
 </template>
 
@@ -114,38 +86,6 @@ interface Role {
 }
 
 const router = useRouter()
-const roles = ref<Role[]>([
-  {
-    name: "Admin",
-    members: 4,
-    permissions: {
-      Dashboard: ["create", "update", "delete", "view"],
-      Items: ["create", "update", "delete", "view"],
-      "Dining Tables": ["create", "update", "delete", "view"],
-      POS: ["create", "update", "delete", "view"],
-      Reports: ["view"],
-      Settings: ["create", "update", "delete", "view"],
-    },
-  },
-  {
-    name: "Customer",
-    members: 6890,
-    permissions: {
-      "Online Orders": ["create", "view"],
-      Feedback: ["create", "view"],
-      "Account Settings": ["update", "view"],
-    },
-  },
-  {
-    name: "Delivery Boy",
-    members: 3,
-    permissions: {
-      "Delivery Orders": ["update", "view"],
-      "Route Management": ["view"],
-      Feedback: ["view"],
-    },
-  },
-]);
 
 // Modals and state
 const showPermissionsModal = ref(false);
@@ -176,7 +116,7 @@ function updatePermissions(updatedPermissions: Record<string, string[]>) {
 
 function openEditModal(role: Role | null) {
   selectedRole.value = role;
-  showAddEditModal.value = true;
+  // showAddEditModal.value = true;
 }
 
 function closeAddEditModal() {
