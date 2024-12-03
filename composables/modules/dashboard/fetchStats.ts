@@ -13,7 +13,7 @@ export const useFetchStats = () => {
                 profileInfoObj.value = res?.data?.result
             }
         } catch (error) {
-            console.error('Error getting profile object', error);
+            // console.error('Error getting profile object', error);
         } finally {
             loading.value = false;
         }

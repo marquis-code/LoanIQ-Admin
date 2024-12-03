@@ -188,7 +188,6 @@ watch(() => props.user, populateForm);
 const handleSubmit = () => {
   const formData = { ...form.value };
   // Submit form data (create or edit based on mode)
-  console.log('Form submitted:', formData);
 
   // After submission, reset form if necessary
   resetForm();

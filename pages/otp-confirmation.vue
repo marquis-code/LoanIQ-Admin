@@ -84,7 +84,6 @@ const submitOTP = async () => {
       alert(data.message || "OTP Verification Failed!");
     }
   } catch (error) {
-    console.error("API Error:", error);
     alert("Something went wrong! Please try again.");
   } finally {
     loading.value = false;

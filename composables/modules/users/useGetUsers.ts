@@ -15,7 +15,6 @@ export const useGetUsers = () => {
     loading.value = true;
     try {
       const response = (await $_get_users()) as any;
-      console.log(response, 'response')
       if (response.statusText !== "ERROR") {
         users.value = response.data.data;
         // showToast({

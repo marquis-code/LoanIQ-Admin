@@ -248,7 +248,6 @@ document.removeEventListener("click", handleClickOutside);
 });
 
 const selectOption = (option: string, item?: any) => {
-console.log(item, 'item')
   selectedPermission.value = item
   if(option === 'view'){
     emit('selected', item)

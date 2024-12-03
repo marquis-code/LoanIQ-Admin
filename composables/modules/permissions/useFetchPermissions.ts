@@ -12,7 +12,6 @@ export const useFetchPermissions = () => {
     loading.value = true;
     try {
       const res = await $_get_permissions();
-      console.log(res?.data?.data, 'permissions')
       permissions.value = res?.data?.data || [];
     } catch (error) {
       showToast({

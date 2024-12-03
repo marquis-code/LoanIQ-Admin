@@ -275,7 +275,6 @@ onBeforeUnmount(() => {
 });
 
 const selectOption = (option: string, item?: any) => {
-  console.log(item, 'item')
   selectedModule.value = item
   if (option === 'view') {
     emit('selected', item)

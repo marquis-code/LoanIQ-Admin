@@ -41,7 +41,7 @@
   
   // Add console log to debug visibility
   watch(() => props.isVisible, (newVal) => {
-    console.log('Modal visibility changed:', newVal);
+    // console.log('Modal visibility changed:', newVal);
   });
   
   // List of countries

@@ -62,7 +62,6 @@ function closePermissionsModal() {
 }
 
 const handleSelectedRole = (item: any) => {
-  // console.log(item, 'item here')
   localStorage.setItem('selected-role', item.slug)
   selectedRoleObj.value = item
   selectedRole.value = item

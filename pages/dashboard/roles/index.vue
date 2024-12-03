@@ -27,7 +27,6 @@ const { loading,
   }
 
   const closeDrawer = () => {
-    console.log('here')
     openDrawer.value = false
   }
 </script>

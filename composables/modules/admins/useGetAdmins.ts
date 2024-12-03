@@ -10,7 +10,6 @@ export const useGetAdmins = () => {
   const getAdmins = async () => {
     loading.value = true;
     const response = (await $_get_admins()) as any;
-    console.log(response, 'tes')
     if (response.statusText === "OK") {
       admins.value = response?.data?.data || [];
       // showToast({

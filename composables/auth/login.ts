@@ -24,7 +24,6 @@ export const useLogin = () => {
       password: credential.passcode.value,
       email: credential.email.value,
     })) as any;
-    console.log(res, 'res')
     loading.value = false;
     if (res.status == 201 || res.status == 200) {
       useUser().createUser(res.data.data);

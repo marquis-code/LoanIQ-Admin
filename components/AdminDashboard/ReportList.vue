@@ -337,7 +337,6 @@
     
     const selectOption = (option: string, item?: any) => {
       selectedUser.value = item
-      console.log(item, 'item here')
       if(option === 'view'){
         emit('selected', item)
       }
@@ -361,7 +360,6 @@
         isRejectModalOpen.value  =  true
         // emit('selected', item)
       }
-      console.log(option);
     };
     </script>
     

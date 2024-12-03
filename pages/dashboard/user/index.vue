@@ -36,13 +36,11 @@
       const selectedUser = ref({})
     
       const handleSelected = (data: any) => {
-        console.log(data, 'selected user')
         selectedUser.value = data
         openDrawer.value = true
       }
     
       const closeDrawer = () => {
-        console.log('here')
         openDrawer.value = false
       }
     </script>

@@ -323,7 +323,6 @@ onBeforeUnmount(() => {
 });
 
 const selectOption = (option: string, item?: any) => {
-  console.log(item, 'item')
     selectedInvestment.value = item
     if(option === 'view'){
       emit('selected', item)

@@ -10,7 +10,6 @@ export const useDeleteInvestmentProduct = () => {
   const deleteInvestmentProduct = async (id: string) => {
     loading.value = true;
     const response = (await $_delete_investment_product(id)) as any;
-    console.log(response.data.message, 'res')
     if (response.type !== "ERROR") {
       showToast({
         title: "Success",

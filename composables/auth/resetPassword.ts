@@ -27,7 +27,6 @@ export const useResetPassword = () => {
     //   });
     //   return;
     // }
-    console.log(credential, 'credential from composabne')
 
     loading.value = true;
 

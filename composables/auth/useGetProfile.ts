@@ -9,7 +9,6 @@ export const useFetchProfile = () => {
     const getProfileInfo = async () => {
         loading.value = true;
         const res = await $_get_profile() as any;
-        console.log(res, 'response here')
         if (res.status == 201 || res.status == 200) {
             updateUserData(res?.data?.data)
             profileObj.value = res?.data.data

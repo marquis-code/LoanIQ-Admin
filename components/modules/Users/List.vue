@@ -322,7 +322,6 @@ const confirmBlockingAction = async (item: any) => {
 const proceedToGenerateAccountNumber = async () => {
   if(selectedUser.value){
     const response = await generateAccountNumber(selectedUser?.value?.id)
-    console.log(response, 'response here 0000')
     if(response && response === 'success'){
       isGenerateAccount.value = false
       openConfirmAccountNumberOTPModal.value = true
@@ -368,7 +367,6 @@ onBeforeUnmount(() => {
 
 
 const selectOption = (option: string, item?: any) => {
-  console.log(item, 'item')
   selectedUser.value = item
   if (option === 'view') {
     emit('selected', item)
@@ -395,7 +393,6 @@ const selectOption = (option: string, item?: any) => {
 };
 
 const handleOtp = async (otpCode: string) => {
-  // console.log("OTP Entered:", otpCode);
   const payload = {
     otp: otpCode
   }
@@ -405,7 +402,6 @@ const handleOtp = async (otpCode: string) => {
 };
 
 const handleClear = () => {
-  console.log("Clearing OTP fields...");
   otpComponent.value.clearOtp(); // Call the `clearOtp` method in the child component
 };
 

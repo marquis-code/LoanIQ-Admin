@@ -4,7 +4,6 @@ export const usePermissions = () => {
   const { permissions } = useUser()
 
   const hasPermission = (moduleId: string): boolean => {
-    console.log(moduleId, 'module id here', permissions.value)
     if (!permissions.value || permissions.value.length === 0) {
       return false // Or handle the case where permissions are empty
     }

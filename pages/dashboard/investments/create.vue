@@ -97,9 +97,6 @@ import { useCreateInvestment } from '@/composables/modules/investments/useCreate
 const { createInvestment, loading} = useCreateInvestment()
 const router = useRouter()
 
-const handleSubmit = () => {
-  console.log('Submitted Data:', formData.value);
-};
 
 definePageMeta({
           layout: 'admin-dashboard',

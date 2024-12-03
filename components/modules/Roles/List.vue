@@ -256,7 +256,6 @@ onBeforeUnmount(() => {
 });
 
 const selectOption = (option: string, item?: any) => {
-  console.log(item, 'item')
     selectedRole.value = item
     if(option === 'view'){
       emit('selected', item)
