@@ -29,8 +29,16 @@
 
 <script setup lang="ts">
 import { useUser } from '@/composables/auth/user'
+import { useFetchProfile } from '@/composables/auth/useGetProfile'
+const { getProfileInfo,
+        loading,
+        profileObj } = useFetchProfile()
 const { user } = useUser()
 import { ref } from 'vue';
+
+onMounted(() => {
+  getProfileInfo()
+})
 
 const summaryCards = ref([
   {

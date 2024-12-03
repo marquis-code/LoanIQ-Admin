@@ -2,6 +2,7 @@ import { ref, watch } from "vue";
 import { useStorage } from "@vueuse/core";
 const user = ref(null);
 
+
 const runtimeData = {
   auth: ref(),
   user: ref({} as any),
@@ -67,18 +68,53 @@ export const useUser = () => {
   };
   const createUser = (user: any) => {
     localStorageData.token.value = user?.token;
-    localStorageData.permissions.value = user?.permissions;
+    localStorageData.permissions.value = user?.permission;
     localStorageData.user.value = user?.admin;
     runtimeData.user.value = user?.admin;
     runtimeData.token.value = user?.token;
-    runtimeData.permissions.value = user?.permissions;
+    runtimeData.permissions.value = user?.permission;
   };
 
   const updateUser = (user: any) => {
-    runtimeData.user.value = user;
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorageData.user.value = user;
+    runtimeData.user.value = user?.admin;
+    runtimeData.permissions.value = user?.permissions;
+    localStorage.setItem('user', JSON.stringify(user.admin));
+    localStorageData.user.value = user.admin;
+    localStorage.setItem('permissions', JSON.stringify(user.permissions));
+    localStorageData.permissions.value = user?.permissions;
   };
+
+  // const updatePermissions = (data: any) => {
+  //   runtimeData.permissions.value = data?.permissions;
+  //   localStorage.setItem('permissions', JSON.stringify(data?.permissions));
+  // }
+
+  // const updateProfile = (data: any) => {
+  //   // Exclude the permissions from the data before updating
+  //   const { permissions, ...profileData } = data;
+  //   const updatedUser = { ...runtimeData.user.value, ...profileData };
+  
+  //   // Update the user profile data (without changing permissions)
+  //   runtimeData.user.value = updatedUser;
+  //   localStorage.setItem('user', JSON.stringify(updatedUser));
+  // };
+
+  const updateUserData = (data: any) => {
+    // Check if the data contains permissions
+    if (data?.permissions) {
+      runtimeData.permissions.value = data?.permissions;
+      localStorage.setItem('permissions', JSON.stringify(data?.permissions));
+    }
+  
+    // Merge the profile data (excluding permissions)
+    const { permissions, ...profileData } = data;
+    const updatedUser = { ...runtimeData.user.value, ...profileData };
+  
+    // Update the user profile data (without changing permissions)
+    runtimeData.user.value = updatedUser;
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  };
+  
 
   return {
     id,
@@ -88,6 +124,7 @@ export const useUser = () => {
     ...runtimeData,
     logOut,
     updateUser,
-    setToken
+    setToken,
+    updateUserData
   };
 };

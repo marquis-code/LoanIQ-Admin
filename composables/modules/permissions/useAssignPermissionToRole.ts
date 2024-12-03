@@ -1,6 +1,8 @@
 import { ref } from 'vue';
 import { permissions_api } from '@/api_factory/modules/permissions';
 import { useCustomToast } from '@/composables/core/useCustomToast'
+import { useFetchProfile } from '@/composables/auth/useGetProfile'
+const { getProfileInfo } = useFetchProfile()
 const { showToast } = useCustomToast();
 
 const payload = ref([])
@@ -23,6 +25,8 @@ export const useAssignPermissionToRole = () => {
                 toastType: "success",
                 duration: 3000
               });
+              window.location.reload();
+              await getProfileInfo()
         } catch (error) {
             showToast({
                 title: "Error",

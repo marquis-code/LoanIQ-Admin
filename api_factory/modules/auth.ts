@@ -16,5 +16,9 @@ export const auth_api = {
 	$_change_default_password: (credential: any) => {
 		const url = '/auth/change-password'
 		return GATEWAY_ENDPOINT.post(url, credential)
-	}
+	},
+	$_get_profile: () => {
+		let url = '/profile';
+		return GATEWAY_ENDPOINT.get(url);
+	  },
 }

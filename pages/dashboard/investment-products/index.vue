@@ -1,6 +1,5 @@
 <template>
-<main class="">
-  <!-- {{ investmentProducts }} -->
+<main v-if="canView('investment-product')"  class="">
   <ModulesInvestmentList :loading="loading" :products="investmentProducts" @selected="handleSelected" />
     <CoreDrawer :showFooter="false" title="Investment Details" description="Below are investment details" :show="openDrawer" @close="closeDrawer">
         <template #content>
@@ -11,6 +10,8 @@
 </template>
 
 <script setup lang="ts">
+import { usePermissions } from '@/composables/core/usePermissions'
+const { canView } = usePermissions()
 import { useFetchInvestmentProducts } from '@/composables/modules/investment-products/useFetchInvestmentProducts'
 const { loading,
   investmentProducts } = useFetchInvestmentProducts()

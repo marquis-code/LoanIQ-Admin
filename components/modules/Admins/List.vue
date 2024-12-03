@@ -10,8 +10,8 @@
           email and role.
         </p>
       </div>
-      <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-        <NuxtLink
+      <div v-if="canCreate('admin-management')" class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+        <NuxtLink 
           to="/dashboard/admin/create"
           class="block rounded-md bg-[#2F6D67] px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#2F6D67] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F6D67]"
         >
@@ -19,7 +19,8 @@
         </NuxtLink>
       </div>
     </div>
-    <div v-if="admins.length && !loading" class="">
+    <section v-if="canView('admin-management')">
+      <div v-if="admins.length && !loading" class="">
       <div class="mt-8 flow-root">
         <div class="-my-2 overflow-x-auto">
           <div class="inline-block min-w-full w-full py-2 align-middle border-[0.5px] rounded-lg">
@@ -110,7 +111,7 @@
                     <ul
                       class="py-1 text-sm text-gray-700 divide divide-y-[0.5px]"
                     >
-                      <li>
+                      <li v-if="canView('admin-manegement')">
                         <a
                          @click="selectOption('view', admin)"
                           href="#"
@@ -158,7 +159,7 @@
                            {{admin.block ? 'Un-Block' : 'Block'}}
                         </a>
                       </li>
-                      <li>
+                      <li v-if="canDelete('admin-manegement')">
                         <a
                           @click="selectOption('delete', admin)"
                           href="#"
@@ -201,6 +202,7 @@
       </p>
     </div>
     <CoreLoader v-else class="mt-6" />
+    </section>
     <div v-if="activeDropdown !== null" @click="closeDropdown" class="fixed inset-0 z-40 bg-black opacity-25"></div>
     <ModalsConfirm @close="isDeleteModalOpen = false" @continue="confirmDeleteAction(selectedadmin)"
       :loading="deleting" title="Confirm Action" :description="`Are you sure you want to delete ${selectedadmin.firstName ?? 'Nil'} ${selectedadmin.lastName ?? 'Nil' } account`" :show="isDeleteModalOpen" />
@@ -211,9 +213,10 @@
 </template>
 
 <script setup lang="ts">
+  import { usePermissions } from '@/composables/core/usePermissions'
+  const { canView } = usePermissions()
 import { useBlockAdmin } from '@/composables/modules/admins/useBlockAdmin'
 const { blockAdmin, loading: blocking, } = useBlockAdmin()
-
 
 import { useDeleteAdmin } from '@/composables/modules/admins/useDeleteAdmin'
 const { deleteAdmin, loading: deleting, } = useDeleteAdmin()

@@ -158,7 +158,7 @@
                       <ul
                           class="py-1 text-sm text-gray-700 divide divide-y-[0.5px]"
                       >
-                        <li>
+                        <li v-if="canView('investment')">
                           <a
                               @click="selectOption('view', product)"
                               href="#"
@@ -183,7 +183,7 @@
                             View
                           </a>
                         </li>
-                        <li>
+                        <li v-if="canDelete('investment')">
                           <a
                               @click="selectOption('delete', product)"
                               href="#"
@@ -238,6 +238,8 @@
 </template>
 
 <script setup lang="ts">
+  import { usePermissions } from '@/composables/core/usePermissions'
+  const { canView, canDelete } = usePermissions()
 import { formatCurrency } from '@/utils/currencyUtils';
 import { dynamicIcons } from "@/utils/assets";
 const props = defineProps({

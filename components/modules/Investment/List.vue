@@ -6,12 +6,11 @@
           Investment Products
         </h1>
         <p class="mt-2 text-sm text-gray-700">
-          A list of all the users in your account including their name, title,
-          email and role.
+          A list of all investment products their Name,	Min Investment,	Interest Rate (%),	Min Tenor(months),	Max Tenor(months),	Pre Liquidation Fee and	Status.	
         </p>
       </div>
       <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-        <NuxtLink
+        <NuxtLink v-if="canCreate('investment-product')"
           to="/dashboard/investment-products/create"
           class="block rounded-md bg-[#2F6D67] px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#2F6D67] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F6D67]"
         >
@@ -88,20 +87,6 @@
                       class="whitespace-nowrap py-5 pl-4 pr-3 text-sm sm:pl-0"
                     >
                       <div class="flex items-center">
-<!--                        <div class="h-11 w-11 shrink-0">-->
-<!--                          <img-->
-<!--                            v-if="product.image"-->
-<!--                            class="h-11 w-11 rounded-full"-->
-<!--                            :src="product.image"-->
-<!--                            alt=""-->
-<!--                          />-->
-<!--                          <img-->
-<!--                            v-else-->
-<!--                            class="h-11 w-11 rounded-full"-->
-<!--                            src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"-->
-<!--                            alt=""-->
-<!--                          />-->
-<!--                        </div>-->
                         <div class="ml-4">
                           <div class="font-medium text-gray-900">
                             {{ product?.name || "Nil" }}
@@ -191,7 +176,7 @@
                     <ul
                       class="py-1 text-sm text-gray-700 divide divide-y-[0.5px]"
                     >
-                      <li>
+                      <li v-if="canView('investment-product')">
                         <a
                          @click="selectOption('view', product)"
                           href="#"
@@ -216,7 +201,7 @@
                           View
                         </a>
                       </li>
-                      <li>
+                      <li v-if="canDelete('investment-product')">
                         <a
                           @click="selectOption('delete', product)"
                           href="#"
@@ -282,6 +267,8 @@
 
 <script setup lang="ts">
 import { formatCurrency } from '@/utils/currencyUtils';
+import { usePermissions } from '@/composables/core/usePermissions'
+const { canCreate, canView, canDelete } = usePermissions()
 import { useDeleteInvestmentProduct } from '@/composables/modules/investment-products/useDeleteInvestmentProduct' 
 const { deleteInvestmentProduct,
   loading:deleting } = useDeleteInvestmentProduct()

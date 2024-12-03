@@ -2,8 +2,8 @@
   <div class="container mx-auto p-4">
     <!-- Header Section -->
     <div class="flex justify-between items-center mb-4">
-      <h1 class="text-2xl font-semibold text-[#2F6D67]">Investments</h1>
-      <NuxtLink to="/dashboard/investments/create" class="bg-[#2F6D67] text-sm text-white px-4 py-3 rounded-lg">Add New</NuxtLink>
+      <h1 class="text-xl font-semibold">Investments</h1>
+      <NuxtLink v-if="canCreate('investment')" to="/dashboard/investments/create" class="bg-[#2F6D67] text-sm text-white px-4 py-3 rounded-lg">Add New</NuxtLink>
     </div>
 
     <!-- Tabs -->
@@ -38,6 +38,7 @@
 
     <!-- Investment List Component -->
     <ModulesUserInvestmentList
+        v-if="canView('investment')" 
         :loading="computedLoader"
         :investments="filteredInvestments"
         @selected="handleSelected"
@@ -45,6 +46,7 @@
 
     <!-- Investment Details Modal -->
     <ModalsInvestmentDetails
+        v-if="canView('investment')" 
         :isOpen="isModalOpen"
         :investment="selectedInvestment"
         @close="closeModal"
@@ -53,6 +55,8 @@
 </template>
 
 <script setup lang="ts">
+  import { usePermissions } from '@/composables/core/usePermissions'
+  const { canView, canCreate } = usePermissions()
 import { useCompletedInvestments } from '@/composables/modules/investments/useCompletedInvestments'
 import { useActiveInvestments } from '@/composables/modules/investments/useActiveInvestments'
 import { useDeactivatedInvestments } from '@/composables/modules/investments/useDeactivatedInvestments'

@@ -5,9 +5,10 @@
   <div  class="rounded-lg border-[0.5px] border-gray-100">
  <div class="flex justify-between items-center px-6">
    <h1 class="text-lg font-semibold ">Role Management</h1>
-   <button @click="showAddEditModal = true" class="bg-[#2F6D67] text-white text-sm px-6 py-2 rounded-lg ">Add Role</button>
+   <button v-if="canCreate('roles-and-permission')" @click="showAddEditModal = true" class="bg-[#2F6D67] text-white text-sm px-6 py-2 rounded-lg ">Add Role</button>
  </div>
-    <section  v-if="rolesList.length && !loading" class="">
+ <section v-if="canView('roles-and-permission')">
+  <section  v-if="rolesList.length && !loading" class="">
       <table class="min-w-full divide-y divide-gray-100 border-t">
         <thead>
         <tr>
@@ -22,6 +23,7 @@
           <!-- <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ role?.members ?? '0' }}</td> -->
           <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
             <button
+                 v-if="canEdit('roles-and-permission') || canView('roles-and-permission') || canCreate('roles-and-permission')"
                 @click="openPermissionsModal(role)"
                 type="button"
                 class="px-2 text-sm px-3 py-2.5 rounded-lg outline-none bg-[#2F6D67] text-white"
@@ -29,6 +31,7 @@
               Permissions
             </button>
             <button
+               v-if="canEdit('roles-and-permission')"
                 @click="openEditModal(role)"
                 type="button"
                 class="ml-2 text-green-500 border py-2.5 border-green-500 px-2 py-2 rounded-lg hover:bg-green-500 hover:text-white"
@@ -50,8 +53,9 @@
         </p>
       </div>
       <CoreLoader v-else class="mt-6" />
+ </section>
   </div>
-  <CoreDrawer :title="`Role & Permissions (${selectedRole?.name})`" :description="`Below are the permissions attached to the ${selectedRole?.name} role`"  :showFooter="false" :show="!!selectedRole" @close="selectedRole = null">
+  <CoreDrawer v-if="canView('roles-and-permission')" :title="`Role & Permissions (${selectedRole?.name})`" :description="`Below are the permissions attached to the ${selectedRole?.name} role`"  :showFooter="false" :show="!!selectedRole" @close="selectedRole = null">
     <template #content>
       <ModulesPermissions
           @close="closePermissionsModal"
@@ -62,7 +66,7 @@
     </template>
   </CoreDrawer>
 
-  <!-- Add/Edit Modal -->
+ 
   <ModulesAddRoleModal
       v-if="showAddEditModal"
       :role="selectedRole"
@@ -73,6 +77,8 @@
 </template>
 
 <script setup lang="ts">
+  import { usePermissions } from '@/composables/core/usePermissions'
+  const { canView, canCreate } = usePermissions()
 import { useFetchRoles } from '@/composables/modules/roles/useFetchRoles'
 import { useFetchModules } from '@/composables/modules/app/useFetchAppModule'
 const { loading, roles: rolesList } = useFetchRoles()

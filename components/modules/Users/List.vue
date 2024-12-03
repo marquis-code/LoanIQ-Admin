@@ -10,11 +10,11 @@
           email and role.
         </p>
       </div>
-      <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+      <div v-if="canCreate('user-management')" class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
         <button @click="openAddUserModal = true" class="text-sm text-white bg-black rounded-md py-2.5 px-5">Add User</button>
       </div>
     </div>
-    <div class="">
+    <div v-if="canView('user-management')" class="">
       <div class="mt-8 flow-root">
         <div class="-my-2 overflow-x-auto">
           <div class="inline-block min-w-full w-full py-2 align-middle border-[0.5px] rounded-lg">
@@ -107,7 +107,7 @@
                     <ul
                       class="py-1 text-sm text-gray-700 divide divide-y-[0.5px]"
                     >
-                      <li>
+                      <li v-if="canView('user-management')">
                         <a
                             @click="selectOption('view', user)"
                             href="#"
@@ -263,6 +263,8 @@ import { useSubmitAccountNumberRequest } from '@/composables/modules/users/useSu
 import { useGenerateAccountNumber } from '@/composables/modules/users/useGenerateAccountNumber'
 import { useBlockUser } from '@/composables/modules/users/useBlockUser'
 import { useCustomToast } from "@/composables/core/useCustomToast";
+import { usePermissions } from '@/composables/core/usePermissions'
+const { canView, canCreate } = usePermissions()
 const { showToast } = useCustomToast();
 const { blockUser, loading: blocking, } = useBlockUser()
 const { generateAccountNumber, loading: generating } = useGenerateAccountNumber ()
