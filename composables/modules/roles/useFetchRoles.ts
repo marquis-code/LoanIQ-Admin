@@ -13,6 +13,7 @@ export const useFetchRoles = () => {
     loading.value = true;
     try {
       const res = await $_get_roles();
+      console.log(res, 'roles res')
       roles.value = res?.data?.data || [];
     } catch (error) {
       showToast({

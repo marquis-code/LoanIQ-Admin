@@ -38,8 +38,7 @@ interface Role {
 
 definePageMeta({
   layout: "admin-dashboard",
-    middleware: ['auth', 'permission'],
-    moduleId: 'roles-and-permission'
+    middleware: 'auth',
 });
 
 const router = useRouter()

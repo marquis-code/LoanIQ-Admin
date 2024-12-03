@@ -131,8 +131,7 @@ const closeModal = () => {
 
 definePageMeta({
   layout: 'admin-dashboard',
-    middleware: ['auth', 'permission'],
-     moduleId: 'investment'
+  middleware: 'auth',
 })
 </script>
 

@@ -13,12 +13,12 @@ export const useGetAdmins = () => {
     console.log(response, 'tes')
     if (response.statusText === "OK") {
       admins.value = response?.data?.data || [];
-      showToast({
-        title: "Success",
-        message: "Admins retrieved successfully.",
-        toastType: "success",
-        duration: 3000,
-      });
+      // showToast({
+      //   title: "Success",
+      //   message: "Admins retrieved successfully.",
+      //   toastType: "success",
+      //   duration: 3000,
+      // });
     } else {
       showToast({
         title: "Error",

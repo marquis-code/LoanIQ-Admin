@@ -18,12 +18,12 @@ export const useGetUsers = () => {
       console.log(response, 'response')
       if (response.statusText !== "ERROR") {
         users.value = response.data.data;
-        showToast({
-          title: "Success",
-          message: "Users retrieved successfully.",
-          toastType: "success",
-          duration: 3000,
-        });
+        // showToast({
+        //   title: "Success",
+        //   message: "Users retrieved successfully.",
+        //   toastType: "success",
+        //   duration: 3000,
+        // });
       } else {
         showToast({
           title: "Error",

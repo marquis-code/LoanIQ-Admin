@@ -214,7 +214,7 @@
 
 <script setup lang="ts">
   import { usePermissions } from '@/composables/core/usePermissions'
-  const { canView } = usePermissions()
+  const { canView, canCreate, canDelete } = usePermissions()
 import { useBlockAdmin } from '@/composables/modules/admins/useBlockAdmin'
 const { blockAdmin, loading: blocking, } = useBlockAdmin()
 

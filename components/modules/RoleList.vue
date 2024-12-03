@@ -78,7 +78,7 @@
 
 <script setup lang="ts">
   import { usePermissions } from '@/composables/core/usePermissions'
-  const { canView, canCreate } = usePermissions()
+  const { canView, canCreate, canEdit } = usePermissions()
 import { useFetchRoles } from '@/composables/modules/roles/useFetchRoles'
 import { useFetchModules } from '@/composables/modules/app/useFetchAppModule'
 const { loading, roles: rolesList } = useFetchRoles()

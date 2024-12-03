@@ -15,8 +15,7 @@
       admins} = useGetAdmins()
       definePageMeta({
           layout: 'admin-dashboard',
-           middleware: ['auth', 'permission'],
-           moduleId: 'admin-management'
+          middleware: 'auth',
       })
     
       const openDrawer = ref(false)
