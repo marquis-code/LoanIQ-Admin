@@ -4,8 +4,8 @@ export const investment_products_api = {
     let url = '/investment-product';
     return GATEWAY_ENDPOINT.post(url, payload);
   },
-  $_get_investment_products: () => {
-    let url = '/investment-product';
+  $_get_investment_products: (metadata: { page: number; pageSize: number }) => {
+    let url = `/investment-product?page=${metadata.page}&pageSize=${metadata.pageSize}`;
     return GATEWAY_ENDPOINT.get(url);
   },
   $_get_investment_product: (id: string) => {
