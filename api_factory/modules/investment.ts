@@ -4,16 +4,16 @@ export const investment_api = {
     let url = '/investment/create';
     return GATEWAY_ENDPOINT.post(url, payload);
   },
-  $_active_investment: () => {
-    let url = '/investment/active-investments';
+  $_active_investment: (metadata: { page: number; pageSize: number }) => {
+    let url = `/investment/active-investments?page=${metadata.page}&pageSize=${metadata.pageSize}`;
     return GATEWAY_ENDPOINT.get(url);
   },
-  $_completed_investment: () => {
-    let url = '/investment/completed-investments';
+  $_completed_investment: (metadata: { page: number; pageSize: number }) => {
+    let url = `/investment/completed-investments?page=${metadata.page}&pageSize=${metadata.pageSize}`;
     return GATEWAY_ENDPOINT.get(url);
   },
-  $_deactivated_investment: () => {
-    let url = '/investment/deactivated-investments';
+  $_deactivated_investment: (metadata: { page: number; pageSize: number }) => {
+    let url = `/investment/deactivated-investments?page=${metadata.page}&pageSize=${metadata.pageSize}`;
     return GATEWAY_ENDPOINT.get(url);
   },
   $_investment_summary: (id: string) => {

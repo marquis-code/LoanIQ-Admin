@@ -1,7 +1,7 @@
 import { GATEWAY_ENDPOINT } from "../axios.config";
 export const users_api = {
-  $_get_users: () => {
-    let url = '/user';
+  $_get_users: (metadata: { page: number; pageSize: number }) => {
+    let url = `/user?page=${metadata.page}&pageSize=${metadata.pageSize}`;
     return GATEWAY_ENDPOINT.get(url);
   },
   $_get_user_details: (id: string, payload: Record<string, any>) => {

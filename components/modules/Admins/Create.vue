@@ -50,10 +50,10 @@
 
               <div class="w-full">
                 <label for="canTopUp" class="input-label text-sm">Role</label>
-                <div class="mt-1">
+                <div v-if="!fetchingRoles" class="mt-1">
                  <select class="input-field" v-model="payload.roleId">
-                  <option value="admin">Admin</option>
-                  <option value="super-admin">Super Admin</option>
+                  <option value="">Please select role</option>
+                  <option v-for="item in rolesList" :key="item.id" :value="item.slug">{{ item.name }}</option>
                  </select>
         
                 </div>
@@ -78,7 +78,9 @@
   </template>
   
   <script setup lang="ts">
+  import { useFetchRoles } from '@/composables/modules/roles/useFetchRoles'
   import { useCreateAdmin } from '@/composables/modules/admins/useCreateAdmin'
+  const { loading: fetchingRoles, roles: rolesList } = useFetchRoles()
   const { createAdmin, loading, payload } = useCreateAdmin()
 
   </script>

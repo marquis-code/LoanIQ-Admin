@@ -4,8 +4,8 @@ export const admin_api = {
     let url = '/create';
     return GATEWAY_ENDPOINT.post(url, payload);
   },
-  $_get_admins: () => {
-    let url = '/';
+  $_get_admins: (metadata: { page: number; pageSize: number }) => {
+    let url = `/?page=${metadata.page}&pageSize=${metadata.pageSize}`;
     return GATEWAY_ENDPOINT.get(url);
   },
   $_get_admin: (id: string) => {

@@ -9,14 +9,23 @@ export const useGetUsers = () => {
   const users = ref(
     [],
   );
+  const metadata = ref({
+    page: 1,
+    pageSize: 7,
+    total: 0,
+    pages: 0,
+  });
   const { $_get_users } = users_api;
 
   const getUsers = async () => {
     loading.value = true;
     try {
-      const response = (await $_get_users()) as any;
+      const response = (await $_get_users(metadata.value)) as any;
+  
       if (response.statusText !== "ERROR") {
-        users.value = response.data.data;
+        const { page, pageSize, total, pages } = response?.data?.data || {};
+        metadata.value = { page, pageSize, total, pages };
+        users.value = response.data.data.users;
         // showToast({
         //   title: "Success",
         //   message: "Users retrieved successfully.",
@@ -46,9 +55,16 @@ export const useGetUsers = () => {
     getUsers();
   });
 
+  watch( [metadata.value.page, metadata.value.pageSize], // Watch only page and pageSize
+    () => {
+        getUsers()
+    }
+);
+
   return {
     getUsers,
     users,
     loading,
+    metadata
   };
 };

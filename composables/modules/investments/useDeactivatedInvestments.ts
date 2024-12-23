@@ -6,12 +6,19 @@ const { showToast } = useCustomToast();
 export const useDeactivatedInvestments = () => {
   const loading = ref(false);
   const deactivatedInvestments = ref<any[]>([]);
+  const metadata = ref({
+    page: 1,
+    pageSize: 7,
+    total: 0,
+    pages: 0,
+  });
 
   const fetchDeactivatedInvestments = async () => {
     loading.value = true;
-    const response = await investment_api.$_deactivated_investment() as any
+    const response = await investment_api.$_deactivated_investment(metadata.value) as any
 
     if (response.type !== "ERROR") {
+      const { deactivatedInvestments, page, pageSize, total, pages } = response?.data?.data || {};
       deactivatedInvestments.value = response.data;
     } else {
       showToast({
@@ -28,8 +35,17 @@ export const useDeactivatedInvestments = () => {
     fetchDeactivatedInvestments()
   })
 
+  watch( [metadata.value.page, metadata.value.pageSize], // Watch only page and pageSize
+    () => {
+        // debouncedGetProperties(); // Use the debounced version here
+        fetchDeactivatedInvestments()
+    }
+);
+
+
   return {
     deactivatedInvestments,
     loading,
+    metadata
   };
 };

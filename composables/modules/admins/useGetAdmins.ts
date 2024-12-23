@@ -5,13 +5,22 @@ const { showToast } = useCustomToast();
 export const useGetAdmins = () => {
   const loading = ref(false);
   const admins = ref([]);
+  const metadata = ref({
+    page: 1,
+    pageSize: 7,
+    total: 0,
+    pages: 0,
+  });
   const { $_get_admins } = admin_api;
 
   const getAdmins = async () => {
     loading.value = true;
-    const response = (await $_get_admins()) as any;
+    const response = (await $_get_admins(metadata.value)) as any;
+    console.log(response, 'res')
     if (response.statusText === "OK") {
-      admins.value = response?.data?.data || [];
+      const { page, pageSize, total, pages } = response?.data?.data || {};
+      admins.value = response?.data?.data|| [];
+      metadata.value = { page, pageSize, total, pages };
       // showToast({
       //   title: "Success",
       //   message: "Admins retrieved successfully.",
@@ -29,6 +38,13 @@ export const useGetAdmins = () => {
     loading.value = false;
   };
 
+  watch( [metadata.value.page, metadata.value.pageSize], // Watch only page and pageSize
+    () => {
+        // debouncedGetProperties(); // Use the debounced version here
+        getAdmins();
+    }
+);
+
   onMounted(() => {
     getAdmins();
   });
@@ -37,5 +53,6 @@ export const useGetAdmins = () => {
     getAdmins,
     admins,
     loading,
+    metadata
   };
 };

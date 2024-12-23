@@ -6,13 +6,22 @@ const { showToast } = useCustomToast();
 export const useCompletedInvestments = () => {
   const loading = ref(false);
   const completedInvestments = ref<any[]>([]);
+  const metadata = ref({
+    page: 1,
+    pageSize: 7,
+    total: 0,
+    pages: 0,
+  });
+
 
   const fetchCompletedInvestments = async () => {
     loading.value = true;
-    const response = await investment_api.$_completed_investment() as any
+    const response = await investment_api.$_completed_investment(metadata.value) as any
 
     if (response.type !== "ERROR") {
+      const { completedInvestments, page, pageSize, total, pages } = response?.data?.data || {};
       completedInvestments.value = response.data;
+      metadata.value = { page, pageSize, total, pages };
     } else {
       showToast({
         title: "Error",
@@ -28,9 +37,19 @@ export const useCompletedInvestments = () => {
     fetchCompletedInvestments()
   })
 
+
+
+  watch( [metadata.value.page, metadata.value.pageSize], // Watch only page and pageSize
+    () => {
+        // debouncedGetProperties(); // Use the debounced version here
+        fetchCompletedInvestments()
+    }
+);
+
   return {
     completedInvestments,
     fetchCompletedInvestments,
     loading,
+    metadata
   };
 };

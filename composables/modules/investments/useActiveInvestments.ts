@@ -6,11 +6,19 @@ const { showToast } = useCustomToast();
 export const useActiveInvestments = () => {
   const loading = ref(false);
   const activeInvestments = ref<any[]>([]);
+  const metadata = ref({
+    page: 1,
+    pageSize: 7,
+    total: 0,
+    pages: 0,
+  });
 
   const fetchActiveInvestments = async () => {
     loading.value = true;
-    const response = await investment_api.$_active_investment() as any
+    const response = await investment_api.$_active_investment(metadata.value) as any
     if (response.type !== "ERROR") {
+      const { activeInvestments, page, pageSize, total, pages } = response?.data?.data || {};
+      metadata.value = { page, pageSize, total, pages };
       activeInvestments.value = response.data;
     } else {
       showToast({
@@ -28,6 +36,13 @@ export const useActiveInvestments = () => {
     fetchActiveInvestments()
   })
 
+
+  watch( [metadata.value.page, metadata.value.pageSize], // Watch only page and pageSize
+    () => {
+        // debouncedGetProperties(); // Use the debounced version here
+        fetchActiveInvestments()
+    }
+);
 
   return {
     activeInvestments,
