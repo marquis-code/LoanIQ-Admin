@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { users_api } from "@/api_factory/modules/users";
+import { users_api } from "~/api_factory/modules/customer-mgt";
 import { useCustomToast } from "@/composables/core/useCustomToast";
 const { showToast } = useCustomToast();
 export const useFlagUserAccount = () => {

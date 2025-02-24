@@ -144,6 +144,78 @@
                     Roles & Permissions
                   </NuxtLink>
                 </li>
+
+
+                <div class="relative" v-if="hasPermission('roles-and-permission')">
+    <button
+      @click="toggleDropdown"
+      class="group flex w-full items-center justify-between gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+      :class="{ 'bg-gray-800 text-white': isOpenDropdown }"
+    >
+      <div class="flex items-center gap-x-3">
+        <svg
+          class="h-6 w-6 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418"
+          />
+        </svg>
+        <span>Finance Management</span>
+      </div>
+      <ChevronDownIcon
+        class="h-4 w-4 transition-transform duration-200"
+        :class="{ 'rotate-180': isOpenDropdown }"
+      />
+    </button>
+
+    <TransitionRoot appear :show="isOpenDropdown" as="template">
+      <div
+        class="absolute left-0 mt-1 w-full min-w-[200px] origin-top-right rounded-md bg-gray-900 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      >
+        <TransitionChild
+          as="template"
+          enter="transition ease-out duration-200"
+          enter-from="opacity-0 translate-y-1"
+          enter-to="opacity-100 translate-y-0"
+          leave="transition ease-in duration-150"
+          leave-from="opacity-100 translate-y-0"
+          leave-to="opacity-0 translate-y-1"
+        >
+          <div class="py-1">
+            <NuxtLink
+              v-for="item in menuItems"
+              :key="item.path"
+              :to="item.path"
+              @click="closeDropdown"
+              class="group flex items-center gap-x-3 px-4 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white"
+            >
+              <component
+                :is="item.icon"
+                class="h-5 w-5"
+                aria-hidden="true"
+              />
+              {{ item.name }}
+            </NuxtLink>
+          </div>
+        </TransitionChild>
+      </div>
+    </TransitionRoot>
+                </div>
+                <!-- <li v-if="hasPermission('roles-and-permission')">
+                  <NuxtLink to="/dashboard/finance" class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white">
+                    <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                    </svg>
+                    Finance Management
+                  </NuxtLink>
+                </li> -->
   
                 <li>
                 </li>
@@ -197,6 +269,14 @@ const isOpen = ref(false)
 import { usePermissions } from '@/composables/core/usePermissions'
 const { hasPermission } = usePermissions()
 import { useCustomToast } from '@/composables/core/useCustomToast'
+import { TransitionRoot, TransitionChild } from '@headlessui/vue'
+import {
+  ChevronDownIcon,
+  ChartBarIcon,
+  BanknotesIcon,
+  FlagIcon,
+  ClipboardDocumentListIcon
+} from '@heroicons/vue/24/outline'
 const { showToast } = useCustomToast();
 import { useUser } from '@/composables/auth/user'
 const { permissions } = useUser()
@@ -226,6 +306,70 @@ const closeSidebar = () => {
   isOpen.value = !isOpen.value;
 }
 const openInvestmentsTabs = ref(false)
+
+interface MenuItem {
+  name: string
+  path: string
+  icon: any
+}
+
+const isOpenDropdown = ref(false)
+
+const menuItems: MenuItem[] = [
+  // {
+  //   name: 'Analytics',
+  //   path: '/dashboard/finance/analytics',
+  //   icon: ChartBarIcon
+  // },
+  {
+    name: 'Transactions',
+    path: '/dashboard/finance/transactions',
+    icon: BanknotesIcon
+  },
+  {
+    name: 'Revenue Streams',
+    path: '/dashboard/finance/revenue-streams',
+    icon: ChartBarIcon
+  },
+  // {
+  //   name: 'Wallet Management',
+  //   path: '/dashboard/finance/wallet',
+  //   icon: FlagIcon
+  // },
+  {
+    name: 'Tasks',
+    path: '/dashboard/finance/tasks',
+    icon: ClipboardDocumentListIcon
+  }
+]
+
+const toggleDropdown = () => {
+  isOpenDropdown.value = !isOpenDropdown.value
+}
+
+const closeDropdown = () => {
+  isOpenDropdown.value = false
+}
+
+// Add click outside handler to close dropdown
+onMounted(() => {
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement
+    if (!target.closest('.relative')) {
+      isOpenDropdown.value = false
+    }
+  })
+})
+
+// Cleanup event listener
+onUnmounted(() => {
+  document.removeEventListener('click', () => {})
+})
+
+// // This is a mock function - replace with your actual permission check
+// const hasPermission = (permission: string) => {
+//   return true // Replace with your actual permission logic
+// }
 
 definePageMeta({
     middleware: 'auth'

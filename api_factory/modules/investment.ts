@@ -1,6 +1,7 @@
 import { GATEWAY_ENDPOINT } from "../axios.config";
+import { InvestmentData, RemainingInvestmentAmount } from '@/types/modules/investment'
 export const investment_api = {
-  $_create_investment: (payload: Record<string, any>) => {
+  $_create_investment: (payload: InvestmentData) => {
     let url = '/investment/create';
     return GATEWAY_ENDPOINT.post(url, payload);
   },
@@ -20,7 +21,7 @@ export const investment_api = {
     let url = `/investment/summary/${id}`;
     return GATEWAY_ENDPOINT.get(url);
   },
-  $_get_remaining_amount: (amount: any, payload: any) => {
+  $_get_remaining_amount: (amount: any, payload: RemainingInvestmentAmount) => {
     let url = `/investment/get-remaining-amount/${amount}`;
     return GATEWAY_ENDPOINT.post(url, payload);
   },

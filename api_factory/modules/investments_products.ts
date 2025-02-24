@@ -1,6 +1,7 @@
 import { GATEWAY_ENDPOINT } from "../axios.config";
+import { InvestmentProduct } from '@/types/modules/investment-product'
 export const investment_products_api = {
-  $_create_investment_product: (payload: Record<string, any>) => {
+  $_create_investment_product: (payload: InvestmentProduct) => {
     let url = '/investment-product';
     return GATEWAY_ENDPOINT.post(url, payload);
   },

@@ -1,7 +1,12 @@
 import { GATEWAY_ENDPOINT } from "../axios.config";
 export const admin_api = {
-  $_create_admin: (payload: Record<string, any>) => {
-    let url = '/create';
+  $_create_admin: (payload: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    roleId: string;
+  }) => {
+    let url = "/create";
     return GATEWAY_ENDPOINT.post(url, payload);
   },
   $_get_admins: (metadata: { page: number; pageSize: number }) => {
@@ -19,5 +24,5 @@ export const admin_api = {
   $_block_admins: (id: string) => {
     let url = `/block/${id}`;
     return GATEWAY_ENDPOINT.delete(url);
-  }
+  },
 };
