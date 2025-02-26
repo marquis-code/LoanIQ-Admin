@@ -2,28 +2,27 @@ import { ref } from "vue";
 import { users_api } from "~/api_factory/modules/customer-mgt";
 import { useCustomToast } from "@/composables/core/useCustomToast";
 const { showToast } = useCustomToast();
-export const useGetUserDetails = () => {
+export const useGetTransactions = () => {
     const loading = ref(false);
-    const user = ref(null);
-    const wallet = ref(null)
-    const { $_get_user_details } = users_api;
+    const transactions = ref([]);
+    const metadata = ref({
+        page: 1,
+        pageSize: 7,
+        total: 0,
+        pages: 0,
+      });
+    const { $_get_user_transactions } = users_api;
     const route = useRoute()
   
-    const getUserDetails = async () => {
+    const getTransactions = async () => {
       const id = route.params.id as string
       loading.value = true;
       try {
-        const response = await $_get_user_details(id) as any
+        const response = await $_get_user_transactions(id, metadata.value) as any
         if (response.type !== "ERROR") {
-          console.log(response?.data, 'respknse here')
-          user.value = response?.data?.data?.profile ?? {};
-          wallet.value = response?.data?.data?.wallet ?? {}
-          showToast({
-            title: "Success",
-            message: "User details retrieved successfully.",
-            toastType: "success",
-            duration: 3000,
-          });
+          const { page, pageSize, total, pages } = response?.data?.data || {};
+          metadata.value = { page, pageSize, total, pages };
+          transactions.value = response?.data?.data?.data ?? [];
         } else {
           showToast({
             title: "Error",
@@ -35,7 +34,7 @@ export const useGetUserDetails = () => {
       } catch (error) {
         showToast({
           title: "Error",
-          message: "An unexpected error occurred while retrieving user details.",
+          message: "An unexpected error occurred while retrieving transactions details.",
           toastType: "error",
           duration: 3000,
         });
@@ -44,13 +43,18 @@ export const useGetUserDetails = () => {
     };
 
     onMounted(() => {
-      getUserDetails()
+      getTransactions()
     })
+
+    watch( [metadata.value.page, metadata.value.pageSize], // Watch only page and pageSize
+        () => {
+            getTransactions()
+        }
+    );
   
     return {
-      getUserDetails,
-      user,
-      wallet,
+      getTransactions,
+      transactions,
       loading,
     };
   };

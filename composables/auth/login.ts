@@ -19,11 +19,13 @@ export const useLogin = () => {
   });
 
   const login = async () => {
+    const router = useRouter();
     loading.value = true;
     const res = (await auth_api.$_login({
       password: credential.passcode.value,
       email: credential.email.value,
     })) as any;
+    console.log(res, 'res here')
     loading.value = false;
     if (res.status == 201 || res.status == 200) {
       useUser().createUser(res.data.data);

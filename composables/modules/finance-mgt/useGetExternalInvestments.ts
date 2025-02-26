@@ -11,6 +11,7 @@ export const useFetchExternalInvestments = () => {
       try {
         const res = await $_get_external_investments() as any
         if (res.type !== 'ERROR') {
+          console.log(res?.data, 'Investments here')
           externalInvestments.value = res?.data?.data?.investments || [];
         }
       } catch (error) {

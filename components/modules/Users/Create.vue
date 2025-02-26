@@ -1,10 +1,10 @@
 <template>
-    <div class="flex items-center justify-center bg-gray-100">
-      <div class="bg-white w-full max-w-md">
-       <div class="flex justify-center items-center flex-col pb-6">
+    <!-- <div class="flex items-center justify-center bg-gray-100"> -->
+      <!-- <div class="bg-white w-full max-w-md"> -->
+       <!-- <div class="flex justify-center items-center flex-col pb-6">
          <h1 class="text-xl font-semibold text-gray-800 text-center">Create User</h1>
          <p class="text-sm text-gray-400 text-center -mt-3">Fill in the information below to create a user</p>
-       </div>
+       </div> -->
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <!-- Email Field -->
           <div>
@@ -44,8 +44,8 @@
             </button>
           </div>
         </form>
-      </div>
-    </div>
+      <!-- </div> -->
+    <!-- </div> -->
   </template>
   
   <script setup>

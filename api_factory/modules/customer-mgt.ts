@@ -1,11 +1,11 @@
 import { GATEWAY_ENDPOINT } from "../axios.config";
 export const users_api = {
   $_create_user: (payload: { email: string; bvn: string }) => {
-    let url = "/admin/user/new-user";
+    let url = "/user/new-user";
     return GATEWAY_ENDPOINT.post(url, payload);
   },
   $_generate_account_number: (id: string) => {
-    let url = `/admin/user/generate-account-number/${id}`;
+    let url = `/user/generate-account-number/${id}`;
     return GATEWAY_ENDPOINT.get(url);
   },
   $_submit_account_number_request: (payload: {
@@ -13,31 +13,47 @@ export const users_api = {
     userId: string;
     trackingId: string;
   }) => {
-    let url = `/admin/user/submit-account-number-request`;
+    let url = `/user/submit-account-number-request`;
     return GATEWAY_ENDPOINT.post(url, payload);
   },
   $_get_users: (metadata: { page: number; pageSize: number }) => {
-    let url = `/admin/user?page=${metadata.page}&pageSize=${metadata.pageSize}`;
+    let url = `/user?page=${metadata.page}&pageSize=${metadata.pageSize}`;
     return GATEWAY_ENDPOINT.get(url);
   },
   $_get_user_details: (id: string) => {
-    let url = `/admin/user/${id}`;
+    let url = `/user/${id}`;
     return GATEWAY_ENDPOINT.get(url);
   },
   $_block_user: (id: string) => {
-    let url = `/admin/user/block/${id}`;
+    let url = `/user/block/${id}`;
     return GATEWAY_ENDPOINT.post(url);
   },
   $_unblock_user: (id: string) => {
-    let url = `/admin/user/unblock/${id}`;
+    let url = `/user/unblock/${id}`;
     return GATEWAY_ENDPOINT.post(url);
   },
   $_flag_user_account: (id: string) => {
-    let url = `/admin/user/flag/${id}`;
+    let url = `/user/flag/${id}`;
     return GATEWAY_ENDPOINT.post(url);
   },
   $_unflag_user_account: (id: string) => {
-    let url = `/admin/user/unblock/${id}`;
+    let url = `/user/unblock/${id}`;
     return GATEWAY_ENDPOINT.post(url);
+  },
+  $_get_user_transactions: (id: string, metadata: { page: number; pageSize: number }) => {
+    let url = `/user/transactions/${id}?page=${metadata.page}&pageSize=${metadata.pageSize}`
+    return GATEWAY_ENDPOINT.get(url);
+  },
+  $_get_user_investments: (id: string, metadata: { page: number; pageSize: number }) => {
+        let url = `/user/investments/${id}?page=${metadata.page}&pageSize=${metadata.pageSize}`
+    return GATEWAY_ENDPOINT.get(url);
+  },
+  $_get_user_activity_logs: (id: string, metadata: { page: number; pageSize: number }) => {
+    let url = `/user/sessions/activities/${id}?page=${metadata.page}&pageSize=${metadata.pageSize}`
+    return GATEWAY_ENDPOINT.get(url);
+  },
+  $_get_user_kyc_documents: (id: string, metadata: { page: number; pageSize: number }) => {
+    let url = `/user/kyc_documents/${id}?page=${metadata.page}&pageSize=${metadata.pageSize}`
+    return GATEWAY_ENDPOINT.get(url);
   },
 };

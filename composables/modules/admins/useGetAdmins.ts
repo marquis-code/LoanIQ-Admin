@@ -19,7 +19,7 @@ export const useGetAdmins = () => {
     console.log(response, 'res')
     if (response.statusText === "OK") {
       const { page, pageSize, total, pages } = response?.data?.data || {};
-      admins.value = response?.data?.data|| [];
+      admins.value = response?.data?.data?.admins || [];
       metadata.value = { page, pageSize, total, pages };
       // showToast({
       //   title: "Success",

@@ -3,9 +3,10 @@ import { investment_api } from "@/api_factory/modules/investment"
 import { useCustomToast } from "@/composables/core/useCustomToast";
 const { showToast } = useCustomToast();
 
+const deactivatedInvestments = ref<any[]>([]);
+
 export const useDeactivatedInvestments = () => {
   const loading = ref(false);
-  const deactivatedInvestments = ref<any[]>([]);
   const metadata = ref({
     page: 1,
     pageSize: 7,
@@ -18,8 +19,8 @@ export const useDeactivatedInvestments = () => {
     const response = await investment_api.$_deactivated_investment(metadata.value) as any
 
     if (response.type !== "ERROR") {
-      const { deactivatedInvestments, page, pageSize, total, pages } = response?.data?.data || {};
-      deactivatedInvestments.value = response.data;
+      const { page, pageSize, total, pages } = response?.data?.data || {};
+      deactivatedInvestments.value = response?.data?.data?.activeInvestments;
     } else {
       showToast({
         title: "Error",

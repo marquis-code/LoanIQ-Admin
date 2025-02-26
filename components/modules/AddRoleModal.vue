@@ -1,6 +1,13 @@
 <template>
-   <!-- <transition name="modal"> -->
-    <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+       <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+    <div  class="fixed inset-0 bg-black/30 backdrop-blur-sm flex justify-center items-center z-50">
     <form @submit.prevent="handleCreateRole" class="bg-white p-6 rounded-b-xl shadow-md w-full max-w-md space-y-10">
       <h2 class="text-lg font-semibold mb-4">Add Role</h2>
       <label class="block mb-2 text-sm mb-2">
@@ -36,6 +43,7 @@
       </div>
     </form>
   </div>
+</Transition>
    <!-- </transition> -->
 </template>
 
@@ -74,4 +82,8 @@ const handleCreateRole = async () => {
 .modal-enter-from, .modal-leave-to {
   opacity: 0;
 }
+
+.backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+  }
 </style>

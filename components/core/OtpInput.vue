@@ -8,7 +8,7 @@
       </div>
 
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form @submit.prevent="submitOTP" class="space-y-6">
+        <form @submit.prevent="submitOTP" class="space-y-6 px-6">
           <div class="flex justify-center items-center gap-x-2">
             <input
                 v-for="(digit, index) in otp"
@@ -27,11 +27,11 @@
             <span class="font-semibold ml-1">{{ timer }}</span>
           </p>
 
-          <div class="pt-10">
+          <div class="pt-10 w-full">
             <button
                 :disabled="loader || !isOtpComplete"
                 type="submit"
-                class="flex w-full disabled:cursor-not-allowed disabled:opacity-25 justify-center rounded-md bg-[#2F6D67] px-3 py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#2F6D67] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F6D67]"
+                class="flex w-full disabled:cursor-not-allowed disabled:opacity-25 justify-center rounded-md bg-[#2F6D67] py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#2F6D67] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F6D67]"
             >
               {{ loader ? 'Processing...' : 'Submit' }}
             </button>

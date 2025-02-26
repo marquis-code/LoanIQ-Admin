@@ -16,10 +16,13 @@ export const useActiveInvestments = () => {
   const fetchActiveInvestments = async () => {
     loading.value = true;
     const response = await investment_api.$_active_investment(metadata.value) as any
+    // console.log(response?.data?.data?.activeInvestments, 'res pns s here')
     if (response.type !== "ERROR") {
-      const { activeInvestments, page, pageSize, total, pages } = response?.data?.data || {};
+      console.log(response?.data?.data?.activeInvestments, 'res pns s here')
+      // console.log(response?.data?.data, 'Active invstments')
+      activeInvestments.value = response?.data?.data?.activeInvestments;
+      const { page, pageSize, total, pages } = response?.data?.data || {};
       metadata.value = { page, pageSize, total, pages };
-      activeInvestments.value = response.data;
     } else {
       showToast({
         title: "Error",

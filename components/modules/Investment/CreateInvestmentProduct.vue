@@ -1,8 +1,8 @@
 <template>
     <div class="space-y-10 divide-y divide-gray-900/10">
       <div class="grid grid-cols-1 gap-x-8 gap-y-8">
-      <form @submit.prevent="createInvestmentProduct" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
-       <div class="px-4 py-4">
+      <form @submit.prevent="createInvestmentProduct" class="md:col-span-2">
+       <div class="py-4">
       <div class="space-y-4">
               <!-- Last Name Field -->
       <div class="">

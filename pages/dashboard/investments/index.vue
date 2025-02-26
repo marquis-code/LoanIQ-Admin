@@ -5,6 +5,9 @@
       <h1 class="text-xl font-semibold">Investments</h1>
       <NuxtLink v-if="canCreate('investment')" to="/dashboard/investments/create" class="bg-[#2F6D67] text-sm text-white px-4 py-3 rounded-lg">Add New</NuxtLink>
     </div>
+    <!-- {{activeInvestments}} -->
+     <!-- {{filteredInvestments}} -->
+     <!-- {{investments}} -->
 
     <!-- Tabs -->
 <section class="lg:flex justify-between items-center">
@@ -19,6 +22,7 @@
       {{ status }}
     </button>
   </div>
+  <!-- {{activeTab}} -->
   <div class="flex justify-between items-center mb-4">
     <div class="flex items-center">
       <input
@@ -107,12 +111,16 @@ const computedLoader = computed(() => {
 
 // Filtered investments based on search query
 const filteredInvestments = computed(() => {
-  if(investments.value.length > 0) {
+  // Check if searchQuery has a value, then filter, otherwise return all investments
+  if (searchQuery?.value && searchQuery.value.trim() !== '') {
     return investments.value.filter(inv =>
-        inv.investor.toLowerCase().includes(searchQuery.value.toLowerCase())
+      inv?.investor?.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
+  } else {
+    return investments.value; // Return all investments if no search query is provided
   }
 });
+
 
 // Functions to handle tab change and modal
 const handleTabChange = (status: string) => {
@@ -128,6 +136,12 @@ const closeModal = () => {
   isModalOpen.value = false;
   selectedInvestment.value = null;
 };
+
+const handleSelected = (data: any) => {
+    selectedInvestment.value = data
+    isModalOpen.value = true
+  }
+
 
 definePageMeta({
   layout: 'admin-dashboard',

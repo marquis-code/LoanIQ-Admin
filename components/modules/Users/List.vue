@@ -24,9 +24,12 @@
                   <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Name
                   </th>
                   <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Phone</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Blocked</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Flagged</th>
-                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Account Type</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">User ID</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">KYC Tier</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                  <!-- <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Blocked</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Flagged</th> -->
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date Joined</th>
                   <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
                     <span class="sr-only">Edit</span>
                   </th>
@@ -55,14 +58,18 @@
                     <div class="text-gray-900">{{ user.phoneNumber ?? 'Nil' }}</div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                    <span
-                      class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">{{ user?.blockStatus }}</span>
+                    <div class="text-gray-900">{{ user.id ?? 'Nil' }}</div>
                   </td>
                   <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
-                    <span
-                      class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">{{ user?.flagStatus }}</span>
+                    <div class="text-gray-900">{{ user.tier ?? 'Nil' }}</div>
                   </td>
-                  <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">{{ user.accountType ?? 'Nil' }}</td>
+                  <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                    <span :class="[user?.blockStatus ? 'bg-green-50  text-green-700' : 'bg-red-50  text-red-700']"
+                      class="inline-flex items-center rounded-md  px-2 py-1 text-xs font-medium ring-1 ring-inset ring-green-600/20">{{ user?.blockStatus ? 'Active' : 'In Active' }}</span>
+                  </td>
+                  <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
+                    {{ moment(user?.createdAt).format("MMMM Do YYYY") }}
+                  </td>
                   <td
                   class="py-4 px-5 relative whitespace-nowrap text-sm text-[#667185]"
                 >
@@ -155,29 +162,6 @@
                           {{user.flagStatus ? 'Un-Flag' : 'Flag'}}
                         </a>
                       </li>
-<!--                      <li>-->
-<!--                        <a-->
-<!--                            @click="selectOption('request', user)"-->
-<!--                            href="#"-->
-<!--                            class="block flex items-center gap-x-2 px-4 py-3 hover:bg-gray-100 text-start"-->
-<!--                        >-->
-<!--                        <svg-->
-<!--                            xmlns="http://www.w3.org/2000/svg"-->
-<!--                            width="22"-->
-<!--                            height="22"-->
-<!--                            viewBox="0 0 24 24"-->
-<!--                            fill="none"-->
-<!--                            stroke="#4a4a4a"-->
-<!--                            stroke-width="1.5"-->
-<!--                            stroke-linecap="round"-->
-<!--                            stroke-linejoin="round"-->
-<!--                          >-->
-<!--                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>-->
-<!--                            <polyline points="22 4 12 14.01 9 11.01"></polyline>-->
-<!--                          </svg>-->
-<!--                         request account number-->
-<!--                        </a>-->
-<!--                      </li>-->
                       <li>
                         <a
                           @click="selectOption('generate', user)"
@@ -242,8 +226,6 @@
     />
 
     <CoreBaseModal :show="openConfirmAccountNumberOTPModal" @update:show="openConfirmAccountNumberOTPModal = false">
-<!--      <ModulesUsersCreate @success="openConfirmAccountNumberOTPModal = false" />-->
-      <!-- Timer duration in seconds (4 minutes) -->
       <CoreOtpInput
           title="Verify Your Email"
           description="We have sent a verification code to john@example.com."
@@ -259,6 +241,7 @@
 </template>
 
 <script setup lang="ts">
+import moment from 'moment'
 import { useSubmitAccountNumberRequest } from '@/composables/modules/users/useSubmitAccountNumberRequest'
 import { useGenerateAccountNumber } from '@/composables/modules/users/useGenerateAccountNumber'
 import { useBlockUser } from '@/composables/modules/users/useBlockUser'

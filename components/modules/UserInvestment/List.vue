@@ -14,7 +14,7 @@
                 <tr>
                   <th
                       scope="col"
-                      class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"
+                      class="py-3.5 pl-6 pr-3 text-center text-sm font-semibold text-gray-900 sm:pl-0"
                   >
                     Name
                   </th>
@@ -22,7 +22,7 @@
                       scope="col"
                       class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Min Investment
+                   Amount
                   </th>
                   <th
                       scope="col"
@@ -34,13 +34,13 @@
                       scope="col"
                       class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Min Tenor(months)
+                   Tenor(months)
                   </th>
                   <th
                       scope="col"
                       class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Max Tenor(months)
+                   Days to matruity
                   </th>
                   <th
                       scope="col"
@@ -73,12 +73,6 @@
                         <div class="font-medium text-gray-900">
                           {{ product?.name || "Nil" }}
                         </div>
-                        <div class="mt-1 text-gray-500">
-                          {{
-                            `${product?.description?.slice(0, 20)}...` ||
-                            "Nil"
-                          }}
-                        </div>
                       </div>
                     </div>
                   </td>
@@ -86,9 +80,10 @@
                       class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
                   >
                     <div class="text-gray-900">
-                      {{ formatCurrency(product?.minInvestment) || "Nil" }}
+                      {{ formatCurrency(product?.amount) || "Nil" }}
                     </div>
                   </td>
+                  <!-- {{product}} -->
                   <td
                       class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
                   >
@@ -97,17 +92,17 @@
                   <td
                       class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
                   >
-                    {{ product?.minTenor || "Nil" }}
+                    {{ product?.tenor || "Nil" }}
                   </td>
                   <td
                       class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
                   >
-                    {{ product?.maxTenor || "Nil" }}
+                    {{ product?.daysToMaturity || "Nil" }}
                   </td>
                   <td
                       class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
                   >
-                    {{ formatCurrency(product?.preLiquidationFee) || "Nil" }}
+                    {{ product?.preliquidionCharge || "Nil" }}
                   </td>
                   <td
                       class="whitespace-nowrap px-3 py-5 text-sm text-gray-500"
@@ -183,7 +178,7 @@
                             View
                           </a>
                         </li>
-                        <li v-if="canDelete('investment')">
+                        <!-- <li v-if="canDelete('investment')">
                           <a
                               @click="selectOption('delete', product)"
                               href="#"
@@ -205,7 +200,7 @@
                             </svg>
                             Delete
                           </a>
-                        </li>
+                        </li> -->
                       </ul>
                     </div>
                   </td>
