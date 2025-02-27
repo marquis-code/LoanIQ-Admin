@@ -24,4 +24,8 @@ export const dashboard_api = {
         let url = `/dashboard/pending-approval-investments`;
         return GATEWAY_ENDPOINT.get(url);
       },
+      $_get_dashboard_liquidatd_investments: () => {
+        let url = `/dashboard/liquidated-investments`;
+        return GATEWAY_ENDPOINT.get(url);
+      },
 }

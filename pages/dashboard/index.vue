@@ -9,6 +9,7 @@
         </p>
       </div>
 
+      <!-- {{ dashboardAnalytics }} -->
       <div class="flex items-center gap-4">
         <!-- Date Range Filter -->
         <div class="relative">
@@ -352,7 +353,7 @@ const metrics = ref([
   {
     id: 1,
     title: 'Total Customer Base',
-    value: '15,234',
+    value: dashboardAnalytics?.value?.totalUsrs ?? 0,
     icon: Users,
     trend: 12,
     type: 'customers',
@@ -361,8 +362,8 @@ const metrics = ref([
   },
   {
     id: 2,
-    title: 'Active Customers',
-    value: '12,543',
+    title: 'Total Transactions',
+    value: dashboardAnalytics?.value?.totalTransactions ?? 0,
     icon: UserCheck,
     trend: 8,
     type: 'customers',
@@ -371,8 +372,8 @@ const metrics = ref([
   },
   {
     id: 3,
-    title: 'Inactive Customers',
-    value: '2,691',
+    title: 'Total Savings',
+    value: dashboardAnalytics?.value?.totalSavings ?? 0,
     icon: UserX,
     trend: -5,
     type: 'customers',
@@ -382,7 +383,7 @@ const metrics = ref([
   {
     id: 4,
     title: 'Liquidated Investments',
-    value: '$2.5M',
+    value: dashboardAnalytics?.value?.liquidatedInvestment ?? 0,
     icon: Wallet,
     trend: 15,
     type: 'investments',
@@ -391,8 +392,8 @@ const metrics = ref([
   },
   {
     id: 5,
-    title: 'Investments Due',
-    value: '$1.8M',
+    title: 'Total Wallet Balance',
+    value: dashboardAnalytics?.value?.totalWalletBalance ?? 0,
     icon: Clock,
     trend: 3,
     type: 'investments',
@@ -402,7 +403,7 @@ const metrics = ref([
   {
     id: 6,
     title: 'Active Investments',
-    value: '$5.2M',
+    value: dashboardAnalytics?.value?.activeInvestments ?? 0,
     icon: CheckCircle,
     trend: 10,
     type: 'investments',
@@ -412,7 +413,7 @@ const metrics = ref([
   {
     id: 7,
     title: 'Loans Disbursed',
-    value: '$3.7M',
+    value: dashboardAnalytics?.value?.totalLoans ?? 0,
     icon: DollarSign,
     trend: 7,
     type: 'loans',
@@ -422,7 +423,7 @@ const metrics = ref([
   {
     id: 8,
     title: 'Pending Approvals',
-    value: '45',
+    value: dashboardAnalytics?.value?.pendingApprovalInvestment ?? 0,
     icon: Clock,
     trend: -2,
     type: 'approvals',

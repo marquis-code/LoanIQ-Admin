@@ -4,7 +4,7 @@ export const useFetchInvestmentsPendingApprovals = () => {
     const loading = ref(false);
     const pendingApprovalsList = ref({} as any);
     const { $_get_dashboard_pending_approvals } = dashboard_api;
-    const getInvestmentsPendingApprovals = async (id: any) => {
+    const getInvestmentsPendingApprovals = async () => {
         loading.value = true;
         try {
             const res = await $_get_dashboard_pending_approvals() as any;
@@ -19,6 +19,9 @@ export const useFetchInvestmentsPendingApprovals = () => {
         }
     };
 
+    onMounted(() => {
+        getInvestmentsPendingApprovals()
+    })
     return {
         getInvestmentsPendingApprovals,
         loading,

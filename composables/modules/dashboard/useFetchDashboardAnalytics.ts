@@ -10,7 +10,7 @@ export const useFetchDashboardAnalytics = () => {
             const res = await $_get_dashboard_analytics() as any;
     
             if (res.type !== 'ERROR') {
-                dashboardAnalytics.value = res?.data?.result
+                dashboardAnalytics.value = res?.data?.data || {}
             }
         } catch (error) {
             // console.error('Error getting profile object', error);

@@ -3,11 +3,11 @@ import { dashboard_api } from '@/api_factory/modules/dashboard'
 export const useFetchActiveCustomers = () => {
     const loading = ref(false);
     const activeCustomers = ref({} as any);
-    const { $_get_dashboard_pending_approvals } = dashboard_api;
-    const getActiveCustomers = async (id: any) => {
+    const { $_get_dashboard_active_users } = dashboard_api;
+    const getActiveCustomers = async () => {
         loading.value = true;
         try {
-            const res = await $_get_dashboard_pending_approvals() as any;
+            const res = await $_get_dashboard_active_users() as any;
     
             if (res.type !== 'ERROR') {
                 activeCustomers.value = res?.data?.result
@@ -19,6 +19,9 @@ export const useFetchActiveCustomers = () => {
         }
     };
 
+    onMounted(() => {
+        getActiveCustomers()
+    })
     return {
         getActiveCustomers,
         loading,
