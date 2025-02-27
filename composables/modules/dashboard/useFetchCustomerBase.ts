@@ -13,7 +13,7 @@ export const useFetchCustomerBase = () => {
             const res = await $_get_dashboard_total_customer_base(filter.value.date) as any;
     
             if (res.type !== 'ERROR') {
-                customers.value = res?.data?.result
+                customers.value = res?.data?.totalCustomers
             }
         } catch (error) {
             // console.error('Error getting profile object', error);

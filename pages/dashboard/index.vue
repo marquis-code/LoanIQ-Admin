@@ -15,7 +15,7 @@
         <div class="relative">
           <select
             v-model="selectedDateRange"
-            class="rounded-md border-gray-300 pr-8 focus:border-primary focus:ring-primary"
+            class="rounded-md border-gray-300 pr-8 outline-none border-[0.5px] py-2.5 text-sm px-4 focus:border-primary focus:ring-primary"
           >
             <option value="all">All Time</option>
             <option value="ytd">Year to Date</option>
@@ -91,7 +91,7 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="mb-6 grid gap-4 sm:grid-cols-3">
+    <!-- <div class="mb-6 grid gap-4 sm:grid-cols-3">
       <NuxtLink
         v-for="action in quickActions"
         :key="action.id"
@@ -113,49 +113,77 @@
           <p class="text-sm text-gray-600">{{ action.count }} pending</p>
         </div>
       </NuxtLink>
-    </div>
+    </div> -->
 
-    <!-- Metrics Grid -->
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <button
-        v-for="metric in metrics"
-        :key="metric.id"
-        @click="showMetricDetails(metric)"
-        class="rounded-lg border bg-white p-6 text-left shadow-sm transition-all hover:shadow-md"
-      >
-        <div class="flex items-start justify-between">
-          <div>
-            <p class="text-sm font-medium text-gray-600">{{ metric.title }}</p>
-            <p class="mt-2 text-2xl font-semibold">{{ metric.value }}</p>
-          </div>
-          <div
-            class="rounded-full p-2"
-            :class="metric.bgColor"
-          >
-            <component
-              :is="metric.icon"
-              class="h-5 w-5"
-              :class="metric.iconColor"
-            />
-          </div>
+    <!-- Loading skeleton -->
+    <div v-if="loading" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div 
+      v-for="i in 9" 
+      :key="i" 
+      class="rounded-lg border bg-white p-6 text-left shadow-sm animate-pulse"
+    >
+      <div class="flex items-start justify-between">
+        <div class="w-2/3">
+          <div class="h-4 bg-gray-200 rounded w-full mb-2"></div>
+          <div class="h-8 bg-gray-200 rounded w-1/2 mt-2"></div>
         </div>
-        <div class="mt-4 flex items-center gap-2">
-          <div
-            class="flex items-center"
-            :class="metric.trend > 0 ? 'text-green-600' : 'text-red-600'"
-          >
-            <component
-              :is="metric.trend > 0 ? TrendingUp : TrendingDown"
-              class="h-4 w-4"
-            />
-            <span class="ml-1 text-sm">
-              {{ Math.abs(metric.trend) }}%
-            </span>
-          </div>
-          <span class="text-sm text-gray-500">vs last period</span>
-        </div>
-      </button>
+        <div class="rounded-full p-2 bg-gray-200 h-10 w-10"></div>
+      </div>
+      <div class="mt-4 flex items-center gap-2">
+        <div class="h-4 bg-gray-200 rounded w-16"></div>
+        <div class="h-4 bg-gray-200 rounded w-24"></div>
+      </div>
     </div>
+  </div>
+
+  <!-- Actual metrics -->
+  <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <button
+      v-for="metric in metrics"
+      :key="metric.id"
+      @click="showMetricDetails(metric)"
+      class="rounded-lg border bg-white p-6 text-left shadow-sm transition-all hover:shadow-md"
+    >
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">{{ metric.title }}</p>
+          <p class="mt-2 text-2xl font-semibold">
+            {{ 
+              ['customers', 'approvals', 'overdue'].includes(metric.type) 
+                ? formatNumber(metric.value) 
+                : formatCurrency(metric.value) 
+            }}
+          </p>
+        </div>
+        <div
+          class="rounded-full p-2"
+          :class="metric.bgColor"
+        >
+          <component
+            :is="metric.icon"
+            class="h-5 w-5"
+            :class="metric.iconColor"
+          />
+        </div>
+      </div>
+      <div class="mt-4 flex items-center gap-2">
+        <div
+          class="flex items-center"
+          :class="metric.trend > 0 ? 'text-green-600' : 'text-red-600'"
+        >
+          <component
+            :is="metric.trend > 0 ? TrendingUp : TrendingDown"
+            class="h-4 w-4"
+          />
+          <span class="ml-1 text-sm">
+            {{ Math.abs(metric.trend) }}%
+          </span>
+        </div>
+        <span class="text-sm text-gray-500">vs last period</span>
+      </div>
+    </button>
+  </div>
+
 
     <!-- Metric Details Modal -->
     <TransitionRoot appear :show="!!selectedMetric" as="template">
@@ -251,6 +279,7 @@
 </template>
 
 <script setup lang="ts">
+import { formatCurrency } from '@/utils/currencyUtils'
 import {  useFetchDashboardAnalytics } from '@/composables/modules/dashboard/useFetchDashboardAnalytics'
 import { useFetchCustomerBase } from '@/composables/modules/dashboard/useFetchCustomerBase'
 import { useFetchInvestmentsPendingApprovals } from '@/composables/modules/dashboard/useFetchInvestmentsPendingApprovals'
@@ -317,6 +346,19 @@ const notifications = ref([
   },
 ])
 
+// Define types for better type safety
+interface Metric {
+  id: number
+  title: string
+  value: number
+  icon: any
+  trend: number
+  type: string
+  bgColor: string
+  iconColor: string
+}
+
+
 // Quick actions
 const quickActions = [
   {
@@ -349,11 +391,104 @@ const quickActions = [
 ]
 
 // Metrics
-const metrics = ref([
+// const metrics = ref([
+//   {
+//     id: 1,
+//     title: 'Total Customer Base',
+//     value: dashboardAnalytics?.value?.totalUsrs ?? 0,
+//     icon: Users,
+//     trend: 12,
+//     type: 'customers',
+//     bgColor: 'bg-blue-100',
+//     iconColor: 'text-blue-600',
+//   },
+//   {
+//     id: 2,
+//     title: 'Total Transactions',
+//     value: dashboardAnalytics?.value?.totalTransactions ?? 0,
+//     icon: UserCheck,
+//     trend: 8,
+//     type: 'customers',
+//     bgColor: 'bg-green-100',
+//     iconColor: 'text-green-600',
+//   },
+//   {
+//     id: 3,
+//     title: 'Total Savings',
+//     value: dashboardAnalytics?.value?.totalSavings ?? 0,
+//     icon: UserX,
+//     trend: -5,
+//     type: 'customers',
+//     bgColor: 'bg-red-100',
+//     iconColor: 'text-red-600',
+//   },
+//   {
+//     id: 4,
+//     title: 'Liquidated Investments',
+//     value: dashboardAnalytics?.value?.liquidatedInvestment ?? 0,
+//     icon: Wallet,
+//     trend: 15,
+//     type: 'investments',
+//     bgColor: 'bg-purple-100',
+//     iconColor: 'text-purple-600',
+//   },
+//   {
+//     id: 5,
+//     title: 'Total Wallet Balance',
+//     value: dashboardAnalytics?.value?.totalWalletBalance ?? 0,
+//     icon: Clock,
+//     trend: 3,
+//     type: 'investments',
+//     bgColor: 'bg-yellow-100',
+//     iconColor: 'text-yellow-600',
+//   },
+//   {
+//     id: 6,
+//     title: 'Active Investments',
+//     value: dashboardAnalytics?.value?.activeInvestments ?? 0,
+//     icon: CheckCircle,
+//     trend: 10,
+//     type: 'investments',
+//     bgColor: 'bg-green-100',
+//     iconColor: 'text-green-600',
+//   },
+//   {
+//     id: 7,
+//     title: 'Loans Disbursed',
+//     value: dashboardAnalytics?.value?.totalLoans ?? 0,
+//     icon: DollarSign,
+//     trend: 7,
+//     type: 'loans',
+//     bgColor: 'bg-blue-100',
+//     iconColor: 'text-blue-600',
+//   },
+//   {
+//     id: 8,
+//     title: 'Pending Approvals',
+//     value: dashboardAnalytics?.value?.pendingApprovalInvestment ?? 0,
+//     icon: Clock,
+//     trend: -2,
+//     type: 'approvals',
+//     bgColor: 'bg-orange-100',
+//     iconColor: 'text-orange-600',
+//   },
+//   {
+//     id: 9,
+//     title: 'Overdue Accounts',
+//     value: '23',
+//     icon: AlertTriangle,
+//     trend: -8,
+//     type: 'overdue',
+//     bgColor: 'bg-red-100',
+//     iconColor: 'text-red-600',
+//   },
+// ])
+
+const metrics = computed<Metric[]>(() => [
   {
     id: 1,
     title: 'Total Customer Base',
-    value: dashboardAnalytics?.value?.totalUsrs ?? 0,
+    value: dashboardAnalytics.value?.totalUsers ?? 0,
     icon: Users,
     trend: 12,
     type: 'customers',
@@ -363,7 +498,7 @@ const metrics = ref([
   {
     id: 2,
     title: 'Total Transactions',
-    value: dashboardAnalytics?.value?.totalTransactions ?? 0,
+    value: dashboardAnalytics.value?.totalTransactions ?? 0,
     icon: UserCheck,
     trend: 8,
     type: 'customers',
@@ -373,7 +508,7 @@ const metrics = ref([
   {
     id: 3,
     title: 'Total Savings',
-    value: dashboardAnalytics?.value?.totalSavings ?? 0,
+    value: dashboardAnalytics.value?.totalSavings ?? 0,
     icon: UserX,
     trend: -5,
     type: 'customers',
@@ -383,17 +518,17 @@ const metrics = ref([
   {
     id: 4,
     title: 'Liquidated Investments',
-    value: dashboardAnalytics?.value?.liquidatedInvestment ?? 0,
+    value: dashboardAnalytics.value?.liquidatedInvestment ?? 0,
     icon: Wallet,
     trend: 15,
-    type: 'investments',
+    type: 'customers',
     bgColor: 'bg-purple-100',
     iconColor: 'text-purple-600',
   },
   {
     id: 5,
     title: 'Total Wallet Balance',
-    value: dashboardAnalytics?.value?.totalWalletBalance ?? 0,
+    value: dashboardAnalytics.value?.totalWalletBalance ?? 0,
     icon: Clock,
     trend: 3,
     type: 'investments',
@@ -403,27 +538,29 @@ const metrics = ref([
   {
     id: 6,
     title: 'Active Investments',
-    value: dashboardAnalytics?.value?.activeInvestments ?? 0,
+    value: dashboardAnalytics.value?.activeInvestment ?? 0,
     icon: CheckCircle,
     trend: 10,
-    type: 'investments',
+    // type: 'investments',
+    type: 'customers',
     bgColor: 'bg-green-100',
     iconColor: 'text-green-600',
   },
   {
     id: 7,
     title: 'Loans Disbursed',
-    value: dashboardAnalytics?.value?.totalLoans ?? 0,
+    value: dashboardAnalytics.value?.totalLoans ?? 0,
     icon: DollarSign,
     trend: 7,
-    type: 'loans',
+    // type: 'loans',
+    type: 'customers',
     bgColor: 'bg-blue-100',
     iconColor: 'text-blue-600',
   },
   {
     id: 8,
     title: 'Pending Approvals',
-    value: dashboardAnalytics?.value?.pendingApprovalInvestment ?? 0,
+    value: dashboardAnalytics.value?.pendingApprovalInvestment ?? 0,
     icon: Clock,
     trend: -2,
     type: 'approvals',
@@ -433,7 +570,7 @@ const metrics = ref([
   {
     id: 9,
     title: 'Overdue Accounts',
-    value: '23',
+    value: dashboardAnalytics.value?.overdueAccounts ?? 0,
     icon: AlertTriangle,
     trend: -8,
     type: 'overdue',
@@ -441,6 +578,8 @@ const metrics = ref([
     iconColor: 'text-red-600',
   },
 ])
+
+
 
 // Selected metric for modal
 const selectedMetric = ref(null)
@@ -543,4 +682,20 @@ definePageMeta({
     layout: 'admin-dashboard',
     middleware: 'auth'
 })
+
+// // Function to handle metric click
+// const showMetricDetails = (metric: Metric) => {
+//   // Implement your detail view logic here
+//   console.log('Metric clicked:', metric)
+// }
+
+// Format number with commas
+const formatNumber = (value: number): string => {
+  return value.toLocaleString()
+}
+
+// Format currency
+// const formatCurrency = (value: number): string => {
+//   return `$${value.toLocaleString()} sssss`
+// }
 </script>

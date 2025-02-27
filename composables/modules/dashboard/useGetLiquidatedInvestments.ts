@@ -10,7 +10,7 @@ export const useFetchLiquidatedInvestments = () => {
             const res = await $_get_dashboard_liquidatd_investments() as any;
     
             if (res.type !== 'ERROR') {
-                liquidatedInvestments.value = res?.data?.result
+                liquidatedInvestments.value = res?.data?.liquidatedInvestments
             }
         } catch (error) {
             // console.error('Error getting profile object', error);

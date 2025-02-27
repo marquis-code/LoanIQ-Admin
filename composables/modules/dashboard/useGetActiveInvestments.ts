@@ -10,7 +10,7 @@ export const useFetchActiveInvestments = () => {
             const res = await $_get_dashboard_active_investments() as any;
     
             if (res.type !== 'ERROR') {
-                activeInvestments.value = res?.data?.result
+                activeInvestments.value = res?.data?.activeInvestments
             }
         } catch (error) {
             // console.error('Error getting profile object', error);
