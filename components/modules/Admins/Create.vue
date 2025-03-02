@@ -1,8 +1,8 @@
 <template>
     <div class="space-y-10 divide-y divide-gray-900/10">
       <div class="grid grid-cols-1 gap-x-8 gap-y-8">
-        <form @submit.prevent="createAdmin" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
-          <div class="px-4 py-4">
+        <form @submit.prevent="handleCreateAdmin" class="">
+          <div class="">
             <div class="space-y-4">
   
               <!-- Last Name Field -->
@@ -62,7 +62,7 @@
             </div>
           </div>
 
-          <div class="flex justify-center items-center p-6">
+          <div class="flex justify-center items-center pt-10">
             <button
              type="submit"
              :disabled="loading"
@@ -82,6 +82,14 @@
   import { useCreateAdmin } from '@/composables/modules/admins/useCreateAdmin'
   const { loading: fetchingRoles, roles: rolesList } = useFetchRoles()
   const { createAdmin, loading, payload } = useCreateAdmin()
+
+  const emit = defineEmits(['close'])
+
+  const handleCreateAdmin = async () => {
+    await createAdmin().then(() => {
+      emit('close')
+    })
+  }
 
   </script>
   

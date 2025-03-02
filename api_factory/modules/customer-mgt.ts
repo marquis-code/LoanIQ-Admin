@@ -48,7 +48,11 @@ export const users_api = {
         let url = `/user/investments/${id}?page=${metadata.page}&pageSize=${metadata.pageSize}`
     return GATEWAY_ENDPOINT.get(url);
   },
-  $_get_user_activity_logs: (id: string, metadata: { page: number; pageSize: number }) => {
+  $_get_user_session_logs: (id: string, metadata: { page: number; pageSize: number }) => {
+    let url = `/user/sessions/${id}?page=${metadata.page}&pageSize=${metadata.pageSize}`
+    return GATEWAY_ENDPOINT.get(url);
+  },
+  $_get_user_session_activity_logs: (id: string, metadata: { page: number; pageSize: number }) => {
     let url = `/user/sessions/activities/${id}?page=${metadata.page}&pageSize=${metadata.pageSize}`
     return GATEWAY_ENDPOINT.get(url);
   },

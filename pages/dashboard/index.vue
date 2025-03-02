@@ -9,25 +9,10 @@
         </p>
       </div>
 
-      <!-- {{ dashboardAnalytics }} -->
       <div class="flex items-center gap-4">
-        <!-- Date Range Filter -->
-        <div class="relative">
-          <select
-            v-model="selectedDateRange"
-            class="rounded-md border-gray-300 pr-8 outline-none border-[0.5px] py-2.5 text-sm px-4 focus:border-primary focus:ring-primary"
-          >
-            <option value="all">All Time</option>
-            <option value="ytd">Year to Date</option>
-            <option value="mtd">Month to Date</option>
-            <option value="wtd">Week to Date</option>
-            <option value="today">Today</option>
-          </select>
-        </div>
-
         <!-- Notifications -->
         <div class="relative">
-          <button
+          <!-- <button
             @click="showNotifications = !showNotifications"
             class="relative rounded-full p-2 hover:bg-gray-100"
           >
@@ -38,7 +23,7 @@
             >
               {{ notifications.length }}
             </span>
-          </button>
+          </button> -->
 
           <!-- Notifications Dropdown -->
           <div
@@ -90,235 +75,245 @@
       </div>
     </div>
 
-    <!-- Quick Actions -->
-    <!-- <div class="mb-6 grid gap-4 sm:grid-cols-3">
-      <NuxtLink
-        v-for="action in quickActions"
-        :key="action.id"
-        :to="action.link"
-        class="flex items-center gap-3 rounded-lg border bg-white p-4 shadow-sm transition-colors hover:bg-gray-50"
-      >
-        <div
-          class="rounded-full p-2"
-          :class="action.bgColor"
-        >
-          <component
-            :is="action.icon"
-            class="h-5 w-5"
-            :class="action.iconColor"
-          />
-        </div>
-        <div>
-          <h3 class="font-medium">{{ action.title }}</h3>
-          <p class="text-sm text-gray-600">{{ action.count }} pending</p>
-        </div>
-      </NuxtLink>
-    </div> -->
-
-    <!-- Loading skeleton -->
-    <div v-if="loading" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-    <div 
-      v-for="i in 9" 
-      :key="i" 
-      class="rounded-lg border bg-white p-6 text-left shadow-sm animate-pulse"
-    >
-      <div class="flex items-start justify-between">
-        <div class="w-2/3">
-          <div class="h-4 bg-gray-200 rounded w-full mb-2"></div>
-          <div class="h-8 bg-gray-200 rounded w-1/2 mt-2"></div>
-        </div>
-        <div class="rounded-full p-2 bg-gray-200 h-10 w-10"></div>
-      </div>
-      <div class="mt-4 flex items-center gap-2">
-        <div class="h-4 bg-gray-200 rounded w-16"></div>
-        <div class="h-4 bg-gray-200 rounded w-24"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Actual metrics -->
-  <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-    <button
-      v-for="metric in metrics"
-      :key="metric.id"
-      @click="showMetricDetails(metric)"
-      class="rounded-lg border bg-white p-6 text-left shadow-sm transition-all hover:shadow-md"
-    >
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-sm font-medium text-gray-600">{{ metric.title }}</p>
-          <p class="mt-2 text-2xl font-semibold">
-            {{ 
-              ['customers', 'approvals', 'overdue'].includes(metric.type) 
-                ? formatNumber(metric.value) 
-                : formatCurrency(metric.value) 
-            }}
-          </p>
-        </div>
-        <div
-          class="rounded-full p-2"
-          :class="metric.bgColor"
-        >
-          <component
-            :is="metric.icon"
-            class="h-5 w-5"
-            :class="metric.iconColor"
-          />
-        </div>
-      </div>
-      <div class="mt-4 flex items-center gap-2">
-        <div
-          class="flex items-center"
-          :class="metric.trend > 0 ? 'text-green-600' : 'text-red-600'"
-        >
-          <component
-            :is="metric.trend > 0 ? TrendingUp : TrendingDown"
-            class="h-4 w-4"
-          />
-          <span class="ml-1 text-sm">
-            {{ Math.abs(metric.trend) }}%
-          </span>
-        </div>
-        <span class="text-sm text-gray-500">vs last period</span>
-      </div>
-    </button>
-  </div>
-
-
-    <!-- Metric Details Modal -->
-    <TransitionRoot appear :show="!!selectedMetric" as="template">
-      <Dialog
-        as="div"
-        @close="selectedMetric = null"
-        class="relative z-50"
-      >
-        <TransitionChild
-          enter="duration-300 ease-out"
-          enter-from="opacity-0"
-          enter-to="opacity-100"
-          leave="duration-200 ease-in"
-          leave-from="opacity-100"
-          leave-to="opacity-0"
-        >
-          <div class="fixed inset-0 bg-black/25" />
-        </TransitionChild>
-
-        <div class="fixed inset-0 overflow-y-auto">
-          <div class="flex min-h-full items-center justify-center p-4">
-            <TransitionChild
-              enter="duration-300 ease-out"
-              enter-from="opacity-0 scale-95"
-              enter-to="opacity-100 scale-100"
-              leave="duration-200 ease-in"
-              leave-from="opacity-100 scale-100"
-              leave-to="opacity-0 scale-95"
-            >
-              <DialogPanel class="w-full max-w-4xl rounded-lg bg-white p-6">
-                <div class="mb-4 flex items-center justify-between">
-                  <DialogTitle class="text-lg font-medium">
-                    {{ selectedMetric?.title }} Details
-                  </DialogTitle>
-                  <button
-                    @click="selectedMetric = null"
-                    class="rounded-full p-2 hover:bg-gray-100"
-                  >
-                    <X class="h-5 w-5 text-gray-500" />
-                  </button>
-                </div>
-
-                <div class="overflow-x-auto">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                      <tr>
-                        <th
-                          v-for="header in getTableHeaders(selectedMetric?.type)"
-                          :key="header"
-                          class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                        >
-                          {{ header }}
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 bg-white">
-                      <tr
-                        v-for="item in getTableData(selectedMetric?.type)"
-                        :key="item.id"
-                      >
-                        <td
-                          v-for="(value, key) in item"
-                          :key="key"
-                          class="whitespace-nowrap px-6 py-4"
-                        >
-                          <template v-if="key === 'status'">
-                            <span
-                              :class="{
-                                'bg-green-100 text-green-800': value === 'active',
-                                'bg-red-100 text-red-800': value === 'inactive',
-                                'bg-yellow-100 text-yellow-800': value === 'pending'
-                              }"
-                              class="rounded-full px-2 py-1 text-xs font-medium"
-                            >
-                              {{ value }}
-                            </span>
-                          </template>
-                          <template v-else>
-                            {{ value }}
-                          </template>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </DialogPanel>
-            </TransitionChild>
+    <!-- Stats Cards Grid -->
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <!-- 1. Active Investments Card -->
+      <div class="rounded-lg border bg-white p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Active Investments</p>
+            <!-- Show skeleton loader when filtering -->
+            <div v-if="fetchingActiveInvestments" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
+            <p v-else class="mt-2 text-2xl font-semibold">
+              {{ activeInvestments || 0 }}
+              <!-- {{ formatCurrency(activeInvestments?.total || 0) }} -->
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-green-100 p-2">
+              <Wallet class="h-5 w-5 text-green-600" />
+            </div>
+            <!-- Dropdown Filter -->
+            <div class="relative">
+              <select
+                v-model="activeInvestmentsFilter"
+                @change="updateActiveInvestmentsFilter"
+                class="rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+              >
+                <option value="YTD">Year to Date</option>
+                <option value="MTD">Month to Date</option>
+                <option value="WTD">Week to Date</option>
+                <option value="Today">Today</option>
+              </select>
+              <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+            </div>
           </div>
         </div>
-      </Dialog>
-    </TransitionRoot>
+        <div class="mt-4 flex items-center gap-2">
+          <div class="flex items-center text-green-600">
+            <TrendingUp class="h-4 w-4" />
+            <span class="ml-1 text-sm">{{ activeInvestments?.trend || 0 }}%</span>
+          </div>
+          <span class="text-sm text-gray-500">vs last period</span>
+        </div>
+      </div>
+
+      <!-- 2. Customer Base Card -->
+      <div class="rounded-lg border bg-white p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Customer Base</p>
+            <!-- Show skeleton loader when filtering -->
+            <div v-if="fetchingCustomerBse" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
+            <p v-else class="mt-2 text-2xl font-semibold">
+              {{ customers || 0 }}
+              <!-- {{ formatNumber(customers?.total || 0) }} -->
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-blue-100 p-2">
+              <Users class="h-5 w-5 text-blue-600" />
+            </div>
+            <!-- Dropdown Filter -->
+            <div class="relative">
+              <select
+                v-model="customerBaseFilter"
+                @change="updateCustomerBaseFilter"
+                class="rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+              >
+                <option value="YTD">Year to Date</option>
+                <option value="MTD">Month to Date</option>
+                <option value="WTD">Week to Date</option>
+                <option value="Today">Today</option>
+              </select>
+              <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center gap-2">
+          <div class="flex items-center text-green-600">
+            <TrendingUp class="h-4 w-4" />
+            <span class="ml-1 text-sm">{{ customers?.trend || 0 }}%</span>
+          </div>
+          <span class="text-sm text-gray-500">vs last period</span>
+        </div>
+      </div>
+
+      <!-- 3. Active Customers Card -->
+      <div class="rounded-lg border bg-white p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Active Customers</p>
+            <!-- Show skeleton loader when filtering -->
+            <div v-if="fetchingActiveCustomers" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
+            <p v-else class="mt-2 text-2xl font-semibold">
+              {{  activeCustomers || 0 }}
+              <!-- {{ formatNumber(activeCustomers?.total || 0) }} -->
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-green-100 p-2">
+              <UserCheck class="h-5 w-5 text-green-600" />
+            </div>
+            <!-- Dropdown Filter -->
+            <div class="relative">
+              <select
+                v-model="activeCustomersFilter"
+                @change="updateActiveCustomersFilter"
+                class="rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+              >
+                <option value="YTD">Year to Date</option>
+                <option value="MTD">Month to Date</option>
+                <option value="WTD">Week to Date</option>
+                <option value="Today">Today</option>
+              </select>
+              <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center gap-2">
+          <div class="flex items-center text-green-600">
+            <TrendingUp class="h-4 w-4" />
+            <span class="ml-1 text-sm">{{ activeCustomers?.trend || 0 }}%</span>
+          </div>
+          <span class="text-sm text-gray-500">vs last period</span>
+        </div>
+      </div>
+
+      <!-- 4. Liquidated Investments Card -->
+      <div class="rounded-lg border bg-white p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Liquidated Investments</p>
+            <!-- Show skeleton loader when filtering -->
+            <div v-if="fetchingLiquidatedInvestments" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
+            <p v-else class="mt-2 text-2xl font-semibold">
+              {{  liquidatedInvestments || 0 }}
+              <!-- {{ formatCurrency(liquidatedInvestments?.total || 0) }} -->
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-purple-100 p-2">
+              <DollarSign class="h-5 w-5 text-purple-600" />
+            </div>
+            <!-- Dropdown Filter -->
+            <div class="relative">
+              <select
+                v-model="liquidatedInvestmentsFilter"
+                @change="updateLiquidatedInvestmentsFilter"
+                class="rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+              >
+                <option value="YTD">Year to Date</option>
+                <option value="MTD">Month to Date</option>
+                <option value="WTD">Week to Date</option>
+                <option value="Today">Today</option>
+              </select>
+              <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center gap-2">
+          <div class="flex items-center text-green-600">
+            <TrendingUp class="h-4 w-4" />
+            <span class="ml-1 text-sm">{{ liquidatedInvestments?.trend || 0 }}%</span>
+          </div>
+          <span class="text-sm text-gray-500">vs last period</span>
+        </div>
+      </div>
+
+      <!-- 5. Pending Approval Investments Card -->
+      <div class="rounded-lg border bg-white p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Pending Approval Investments</p>
+            <!-- Show skeleton loader when filtering -->
+            <div v-if="fetchingApprovalsList" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
+            <p v-else class="mt-2 text-2xl font-semibold">
+              {{ pendingApprovalsList || 0 }}
+              <!-- {{ formatNumber(pendingApprovalsList?.total || 0) }} -->
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-orange-100 p-2">
+              <Clock class="h-5 w-5 text-orange-600" />
+            </div>
+            <!-- Dropdown Filter -->
+            <div class="relative">
+              <select
+                v-model="pendingApprovalFilter"
+                @change="updatePendingApprovalFilter"
+                class="rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+              >
+                <option value="YTD">Year to Date</option>
+                <option value="MTD">Month to Date</option>
+                <option value="WTD">Week to Date</option>
+                <option value="Today">Today</option>
+              </select>
+              <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center gap-2">
+          <div class="flex items-center" :class="pendingApprovalsList?.trend > 0 ? 'text-green-600' : 'text-red-600'">
+            <component :is="pendingApprovalsList?.trend > 0 ? TrendingUp : TrendingDown" class="h-4 w-4" />
+            <span class="ml-1 text-sm">{{ Math.abs(pendingApprovalsList?.trend || 0) }}%</span>
+          </div>
+          <span class="text-sm text-gray-500">vs last period</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { formatCurrency } from '@/utils/currencyUtils'
-import {  useFetchDashboardAnalytics } from '@/composables/modules/dashboard/useFetchDashboardAnalytics'
 import { useFetchCustomerBase } from '@/composables/modules/dashboard/useFetchCustomerBase'
 import { useFetchInvestmentsPendingApprovals } from '@/composables/modules/dashboard/useFetchInvestmentsPendingApprovals'
 import { useFetchActiveCustomers } from '@/composables/modules/dashboard/useGetActiveCustomers'
-import { useFetchActiveInvestments } from  '@/composables/modules/dashboard/useGetActiveInvestments'
+import { useFetchActiveInvestments } from '@/composables/modules/dashboard/useGetActiveInvestments'
 import { useFetchLiquidatedInvestments } from '@/composables/modules/dashboard/useGetLiquidatedInvestments'
-const { dashboardAnalytics, loading } = useFetchDashboardAnalytics()
-const { customers, loading: fetchingCustomerBse } = useFetchCustomerBase()
-const { pendingApprovalsList, loading: fetchingApprovalsList } = useFetchInvestmentsPendingApprovals()
-const { activeCustomers, loading: fetchingActiveCustomers } = useFetchActiveCustomers()
-const { activeInvestments, loading: fetchingActiveInvestments } = useFetchActiveInvestments()
-const { liquidatedInvestments, loading: fetchingLiquidatedInvestments } = useFetchLiquidatedInvestments()
-import { ref } from 'vue'
 import {
   Users,
   UserCheck,
-  UserX,
   Wallet,
   Clock,
-  CheckCircle,
   DollarSign,
-  AlertTriangle,
   Bell,
-  FileCheck,
   TrendingUp,
   TrendingDown,
-  X,
+  ChevronDown,
+  AlertTriangle,
   AlertCircle,
+  CheckCircle
 } from 'lucide-vue-next'
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from '@headlessui/vue'
 
-// Date range filter
-const selectedDateRange = ref('all')
+// Fetch data using composables
+const { customers, loading: fetchingCustomerBse, filter: customerBaseFilter } = useFetchCustomerBase()
+const { pendingApprovalsList, loading: fetchingApprovalsList, filter: pendingApprovalFilter } = useFetchInvestmentsPendingApprovals()
+const { activeCustomers, loading: fetchingActiveCustomers, filter: activeCustomersFilter } = useFetchActiveCustomers()
+const { activeInvestments, loading: fetchingActiveInvestments, filter: activeInvestmentsFilter } = useFetchActiveInvestments()
+const { liquidatedInvestments, loading: fetchingLiquidatedInvestments, filter: liquidatedInvestmentsFilter } = useFetchLiquidatedInvestments()
 
 // Notifications
 const showNotifications = ref(false)
@@ -326,8 +321,8 @@ const notifications = ref([
   {
     id: 1,
     type: 'approval',
-    title: 'New Loan Application',
-    message: 'A new loan application requires your approval',
+    title: 'New Investment Application',
+    message: 'A new investment application requires your approval',
     time: '5 minutes ago',
   },
   {
@@ -346,249 +341,38 @@ const notifications = ref([
   },
 ])
 
-// Define types for better type safety
-interface Metric {
-  id: number
-  title: string
-  value: number
-  icon: any
-  trend: number
-  type: string
-  bgColor: string
-  iconColor: string
+// Initialize filters with default values
+onMounted(() => {
+  // Set default timeframe to 'YTD' for all filters
+  customerBaseFilter.timeframe = 'YTD'
+  pendingApprovalFilter.timeframe = 'YTD'
+  activeCustomersFilter.timeframe = 'YTD'
+  activeInvestmentsFilter.timeframe = 'YTD'
+  liquidatedInvestmentsFilter.timeframe = 'YTD'
+})
+
+// Filter update methods
+const updateCustomerBaseFilter = () => {
+  customerBaseFilter.apply()
 }
 
-
-// Quick actions
-const quickActions = [
-  {
-    id: 1,
-    title: 'Pending Loans',
-    count: 12,
-    icon: FileCheck,
-    link: '/loans/pending',
-    bgColor: 'bg-blue-100',
-    iconColor: 'text-blue-600',
-  },
-  {
-    id: 2,
-    title: 'Assigned Tasks',
-    count: 5,
-    icon: CheckCircle,
-    link: '/tasks',
-    bgColor: 'bg-green-100',
-    iconColor: 'text-green-600',
-  },
-  {
-    id: 3,
-    title: 'Investment Approvals',
-    count: 8,
-    icon: DollarSign,
-    link: '/investments/pending',
-    bgColor: 'bg-yellow-100',
-    iconColor: 'text-yellow-600',
-  },
-]
-
-// Metrics
-// const metrics = ref([
-//   {
-//     id: 1,
-//     title: 'Total Customer Base',
-//     value: dashboardAnalytics?.value?.totalUsrs ?? 0,
-//     icon: Users,
-//     trend: 12,
-//     type: 'customers',
-//     bgColor: 'bg-blue-100',
-//     iconColor: 'text-blue-600',
-//   },
-//   {
-//     id: 2,
-//     title: 'Total Transactions',
-//     value: dashboardAnalytics?.value?.totalTransactions ?? 0,
-//     icon: UserCheck,
-//     trend: 8,
-//     type: 'customers',
-//     bgColor: 'bg-green-100',
-//     iconColor: 'text-green-600',
-//   },
-//   {
-//     id: 3,
-//     title: 'Total Savings',
-//     value: dashboardAnalytics?.value?.totalSavings ?? 0,
-//     icon: UserX,
-//     trend: -5,
-//     type: 'customers',
-//     bgColor: 'bg-red-100',
-//     iconColor: 'text-red-600',
-//   },
-//   {
-//     id: 4,
-//     title: 'Liquidated Investments',
-//     value: dashboardAnalytics?.value?.liquidatedInvestment ?? 0,
-//     icon: Wallet,
-//     trend: 15,
-//     type: 'investments',
-//     bgColor: 'bg-purple-100',
-//     iconColor: 'text-purple-600',
-//   },
-//   {
-//     id: 5,
-//     title: 'Total Wallet Balance',
-//     value: dashboardAnalytics?.value?.totalWalletBalance ?? 0,
-//     icon: Clock,
-//     trend: 3,
-//     type: 'investments',
-//     bgColor: 'bg-yellow-100',
-//     iconColor: 'text-yellow-600',
-//   },
-//   {
-//     id: 6,
-//     title: 'Active Investments',
-//     value: dashboardAnalytics?.value?.activeInvestments ?? 0,
-//     icon: CheckCircle,
-//     trend: 10,
-//     type: 'investments',
-//     bgColor: 'bg-green-100',
-//     iconColor: 'text-green-600',
-//   },
-//   {
-//     id: 7,
-//     title: 'Loans Disbursed',
-//     value: dashboardAnalytics?.value?.totalLoans ?? 0,
-//     icon: DollarSign,
-//     trend: 7,
-//     type: 'loans',
-//     bgColor: 'bg-blue-100',
-//     iconColor: 'text-blue-600',
-//   },
-//   {
-//     id: 8,
-//     title: 'Pending Approvals',
-//     value: dashboardAnalytics?.value?.pendingApprovalInvestment ?? 0,
-//     icon: Clock,
-//     trend: -2,
-//     type: 'approvals',
-//     bgColor: 'bg-orange-100',
-//     iconColor: 'text-orange-600',
-//   },
-//   {
-//     id: 9,
-//     title: 'Overdue Accounts',
-//     value: '23',
-//     icon: AlertTriangle,
-//     trend: -8,
-//     type: 'overdue',
-//     bgColor: 'bg-red-100',
-//     iconColor: 'text-red-600',
-//   },
-// ])
-
-const metrics = computed<Metric[]>(() => [
-  {
-    id: 1,
-    title: 'Total Customer Base',
-    value: dashboardAnalytics.value?.totalUsers ?? 0,
-    icon: Users,
-    trend: 12,
-    type: 'customers',
-    bgColor: 'bg-blue-100',
-    iconColor: 'text-blue-600',
-  },
-  {
-    id: 2,
-    title: 'Total Transactions',
-    value: dashboardAnalytics.value?.totalTransactions ?? 0,
-    icon: UserCheck,
-    trend: 8,
-    type: 'customers',
-    bgColor: 'bg-green-100',
-    iconColor: 'text-green-600',
-  },
-  {
-    id: 3,
-    title: 'Total Savings',
-    value: dashboardAnalytics.value?.totalSavings ?? 0,
-    icon: UserX,
-    trend: -5,
-    type: 'customers',
-    bgColor: 'bg-red-100',
-    iconColor: 'text-red-600',
-  },
-  {
-    id: 4,
-    title: 'Liquidated Investments',
-    value: dashboardAnalytics.value?.liquidatedInvestment ?? 0,
-    icon: Wallet,
-    trend: 15,
-    type: 'customers',
-    bgColor: 'bg-purple-100',
-    iconColor: 'text-purple-600',
-  },
-  {
-    id: 5,
-    title: 'Total Wallet Balance',
-    value: dashboardAnalytics.value?.totalWalletBalance ?? 0,
-    icon: Clock,
-    trend: 3,
-    type: 'investments',
-    bgColor: 'bg-yellow-100',
-    iconColor: 'text-yellow-600',
-  },
-  {
-    id: 6,
-    title: 'Active Investments',
-    value: dashboardAnalytics.value?.activeInvestment ?? 0,
-    icon: CheckCircle,
-    trend: 10,
-    // type: 'investments',
-    type: 'customers',
-    bgColor: 'bg-green-100',
-    iconColor: 'text-green-600',
-  },
-  {
-    id: 7,
-    title: 'Loans Disbursed',
-    value: dashboardAnalytics.value?.totalLoans ?? 0,
-    icon: DollarSign,
-    trend: 7,
-    // type: 'loans',
-    type: 'customers',
-    bgColor: 'bg-blue-100',
-    iconColor: 'text-blue-600',
-  },
-  {
-    id: 8,
-    title: 'Pending Approvals',
-    value: dashboardAnalytics.value?.pendingApprovalInvestment ?? 0,
-    icon: Clock,
-    trend: -2,
-    type: 'approvals',
-    bgColor: 'bg-orange-100',
-    iconColor: 'text-orange-600',
-  },
-  {
-    id: 9,
-    title: 'Overdue Accounts',
-    value: dashboardAnalytics.value?.overdueAccounts ?? 0,
-    icon: AlertTriangle,
-    trend: -8,
-    type: 'overdue',
-    bgColor: 'bg-red-100',
-    iconColor: 'text-red-600',
-  },
-])
-
-
-
-// Selected metric for modal
-const selectedMetric = ref(null)
-
-// Methods
-const showMetricDetails = (metric: any) => {
-  selectedMetric.value = metric
+const updatePendingApprovalFilter = () => {
+  pendingApprovalFilter.apply()
 }
 
+const updateActiveCustomersFilter = () => {
+  activeCustomersFilter.apply()
+}
+
+const updateActiveInvestmentsFilter = () => {
+  activeInvestmentsFilter.apply()
+}
+
+const updateLiquidatedInvestmentsFilter = () => {
+  liquidatedInvestmentsFilter.apply()
+}
+
+// Helper methods
 const getNotificationIcon = (type: string) => {
   switch (type) {
     case 'approval':
@@ -602,100 +386,38 @@ const getNotificationIcon = (type: string) => {
   }
 }
 
-const getTableHeaders = (type: string) => {
-  switch (type) {
-    case 'customers':
-      return ['ID', 'Name', 'Email', 'Status', 'Join Date']
-    case 'investments':
-      return ['ID', 'Amount', 'Type', 'Status', 'Maturity Date']
-    case 'loans':
-      return ['ID', 'Customer', 'Amount', 'Status', 'Due Date']
-    case 'approvals':
-      return ['ID', 'Type', 'Customer', 'Amount', 'Status']
-    case 'overdue':
-      return ['ID', 'Customer', 'Type', 'Amount', 'Days Overdue']
-    default:
-      return []
-  }
-}
-
-const getTableData = (type: string) => {
-  // Dummy data for each type
-  switch (type) {
-    case 'customers':
-      return [
-        {
-          id: 'CST001',
-          name: 'John Doe',
-          email: 'john@example.com',
-          status: 'active',
-          joinDate: '2024-01-15',
-        },
-        {
-          id: 'CST002',
-          name: 'Jane Smith',
-          email: 'jane@example.com',
-          status: 'inactive',
-          joinDate: '2023-11-20',
-        },
-      ]
-    case 'investments':
-      return [
-        {
-          id: 'INV001',
-          amount: '$50,000',
-          type: 'Fixed Deposit',
-          status: 'active',
-          maturityDate: '2024-12-31',
-        },
-        {
-          id: 'INV002',
-          amount: '$25,000',
-          type: 'Mutual Fund',
-          status: 'pending',
-          maturityDate: '2024-06-30',
-        },
-      ]
-    case 'loans':
-      return [
-        {
-          id: 'LN001',
-          customer: 'John Doe',
-          amount: '$10,000',
-          status: 'active',
-          dueDate: '2024-08-15',
-        },
-        {
-          id: 'LN002',
-          customer: 'Jane Smith',
-          amount: '$5,000',
-          status: 'pending',
-          dueDate: '2024-07-01',
-        },
-      ]
-    default:
-      return []
-  }
-}
-
-definePageMeta({
-    layout: 'admin-dashboard',
-    middleware: 'auth'
-})
-
-// // Function to handle metric click
-// const showMetricDetails = (metric: Metric) => {
-//   // Implement your detail view logic here
-//   console.log('Metric clicked:', metric)
-// }
-
 // Format number with commas
 const formatNumber = (value: number): string => {
   return value.toLocaleString()
 }
 
-// Format currency
-// const formatCurrency = (value: number): string => {
-//   return `$${value.toLocaleString()} sssss`
-// }
+definePageMeta({
+  layout: 'admin-dashboard',
+  middleware: 'auth'
+})
 </script>
+
+<style scoped>
+/* Add transition for smooth loading state changes */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Add transition for dropdown */
+select {
+  transition: all 0.2s ease;
+}
+
+select:hover {
+  border-color: var(--color-primary);
+}
+</style>

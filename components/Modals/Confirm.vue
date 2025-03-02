@@ -18,7 +18,7 @@
           <!-- Confirm Button -->
           <div class="mt-6">
             <button :disabled="loading" class="bg-[#2F6D67] disabled:opacity-25 disabled:cursor-not-allowed text-white px-4 py-3.5 w-full rounded-md" @click="confirmTransfer">
-              {{  loading ? "processing..." : 'Cotinue' }}
+              {{  loading ? "processing..." : 'Continue' }}
             </button>
           </div>
         </div>

@@ -2,28 +2,28 @@ import { ref } from "vue";
 import { users_api } from "~/api_factory/modules/customer-mgt";
 import { useCustomToast } from "@/composables/core/useCustomToast";
 const { showToast } = useCustomToast();
-export const useGetActivities = () => {
+export const useGetSessionLogs = () => {
     const loading = ref(false);
-    const activities = ref([]);
+    const sessionLogs = ref([]);
     const metadata = ref({
         page: 1,
         pageSize: 7,
         total: 0,
         pages: 0,
       });
-    const { $_get_user_activity_logs } = users_api;
+    const { $_get_user_session_logs } = users_api;
     const route = useRoute()
   
-    const getActivities = async () => {
+    const getSessionLogs = async () => {
       const id = route.params.id as string
       loading.value = true;
       try {
-        const response = await $_get_user_activity_logs(id, metadata.value) as any
+        const response = await $_get_user_session_logs(id, metadata.value) as any
         if (response.type !== "ERROR") {
-          console.log(response?.data, 'Activity logs')
+          console.log(response?.data, 'Session logs')
           const { page, pageSize, total, pages } = response?.data || {};
           metadata.value = { page, pageSize, total, pages };
-          activities.value = response?.data?.data?.activities ?? [];
+          sessionLogs.value = response?.data?.data?.sessions ?? [];
         } else {
           showToast({
             title: "Error",
@@ -35,7 +35,7 @@ export const useGetActivities = () => {
       } catch (error) {
         showToast({
           title: "Error",
-          message: "An unexpected error occurred while retrieving activities details.",
+          message: "An unexpected error occurred while retrieving sessionLogs details.",
           toastType: "error",
           duration: 3000,
         });
@@ -44,18 +44,18 @@ export const useGetActivities = () => {
     };
 
     onMounted(() => {
-      getActivities()
+      getSessionLogs()
     })
 
     watch( [metadata.value.page, metadata.value.pageSize], // Watch only page and pageSize
         () => {
-            getActivities()
+            getSessionLogs()
         }
     );
   
     return {
-      getActivities,
-      activities,
+      getSessionLogs,
+      sessionLogs,
       loading,
     };
   };

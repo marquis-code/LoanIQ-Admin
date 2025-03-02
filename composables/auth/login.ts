@@ -35,6 +35,7 @@ export const useLogin = () => {
         toastType: "success",
         duration: 3000
       });
+      window.location.href = '/dashboard'
       router.push("/dashboard");
     }
   };

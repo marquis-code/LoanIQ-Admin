@@ -1,24 +1,5 @@
 <template>
   <div class="px-4 sm:px-6 lg:px-8 mt-6">
-    <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold text-gray-900">
-          admins
-        </h1>
-        <p class="mt-2 text-sm text-gray-700">
-          A list of all the admins including their name, title,
-          email and role.
-        </p>
-      </div>
-      <div v-if="canCreate('admin-management')" class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-        <NuxtLink 
-          to="/dashboard/admin/create"
-          class="block rounded-md bg-[#2F6D67] px-3 py-3 text-center text-sm font-semibold text-white shadow-sm hover:bg-[#2F6D67] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F6D67]"
-        >
-          Create Admin
-        </NuxtLink>
-      </div>
-    </div>
     <section v-if="canView('admin-management')">
       <div v-if="admins.length && !loading" class="">
       <div class="mt-8 flow-root">
