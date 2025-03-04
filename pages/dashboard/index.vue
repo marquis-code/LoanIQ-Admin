@@ -12,20 +12,6 @@
       <div class="flex items-center gap-4">
         <!-- Notifications -->
         <div class="relative">
-          <!-- <button
-            @click="showNotifications = !showNotifications"
-            class="relative rounded-full p-2 hover:bg-gray-100"
-          >
-            <Bell class="h-6 w-6 text-gray-600" />
-            <span
-              v-if="notifications.length > 0"
-              class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white"
-            >
-              {{ notifications.length }}
-            </span>
-          </button> -->
-
-          <!-- Notifications Dropdown -->
           <div
             v-if="showNotifications"
             class="absolute right-0 top-full z-50 mt-2 w-80 rounded-lg border bg-white shadow-lg"
