@@ -29,11 +29,11 @@ export const investment_api = {
     let url = `/investment/${id}`;
     return GATEWAY_ENDPOINT.get(url);
   },
-  $_rollover_investment: (id: string | any, payload: InvestmentData) => {
+  $_rollover_investment: (id: string | any, payload: any) => {
     let url = `/investment/rollover/${id}`;
     return GATEWAY_ENDPOINT.post(url, payload);
   },
-  $_topup_investment: (id: string | any, payload: InvestmentData) => {
+  $_topup_investment: (id: string | any, payload: any) => {
     let url = `/investment/topup/${id}`;
     return GATEWAY_ENDPOINT.post(url, payload);
   },

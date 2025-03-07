@@ -20,6 +20,8 @@
       </div>
     </div>
 
+    <!-- {{investmentDetails}} -->
+
     <!-- Loading State -->
     <div v-if="loading || fetchingInvestmentSummary" class="flex justify-center py-10">
       <div class="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
@@ -86,7 +88,7 @@
               </div>
             </div>
 
-            <div class="mt-6">
+            <!-- <div class="mt-6">
               <div class="flex items-center justify-between">
                 <p class="text-sm font-medium">Investment Progress</p>
                 <p class="text-sm text-gray-500">{{ progressPercentage }}%</p>
@@ -97,7 +99,12 @@
                   :style="{ width: `${progressPercentage}%` }"
                 ></div>
               </div>
-            </div>
+            </div> -->
+                 <!-- Investment Progress Component -->
+              <InvestmentProgress 
+                :start-date="investmentDetails?.startDate" 
+                :maturity-date="investmentDetails?.maturityDate" 
+              />
           </div>
 
           <!-- Additional Investment Details -->
@@ -201,6 +208,14 @@
               </button>
               <button
                 v-if="investmentDetails?.status === 'active'"
+                @click="showRollOverModal = true"
+                class="flex w-full items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                <PlusCircle class="h-4 w-4" />
+                Roll Over Investment
+              </button>
+              <button
+                v-if="investmentDetails?.status === 'active'"
                 @click="showLiquidationModal = true"
                 class="flex w-full items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
@@ -260,12 +275,12 @@
                 v-model="transactionSearch"
                 type="text"
                 placeholder="Search transactions..."
-                class="pl-9 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                class="pl-9 rounded-md outline-none border-[0.5px] py-3 rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
               />
             </div>
             <select
               v-model="transactionType"
-              class="rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+              class="rounded-md rounded-md outline-none border-[0.5px] py-3 px-3 rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
             >
               <option value="">All Types</option>
               <option value="investment">Investment</option>
@@ -363,6 +378,135 @@
 
     <!-- Top Up Modal -->
     <TransitionRoot appear :show="showTopUpModal" as="template">
+    <Dialog as="div" @close="closeModal" class="relative z-50">
+      <TransitionChild
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black/25" />
+      </TransitionChild>
+
+      <div class="fixed inset-0 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4">
+          <TransitionChild
+            enter="duration-300 ease-out"
+            enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95"
+          >
+            <DialogPanel class="w-[90%] sm:w-[85%] md:w-[80%] rounded-xl mx-auto lg:w-[500px] max-w-[5200px] bg-white p-6">
+              <DialogTitle class="text-lg font-medium">
+                Top Up Investment
+              </DialogTitle>
+              <form @submit.prevent="handleTopUp" class="mt-4 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">
+                    Current Amount
+                  </label>
+                  <p class="mt-1 text-lg font-medium">
+                    {{ formatCurrency(parseFloat(investmentDetails?.amount)) }}
+                  </p>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">
+                    Top Up Amount
+                  </label>
+                  <input
+                    v-model="topUpForm.principal"
+                    type="number"
+                    required
+                    min="1"
+                    class="mt-1 block w-full py-3.5 border-[0.5px] px-3 outline-none rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  />
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Interest Rate (%)
+                  </label>
+                  <div class="relative">
+                    <input
+                      v-model="topUpForm.interestRate"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="100"
+                      required
+                      class="mt-1 block w-full py-3.5 border-[0.5px] px-3 outline-none rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm pr-10"
+                    />
+                    <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
+                  </div>
+                  
+                  <!-- Interest Rate Slider -->
+                  <div class="mt-2 px-2">
+                    <input
+                      v-model="topUpForm.interestRate"
+                      type="range"
+                      min="0"
+                      max="30"
+                      step="0.1"
+                      class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>0%</span>
+                      <span>10%</span>
+                      <span>20%</span>
+                      <span>30%</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Common Interest Rate Presets -->
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    <button 
+                      v-for="rate in [4.5, 5.0, 7.5, 10.0, 15.0]" 
+                      :key="rate"
+                      type="button"
+                      @click="topUpForm.interestRate = rate.toString()"
+                      class="px-3 py-1 text-xs rounded-full border border-gray-300 hover:bg-gray-100"
+                    >
+                      {{ rate }}%
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="mt-6 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    @click="showTopUpModal = false"
+                    class="rounded-md border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    :disabled="processingTopUp"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 flex items-center"
+                    :disabled="processingTopUp"
+                  >
+                    <span v-if="processingTopUp" class="mr-2">
+                      <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </span>
+                    Confirm Top Up
+                  </button>
+                </div>
+              </form>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
+      </div>
+    </Dialog>
+  </TransitionRoot>
+    <!-- <TransitionRoot appear :show="showTopUpModal" as="template">
       <Dialog
         as="div"
         @close="showTopUpModal = false"
@@ -411,7 +555,7 @@
                       type="number"
                       required
                       min="1"
-                      class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                      class="mt-1 block w-full py-3.5 border-[0.5px] px-3 outline-none rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                     />
                   </div>
                   <div class="mt-6 flex justify-end gap-3">
@@ -435,7 +579,217 @@
           </div>
         </div>
       </Dialog>
-    </TransitionRoot>
+    </TransitionRoot> -->
+
+        <!-- Roll Over Modal -->
+        <TransitionRoot appear :show="showRollOverModal" as="template">
+    <Dialog as="div" @close="closeModal" class="relative z-50">
+      <TransitionChild
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black/25" />
+      </TransitionChild>
+
+      <div class="fixed inset-0 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4">
+          <TransitionChild
+            enter="duration-300 ease-out"
+            enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95"
+          >
+            <DialogPanel class="w-[90%] sm:w-[85%] md:w-[80%] rounded-xl mx-auto lg:w-[500px] max-w-[5200px] bg-white p-6">
+              <DialogTitle class="text-lg font-medium">
+                Roll Over Investment
+              </DialogTitle>
+              <form @submit.prevent="handleRollOver" class="mt-4 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">
+                    Current Amount
+                  </label>
+                  <p class="mt-1 text-lg font-medium">
+                    {{ formatCurrency(parseFloat(investmentDetails?.amount)) }}
+                  </p>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">
+                    Roll Over Amount
+                  </label>
+                  <input
+                    v-model="rolloverForm.rolloverAmount"
+                    type="number"
+                    required
+                    min="1"
+                    class="mt-1 block w-full py-3.5 border-[0.5px] px-3 outline-none rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  />
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    New Tenor (Months): {{ rolloverForm.newTenor }}
+                  </label>
+                  <div class="px-2">
+                    <input
+                      v-model="rolloverForm.newTenor"
+                      type="range"
+                      min="1"
+                      max="36"
+                      step="1"
+                      class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>1</span>
+                      <span>12</span>
+                      <span>24</span>
+                      <span>36</span>
+                    </div>
+                  </div>
+                </div>
+
+                <section>
+                  <div class="mt-2 px-2">
+                    <input
+                      v-model="rolloverForm.interestRate"
+                      type="range"
+                      min="0"
+                      max="30"
+                      step="0.1"
+                      class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                    <div class="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>0%</span>
+                      <span>10%</span>
+                      <span>20%</span>
+                      <span>30%</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Common Interest Rate Presets -->
+                  <div class="mt-2 flex flex-wrap gap-2">
+                    <button 
+                      v-for="rate in [4.5, 5.0, 7.5, 10.0, 15.0]" 
+                      :key="rate"
+                      type="button"
+                      @click="rolloverForm.interestRate = rate.toString()"
+                      class="px-3 py-1 text-xs rounded-full border border-gray-300 hover:bg-gray-100"
+                    >
+                      {{ rate }}%
+                    </button>
+                  </div>
+                </section>
+                
+                <div class="mt-6 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    @click="showRollOverModal = false"
+                    class="rounded-md border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    :disabled="loading"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 flex items-center"
+                    :disabled="loading"
+                  >
+                    <span v-if="loading" class="mr-2">
+                      <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </span>
+                    Confirm Roll Over
+                  </button>
+                </div>
+              </form>
+            </DialogPanel>
+          </TransitionChild>
+        </div>
+      </div>
+    </Dialog>
+  </TransitionRoot>
+    <!-- <TransitionRoot appear :show="showRollOverModal" as="template">
+      <Dialog
+        as="div"
+        @close="showRollOverModal = false"
+        class="relative z-50"
+      >
+        <TransitionChild
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div class="flex min-h-full items-center justify-center p-4">
+            <TransitionChild
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel class="w-[90%] sm:w-[85%] md:w-[80%] rounded-xl mx-auto lg:w-[500px] max-w-[5200px]  bg-white p-6">
+                <DialogTitle class="text-lg font-medium">
+                  Roll Over Investment
+                </DialogTitle>
+                <form @submit.prevent="handleRollOver" class="mt-4 space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">
+                      Current Amount
+                    </label>
+                    <p class="mt-1 text-lg font-medium">
+                      {{ formatCurrency(parseFloat(investmentDetails?.amount)) }}
+                    </p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700">
+                      Roll Over Amount
+                    </label>
+                    <input
+                      v-model="topUpForm.amount"
+                      type="number"
+                      required
+                      min="1"
+                      class="mt-1 block w-full py-3.5 border-[0.5px] px-3 outline-none rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                    />
+                  </div>
+                  <div class="mt-6 flex justify-end gap-3">
+                    <button
+                      type="button"
+                      @click="showRollOverModal = false"
+                      class="rounded-md border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
+                    >
+                      Confirm Roll Over
+                    </button>
+                  </div>
+                </form>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot> -->
 
     <!-- Liquidation Modal -->
     <TransitionRoot appear :show="showLiquidationModal" as="template">
@@ -517,6 +871,11 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useInvestmentSummary } from '@/composables/modules/investments/useInvestmentSummary'
+import { useRolloverInvestment } from '@/composables/modules/investments/useRolloverInvestment';
+import { useTopupInvestment } from '@/composables/modules/investments/useTopupInvestment';
+
+const { rolloverInvestment, loading, payload, setRolloverPayload } = useRolloverInvestment();
+const { topupInvestment, loading: processingTopUp, setTopupPayload } = useTopupInvestment();
 import {
   Dialog,
   DialogPanel,
@@ -559,6 +918,7 @@ const documents = ref([
   },
 ])
 
+
 // Transaction configuration
 const transactionHeaders = [
   { key: 'date', label: 'Date' },
@@ -574,15 +934,29 @@ const transactions = ref<any[]>([])
 // State
 const chartPeriod = ref('3M')
 const showTopUpModal = ref(false)
+const showRollOverModal = ref(false)
 const showLiquidationModal = ref(false)
 const transactionSearch = ref('')
 const transactionType = ref('')
 const currentPage = ref(1)
 const itemsPerPage = 10
 
+// const topUpForm = ref({
+//   amount: '',
+// })
+
 const topUpForm = ref({
-  amount: '',
-})
+  principal: 0,
+  interestRate: "4.5"
+});
+
+const rolloverForm = ref({
+  rolloverAmount: '',
+  newTenor: 3,
+  interestRate: "4.5"
+});
+
+
 
 // Computed
 const expectedReturns = computed(() => {
@@ -680,7 +1054,7 @@ const formatDate = (date: string) => {
   })
 }
 
-const handleTopUp = () => {
+const handleTopUp = async () => {
   const topUpAmount = Number(topUpForm.value.amount)
   const currentAmount = parseFloat(investmentDetails?.value?.amount)
   
@@ -697,7 +1071,47 @@ const handleTopUp = () => {
     reference: `TOP${Date.now()}`,
   })
 
-  showTopUpModal.value = false
+  const payloadObj ={
+    principal: topUpForm.value.principal,
+    interestRate: topUpForm.value.interestRate
+  }
+
+  setTopupPayload(payloadObj)
+  await topupInvestment().then(() => {
+    showTopUpModal.value = false
+  })
+
+  topUpForm.value.amount = ''
+}
+
+const handleRollOver = async () => {
+  const topUpAmount = Number(topUpForm.value.amount)
+  const currentAmount = parseFloat(investmentDetails?.value?.amount)
+  
+  // Update investment amount
+  investmentDetails.value.amount = (currentAmount + topUpAmount).toString()
+  
+  // Add transaction
+  transactions.value.push({
+    id: Date.now(),
+    date: new Date().toISOString(),
+    type: 'top-up',
+    description: 'Investment Top Up',
+    amount: topUpAmount,
+    reference: `TOP${Date.now()}`,
+  })
+
+  const payloadObj = {
+    newTenor: rolloverForm.value.newTenor,
+    interestRate:  rolloverForm.value.interestRate,
+    rolloverAmount: rolloverForm.value.rolloverAmount
+  }
+
+  setRolloverPayload(payloadObj)
+  await rolloverInvestment().then(() => {
+    showRollOverModal.value = false
+  })
+
   topUpForm.value.amount = ''
 }
 
@@ -750,4 +1164,5 @@ definePageMeta({
   layout: 'admin-dashboard',
   middleware: 'auth'
 })
+
 </script>

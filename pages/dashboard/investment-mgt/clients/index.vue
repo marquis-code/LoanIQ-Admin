@@ -3,7 +3,7 @@
     <div class="container mx-auto p-4">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Investments</h1>
-        <button class="bg-teal-700 hover:bg-teal-800 text-white px-4 py-2 rounded-md">Add New</button>
+        <!-- <button class="bg-teal-700 hover:bg-teal-800 text-white px-4 py-2 rounded-md">Add New</button> -->
       </div>
   
       <div class="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -551,7 +551,7 @@
                       <input
                         v-model="calculator.amount"
                         type="number"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        class="mt-1 block w-full py-3 px-3 rounded-lg border-[0.5px] outline-none rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                       />
                     </div>
                     <div>
@@ -562,7 +562,7 @@
                         v-model="calculator.returns"
                         type="number"
                         step="0.01"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        class="mt-1 block w-full py-3 px-3 rounded-lg border-[0.5px] outline-none rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                       />
                     </div>
                     <div>
@@ -572,7 +572,7 @@
                       <input
                         v-model="calculator.tenor"
                         type="number"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        class="mt-1 block w-full py-3 px-3 rounded-lg border-[0.5px] outline-none rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                       />
                     </div>
   
@@ -999,48 +999,146 @@
   const liquidatingInvestment = ref(null)
   
   // Metrics
-  const metrics = [
-    {
-      id: 1,
-      title: 'Total Active Investments',
-      value: computed(() => formatCurrency(activeInvestments.value.reduce((sum, inv) => sum + inv.amount, 0))),
-      icon: Wallet,
-      trend: 15,
-      bgColor: 'bg-blue-100',
-      iconColor: 'text-blue-600',
-    },
-    {
-      id: 2,
-      title: 'Active Clients',
-      value: computed(() => activeInvestments.value.length.toString()),
-      icon: Users,
-      trend: 8,
-      bgColor: 'bg-green-100',
-      iconColor: 'text-green-600',
-    },
-    {
-      id: 3,
-      title: 'Average Returns',
-      value: computed(() => {
-        const avg = activeInvestments.value.reduce((sum, inv) => sum + inv.interestRate, 0) / 
-                   (activeInvestments.value.length || 1);
-        return `${avg.toFixed(1)}%`;
-      }),
-      icon: ArrowUpRight,
-      trend: 5,
-      bgColor: 'bg-indigo-100',
-      iconColor: 'text-indigo-600',
-    },
-    {
-      id: 4,
-      title: 'Pending Liquidations',
-      value: '0',
-      icon: AlertTriangle,
-      trend: 0,
-      bgColor: 'bg-red-100',
-      iconColor: 'text-red-600',
-    },
-  ]
+  // const metrics = [
+  //   {
+  //     id: 1,
+  //     title: 'Total Active Investments',
+  //     value: computed(() => formatCurrency(activeInvestments.value.reduce((sum, inv) => sum + inv.amount, 0))),
+  //     icon: Wallet,
+  //     trend: 15,
+  //     bgColor: 'bg-blue-100',
+  //     iconColor: 'text-blue-600',
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Active Clients',
+  //     value: computed(() => activeInvestments.value.length.toString()),
+  //     icon: Users,
+  //     trend: 8,
+  //     bgColor: 'bg-green-100',
+  //     iconColor: 'text-green-600',
+  //   },
+  //   {
+  //     id: 3,
+  //     title: 'Average Returns',
+  //     value: computed(() => {
+  //       const avg = activeInvestments.value.reduce((sum, inv) => sum + inv.interestRate, 0) / 
+  //                  (activeInvestments.value.length || 1);
+  //       return `${avg.toFixed(1)}%`;
+  //     }),
+  //     icon: ArrowUpRight,
+  //     trend: 5,
+  //     bgColor: 'bg-indigo-100',
+  //     iconColor: 'text-indigo-600',
+  //   },
+  //   {
+  //     id: 4,
+  //     title: 'Pending Liquidations',
+  //     value: '0',
+  //     icon: AlertTriangle,
+  //     trend: 0,
+  //     bgColor: 'bg-red-100',
+  //     iconColor: 'text-red-600',
+  //   },
+  // ]
+
+  // Metrics
+// const metrics = [
+//   {
+//     id: 1,
+//     title: 'Total Active Investments',
+//     value: computed(() => {
+//       const total = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0);
+//       return formatCurrency(total);  // Ensure correct currency formatting
+//     }),
+//     icon: Wallet,
+//     trend: 15,
+//     bgColor: 'bg-blue-100',
+//     iconColor: 'text-blue-600',
+//   },
+//   {
+//     id: 2,
+//     title: 'Active Clients',
+//     value: computed(() => activeInvestments.value.length.toString()),
+//     icon: Users,
+//     trend: 8,
+//     bgColor: 'bg-green-100',
+//     iconColor: 'text-green-600',
+//   },
+//   {
+//     id: 3,
+//     title: 'Average Returns',
+//     value: computed(() => {
+//       if (activeInvestments.value.length === 0) return "0.0%";  // Handle empty case
+//       const avg = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / 
+//                  activeInvestments.value.length;
+//       return `${avg.toFixed(1)}%`;
+//     }),
+//     icon: ArrowUpRight,
+//     trend: 5,
+//     bgColor: 'bg-indigo-100',
+//     iconColor: 'text-indigo-600',
+//   },
+//   {
+//     id: 4,
+//     title: 'Pending Liquidations',
+//     value: '0',
+//     icon: AlertTriangle,
+//     trend: 0,
+//     bgColor: 'bg-red-100',
+//     iconColor: 'text-red-600',
+//   },
+// ];
+
+// Metrics
+const metrics = [
+  {
+    id: 1,
+    title: 'Total Active Investments',
+    value: computed(() => {
+      const total = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0);
+      return formatCurrency(total); // Ensure correct currency formatting
+    }),
+    icon: Wallet,
+    trend: 15,
+    bgColor: 'bg-blue-100',
+    iconColor: 'text-blue-600',
+  },
+  {
+    id: 2,
+    title: 'Active Clients',
+    value: computed(() => activeInvestments.value.length), // Directly return number
+    icon: Users,
+    trend: 8,
+    bgColor: 'bg-green-100',
+    iconColor: 'text-green-600',
+  },
+  {
+    id: 3,
+    title: 'Average Returns',
+    value: computed(() => {
+      if (activeInvestments.value.length === 0) return `0.0%`;  // Handle empty case
+      const avg = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / 
+                 activeInvestments.value.length;
+      return `${avg.toFixed(1)}%`;  // Ensure formatted percentage
+    }),
+    icon: ArrowUpRight,
+    trend: 5,
+    bgColor: 'bg-indigo-100',
+    iconColor: 'text-indigo-600',
+  },
+  {
+    id: 4,
+    title: 'Pending Liquidations',
+    value: 0, // Ensure direct number to avoid extra quotes
+    icon: AlertTriangle,
+    trend: 0,
+    bgColor: 'bg-red-100',
+    iconColor: 'text-red-600',
+  },
+];
+
+
   
   // Handle tab change with loading state
   const handleTabChange = (tabValue) => {

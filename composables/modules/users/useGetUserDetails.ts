@@ -6,6 +6,7 @@ export const useGetUserDetails = () => {
     const loading = ref(false);
     const user = ref(null);
     const wallet = ref(null)
+    const investmentBalance = ref(null)
     const { $_get_user_details } = users_api;
     const route = useRoute()
   
@@ -18,6 +19,7 @@ export const useGetUserDetails = () => {
           console.log(response?.data, 'respknse here')
           user.value = response?.data?.data?.profile ?? {};
           wallet.value = response?.data?.data?.wallet ?? {}
+          investmentBalance.value = response.data.data.investmentBalance ?? {}
           showToast({
             title: "Success",
             message: "User details retrieved successfully.",
@@ -52,6 +54,7 @@ export const useGetUserDetails = () => {
       user,
       wallet,
       loading,
+      investmentBalance
     };
   };
   

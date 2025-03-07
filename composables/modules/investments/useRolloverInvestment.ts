@@ -2,59 +2,63 @@ import { ref } from "vue";
 import { investment_api } from "@/api_factory/modules/investment";
 import { useCustomToast } from "@/composables/core/useCustomToast";
 import router from "#app/plugins/router";
-const { showToast } = useCustomToast();
-
-const payload = ref({
-    name: "",
-    email: "",
-    productId: "",
-    principal: '',
-    automatedFrequency: "",
-    interestPaymentSchedule: "",
-     paymentMethod: "",
-  });
 
 export const useRolloverInvestment = () => {
+  const { showToast } = useCustomToast();
   const loading = ref(false);
+  
+  const payload = ref({
+    newTenor: 3,
+    rolloverAmount: "",
+    interestRate: ""
+  });
 
   const rolloverInvestment = async () => {
     loading.value = true;
-    const response = (await investment_api.$_create_investment(payload.value)) as any;
+    const route = useRoute()
+    
+    try {
+      const response = await investment_api.$_rollover_investment(route.params.id, payload.value);
 
-    if (response.type !== "ERROR") {
-      showToast({
-        title: "Success",
-        message: "Investment was created successfully.",
-        toastType: "success",
-        duration: 3000,
-      });
-      router.push(`/investments`);
-      return response.data; // or any data you want to return
-    } else {
+      if (response.type !== "ERROR") {
+        showToast({
+          title: "Success",
+          message: "Investment was rolled over successfully.",
+          toastType: "success",
+          duration: 3000,
+        });
+        router.push(`/investments`);
+        return response.data;
+      } else {
+        showToast({
+          title: "Error",
+          message: `${response.data?.message || "Error rolling over investment"}`,
+          toastType: "error",
+          duration: 3000,
+        });
+      }
+    } catch (error: any) {
       showToast({
         title: "Error",
-        message: `${response.data.message || "Error creating investment"}`,
+        message: error.message || "An unexpected error occurred",
         toastType: "error",
         duration: 3000,
       });
+    } finally {
+      loading.value = false;
     }
-    loading.value = false;
   };
 
-
-  const setPayload = (data: any) => {
-    payload.value.name = data.name
-    payload.value.email = data.email
-    payload.value.productId = data.productId
-    payload.value.principal = data.principal
-    payload.value.automatedFrequency = data.automatedFrequency
-    payload.value.paymentMethod = data.paymentMethod
-    payload.value.interestPaymentSchedule = data.interestPaymentSchedule
-  }
+  const setRolloverPayload = (data: { newTenor: number,  interestRate: string, rolloverAmount: string }) => {
+    payload.value.newTenor = data.newTenor;
+    payload.value.rolloverAmount = data.rolloverAmount;
+    payload.value.interestRate = data.interestRate;
+  };
 
   return {
     rolloverInvestment,
     loading,
-    payload
+    payload,
+    setRolloverPayload
   };
 };
