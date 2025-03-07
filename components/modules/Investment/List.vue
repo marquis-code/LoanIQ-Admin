@@ -269,9 +269,9 @@
 import { formatCurrency } from '@/utils/currencyUtils';
 import { usePermissions } from '@/composables/core/usePermissions'
 const { canCreate, canView, canDelete } = usePermissions()
-import { useDeleteInvestmentProduct } from '~/composables/modules/investment-products/useArchiveInvestmentProductt' 
-const { deleteInvestmentProduct,
-  loading:deleting } = useDeleteInvestmentProduct()
+import { useArchiveInvestmentProduct } from '@/composables/modules/investment-products/useArchiveInvestmentProduct' 
+const { archiveInvestmentProduct,
+  loading:deleting } = useArchiveInvestmentProduct()
 import { dynamicIcons } from "@/utils/assets";
 const props = defineProps({
   loading: {
