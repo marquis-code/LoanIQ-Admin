@@ -269,7 +269,7 @@
 import { formatCurrency } from '@/utils/currencyUtils';
 import { usePermissions } from '@/composables/core/usePermissions'
 const { canCreate, canView, canDelete } = usePermissions()
-import { useDeleteInvestmentProduct } from '@/composables/modules/investment-products/useDeleteInvestmentProduct' 
+import { useDeleteInvestmentProduct } from '~/composables/modules/investment-products/useArchiveInvestmentProductt' 
 const { deleteInvestmentProduct,
   loading:deleting } = useDeleteInvestmentProduct()
 import { dynamicIcons } from "@/utils/assets";

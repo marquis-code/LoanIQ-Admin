@@ -41,7 +41,7 @@
                         Home
                       </NuxtLink>
                     </li>
-                    <li>
+                    <!-- <li>
                       <NuxtLink
                         @click="closeSidebar"
                         to="/dashboard/investment-products"
@@ -50,7 +50,7 @@
                         <LineChart class="h-6 w-6 shrink-0" />
                         Investment Products
                       </NuxtLink>
-                    </li>
+                    </li> -->
                     <li>
                       <NuxtLink
                         @click="closeSidebar"
@@ -71,7 +71,7 @@
                         Admin Management
                       </NuxtLink>
                     </li>
-                    <li>
+                    <!-- <li>
                       <NuxtLink
                         @click="closeSidebar"
                         to="/dashboard/investments"
@@ -80,7 +80,7 @@
                         <TrendingUp class="h-6 w-6 shrink-0" />
                         Investments
                       </NuxtLink>
-                    </li>
+                    </li> -->
                     <NuxtLink
                       @click="closeSidebar"
                       to="/dashboard/roles-permissions"
@@ -135,7 +135,7 @@
                     Home
                   </NuxtLink>
                 </li>
-                <li v-if="hasPermission('investment-product')">
+                <!-- <li v-if="hasPermission('investment-product')">
                   <NuxtLink
                     to="/dashboard/investment-products"
                     class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
@@ -143,7 +143,7 @@
                     <LineChart class="h-6 w-6 shrink-0" />
                     Investment Products
                   </NuxtLink>
-                </li>
+                </li> -->
                 <li v-if="hasPermission('user-management')">
                   <NuxtLink
                     to="/dashboard/users-mgt"
@@ -162,7 +162,7 @@
                     Admin Management
                   </NuxtLink>
                 </li>
-                <li v-if="hasPermission('investment')">
+                <!-- <li v-if="hasPermission('investment')">
                   <NuxtLink
                     to="/dashboard/investments"
                     class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
@@ -170,7 +170,7 @@
                     <TrendingUp class="h-6 w-6 shrink-0" />
                     Investments
                   </NuxtLink>
-                </li>
+                </li> -->
 
                 <li v-if="hasPermission('roles-and-permission')">
                   <NuxtLink

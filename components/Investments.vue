@@ -12,7 +12,7 @@
             <tbody class="divide-y divide-gray-200 bg-white">
               <tr v-for="investment in investments" :key="investment.id">
                 <td class="whitespace-nowrap px-6 py-6">
-                  {{ investment.name }}
+                  {{ investment.name ?? 'Nil' }}
                 </td>
                 <td class="whitespace-nowrap px-6 py-6">
                   {{ formatCurrency(investment?.amount) }}
@@ -59,7 +59,7 @@ import { useGetInvestments } from "@/composables/modules/users/useFetchInvestmen
 const { investments, loading: fetchingInvestnemts } = useGetInvestments();
 // Investments data
 const investmentHeaders = [
-  "Plan",
+  "Name",
   "Amount",
   "Start Date",
   "End Date",

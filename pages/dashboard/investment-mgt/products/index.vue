@@ -1,7 +1,7 @@
 <template>
     <div class="p-4 sm:p-6 lg:p-8">
       <!-- Metrics Cards -->
-      <div class="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <!-- <div class="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <div
           v-for="metric in metrics"
           :key="metric.id"
@@ -39,7 +39,7 @@
             <span class="text-sm text-gray-500">vs last month</span>
           </div>
         </div>
-      </div>
+      </div> -->
   
       <!-- Header -->
       <div class="mb-6 sm:flex sm:items-center sm:justify-between">
@@ -59,19 +59,19 @@
       </div>
   
       <!-- Filters -->
-      <div class="mb-6 grid gap-4 rounded-lg border bg-white p-4 sm:flex sm:items-center">
+      <div class="grid gap-4 rounded-t-lg border bg-white p-4 sm:flex sm:items-center">
         <div class="flex flex-1 gap-4">
           <div class="flex-1">
             <input
               v-model="search"
               type="text"
               placeholder="Search products..."
-              class="w-full rounded-md border-gray-300 outline-none shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+              class="w-full rounded-md border-gray-300 outline-none focus:border-primary focus:ring-primary sm:text-sm"
             />
           </div>
           <select
             v-model="filters.status"
-            class="rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+            class="rounded-md border-gray-300 border-[0.5px] px-6 py-2.5 outline-none  focus:border-primary focus:ring-primary sm:text-sm"
           >
             <option value="">All Status</option>
             <option value="active">Active</option>
@@ -81,7 +81,7 @@
       </div>
   
       <!-- Products Table -->
-      <div class="rounded-lg border bg-white shadow-sm">
+      <div v-if="!loading && products.length" class="rounded-b-lg border bg-white">
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -138,12 +138,12 @@
                 </td>
                 <td class="whitespace-nowrap px-6 py-4 text-right">
                   <div class="flex justify-end gap-2">
-                    <NuxtLink
+                    <!-- <NuxtLink
                       :to="`/investments/products/${product.id}/transactions`"
                       class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
                     >
                       <History class="h-4 w-4" />
-                    </NuxtLink>
+                    </NuxtLink> -->
                     <button
                       @click="editProduct(product)"
                       class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
@@ -202,6 +202,8 @@
           </div>
         </div>
       </div>
+      <Coreoader v-else-if="loading && !products.length" />
+      <CoreEmptyState v-else message="No Investment Products Available" />
   
       <!-- Create/Edit Modal -->
       <!-- <TransitionRoot appear :show="showCreateModal || !!editingProduct" as="template">
@@ -314,9 +316,9 @@
         </Dialog>
       </TransitionRoot> -->
 
-      <CoreDrawer :showCreateModal="false" title="Create Investment" description="Please fill the form to create investment" @close="showCreateModal = false" :show="showCreateModal" >
+      <CoreDrawer :show-footer="false" :showCreateModal="false" title="Create Investment Product" description="Please fill the form to create investment" @close="showCreateModal = false" :show="showCreateModal" >
      <template #content>
-       <section class="p-3">
+       <section class="p-6">
         <ModulesInvestmentCreateInvestmentProduct />
        </section>
      </template>
@@ -366,9 +368,10 @@
                     </button>
                     <button
                       @click="confirmArchive"
-                      class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
+                      :disabled="archiving"
+                      class="rounded-md disabled:cursor-not-allowed disabled:opacity-25 bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
                     >
-                      Archive
+                      {{  archiving ? 'processing..' : 'Archive' }}
                     </button>
                   </div>
                 </DialogPanel>
@@ -382,10 +385,12 @@
   
   <script setup lang="ts">
   import { useInvestment } from '@/composables/core/useReturnsCalculator'
+  import { useArchiveInvestmentProduct } from '~/composables/modules/investment-products/useArchiveInvestmentProduct'
   import { useFetchInvestmentProducts } from '@/composables/modules/investment-products/useFetchInvestmentProducts'
   const { loading,
     investmentProducts: products, metadata } = useFetchInvestmentProducts()
     const { calculateReturn } = useInvestment()
+    const { archiveInvestmentProduct, loading: archiving } = useArchiveInvestmentProduct()
   import { ref, computed } from 'vue'
   import {
     Dialog,
@@ -556,15 +561,16 @@
     archivingProduct.value = product
   }
   
-  const confirmArchive = () => {
+  const confirmArchive = async () => {
     if (archivingProduct.value) {
-      const index = products.value.findIndex(p => p.id === archivingProduct.value.id)
-      if (index !== -1) {
-        products.value[index] = {
-          ...products.value[index],
-          status: 'archived',
-        }
-      }
+     await archiveInvestmentProduct(archivingProduct.value.id)
+      // const index = products.value.findIndex(p => p.id === archivingProduct.value.id)
+      // if (index !== -1) {
+      //   products.value[index] = {
+      //     ...products.value[index],
+      //     status: 'archived',
+      //   }
+      // }
       archivingProduct.value = null
     }
   }

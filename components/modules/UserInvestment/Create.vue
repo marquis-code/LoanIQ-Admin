@@ -1,8 +1,6 @@
 <template>
   <main class="w-full">
     <div class="">
-      <h1 class="font-semibold text-lg mb-6">Create Investment</h1>
-      
       <!-- Progress Bar -->
       <div class="mb-4">
         <div class="flex justify-between mb-2">

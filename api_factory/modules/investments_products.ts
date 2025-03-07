@@ -13,7 +13,7 @@ export const investment_products_api = {
     let url = `/investment-product/${id}`;
     return GATEWAY_ENDPOINT.get(url);
   },
-  $_delete_investment_product: (id: string) => {
+  $_archive_investment_product: (id: string) => {
     let url = `/investment-product/${id}`;
     return GATEWAY_ENDPOINT.delete(url);
   },

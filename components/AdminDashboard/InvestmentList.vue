@@ -294,7 +294,7 @@
 </template>
 
 <script setup lang="ts">
-import { useDeleteInvestmentProduct } from '@/composables/modules/investment-products/useDeleteInvestmentProduct' 
+import { useDeleteInvestmentProduct } from '~/composables/modules/investment-products/useArchiveInvestmentProductt' 
 const { deleteInvestmentProduct,
   loading } = useDeleteInvestmentProduct()
 const props = defineProps({

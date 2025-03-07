@@ -32,5 +32,15 @@ export const dashboard_api = {
         let url = "/dashboard/liquidated-investments";
         if (date) url += `?filter=${date}`;
         return GATEWAY_ENDPOINT.get(url);
+      },
+      $_get_dashboard_total_transactions: (date?: string) => {
+        let url = "/dashboard/total-transactions";
+        if (date) url += `?filter=${date}`;
+        return GATEWAY_ENDPOINT.get(url);
+      },
+      $_get_dashboard_total_wallet_balance: (date?: string) => {
+        let url = "/dashboard/total-wallet-balance";
+        if (date) url += `?filter=${date}`;
+        return GATEWAY_ENDPOINT.get(url);
       }
 }

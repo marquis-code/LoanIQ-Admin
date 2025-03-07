@@ -72,35 +72,31 @@
             <div v-if="fetchingActiveInvestments" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
             <p v-else class="mt-2 text-2xl font-semibold">
               {{ activeInvestments || 0 }}
-              <!-- {{ formatCurrency(activeInvestments?.total || 0) }} -->
             </p>
           </div>
           <div class="flex items-center gap-2">
             <div class="rounded-full bg-green-100 p-2">
               <Wallet class="h-5 w-5 text-green-600" />
             </div>
-            <!-- Dropdown Filter -->
-            <div class="relative">
-              <select
-                v-model="activeInvestmentsFilter"
-                @change="updateActiveInvestmentsFilter"
-                class="rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
-              >
-                <option value="YTD">Year to Date</option>
-                <option value="MTD">Month to Date</option>
-                <option value="WTD">Week to Date</option>
-                <option value="Today">Today</option>
-              </select>
-              <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-            </div>
           </div>
         </div>
-        <div class="mt-4 flex items-center gap-2">
-          <div class="flex items-center text-green-600">
-            <TrendingUp class="h-4 w-4" />
-            <span class="ml-1 text-sm">{{ activeInvestments?.trend || 0 }}%</span>
+        
+        <!-- Dropdown Filter (Moved to bottom) -->
+        <div class="mt-4">
+          <div class="relative w-full">
+            <select
+              v-model="activeInvestmentsFilter"
+              @change="updateActiveInvestmentsFilter"
+              class="w-full rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+            >
+              <option value="YTD">Year to Date</option>
+              <option value="MTD">Month to Date</option>
+              <option value="WTD">Week to Date</option>
+              <option value="Today">Today</option>
+            </select>
+            <!-- <svg  xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z"></path></svg> -->
+            <!-- <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" /> -->
           </div>
-          <span class="text-sm text-gray-500">vs last period</span>
         </div>
       </div>
 
@@ -113,35 +109,31 @@
             <div v-if="fetchingCustomerBse" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
             <p v-else class="mt-2 text-2xl font-semibold">
               {{ customers || 0 }}
-              <!-- {{ formatNumber(customers?.total || 0) }} -->
             </p>
           </div>
           <div class="flex items-center gap-2">
             <div class="rounded-full bg-blue-100 p-2">
               <Users class="h-5 w-5 text-blue-600" />
             </div>
-            <!-- Dropdown Filter -->
-            <div class="relative">
-              <select
-                v-model="customerBaseFilter"
-                @change="updateCustomerBaseFilter"
-                class="rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
-              >
-                <option value="YTD">Year to Date</option>
-                <option value="MTD">Month to Date</option>
-                <option value="WTD">Week to Date</option>
-                <option value="Today">Today</option>
-              </select>
-              <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-            </div>
           </div>
         </div>
-        <div class="mt-4 flex items-center gap-2">
-          <div class="flex items-center text-green-600">
-            <TrendingUp class="h-4 w-4" />
-            <span class="ml-1 text-sm">{{ customers?.trend || 0 }}%</span>
+        
+        <!-- Dropdown Filter (Moved to bottom) -->
+        <div class="mt-4">
+          <div class="relative w-full">
+            <select
+              v-model="customerBaseFilter"
+              @change="updateCustomerBaseFilter"
+              class="w-full rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+            >
+              <option value="YTD">Year to Date</option>
+              <option value="MTD">Month to Date</option>
+              <option value="WTD">Week to Date</option>
+              <option value="Today">Today</option>
+            </select>
+            <!-- <svg class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z"></path></svg> -->
+            <!-- <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" /> -->
           </div>
-          <span class="text-sm text-gray-500">vs last period</span>
         </div>
       </div>
 
@@ -153,36 +145,32 @@
             <!-- Show skeleton loader when filtering -->
             <div v-if="fetchingActiveCustomers" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
             <p v-else class="mt-2 text-2xl font-semibold">
-              {{  activeCustomers || 0 }}
-              <!-- {{ formatNumber(activeCustomers?.total || 0) }} -->
+              {{ activeCustomers || 0 }}
             </p>
           </div>
           <div class="flex items-center gap-2">
             <div class="rounded-full bg-green-100 p-2">
               <UserCheck class="h-5 w-5 text-green-600" />
             </div>
-            <!-- Dropdown Filter -->
-            <div class="relative">
-              <select
-                v-model="activeCustomersFilter"
-                @change="updateActiveCustomersFilter"
-                class="rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
-              >
-                <option value="YTD">Year to Date</option>
-                <option value="MTD">Month to Date</option>
-                <option value="WTD">Week to Date</option>
-                <option value="Today">Today</option>
-              </select>
-              <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-            </div>
           </div>
         </div>
-        <div class="mt-4 flex items-center gap-2">
-          <div class="flex items-center text-green-600">
-            <TrendingUp class="h-4 w-4" />
-            <span class="ml-1 text-sm">{{ activeCustomers?.trend || 0 }}%</span>
+        
+        <!-- Dropdown Filter (Moved to bottom) -->
+        <div class="mt-4">
+          <div class="relative w-full">
+            <select
+              v-model="activeCustomersFilter"
+              @change="updateActiveCustomersFilter"
+              class="w-full rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+            >
+              <option value="YTD">Year to Date</option>
+              <option value="MTD">Month to Date</option>
+              <option value="WTD">Week to Date</option>
+              <option value="Today">Today</option>
+            </select>
+            <!-- <svg class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z"></path></svg> -->
+            <!-- <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" /> -->
           </div>
-          <span class="text-sm text-gray-500">vs last period</span>
         </div>
       </div>
 
@@ -194,36 +182,32 @@
             <!-- Show skeleton loader when filtering -->
             <div v-if="fetchingLiquidatedInvestments" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
             <p v-else class="mt-2 text-2xl font-semibold">
-              {{  liquidatedInvestments || 0 }}
-              <!-- {{ formatCurrency(liquidatedInvestments?.total || 0) }} -->
+              {{ liquidatedInvestments || 0 }}
             </p>
           </div>
           <div class="flex items-center gap-2">
             <div class="rounded-full bg-purple-100 p-2">
               <DollarSign class="h-5 w-5 text-purple-600" />
             </div>
-            <!-- Dropdown Filter -->
-            <div class="relative">
-              <select
-                v-model="liquidatedInvestmentsFilter"
-                @change="updateLiquidatedInvestmentsFilter"
-                class="rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
-              >
-                <option value="YTD">Year to Date</option>
-                <option value="MTD">Month to Date</option>
-                <option value="WTD">Week to Date</option>
-                <option value="Today">Today</option>
-              </select>
-              <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-            </div>
           </div>
         </div>
-        <div class="mt-4 flex items-center gap-2">
-          <div class="flex items-center text-green-600">
-            <TrendingUp class="h-4 w-4" />
-            <span class="ml-1 text-sm">{{ liquidatedInvestments?.trend || 0 }}%</span>
+        
+        <!-- Dropdown Filter (Moved to bottom) -->
+        <div class="mt-4">
+          <div class="relative w-full">
+            <select
+              v-model="liquidatedInvestmentsFilter"
+              @change="updateLiquidatedInvestmentsFilter"
+              class="w-full rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+            >
+              <option value="YTD">Year to Date</option>
+              <option value="MTD">Month to Date</option>
+              <option value="WTD">Week to Date</option>
+              <option value="Today">Today</option>
+            </select>
+            <!-- <svg class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z"></path></svg> -->
+            <!-- <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" /> -->
           </div>
-          <span class="text-sm text-gray-500">vs last period</span>
         </div>
       </div>
 
@@ -231,40 +215,111 @@
       <div class="rounded-lg border bg-white p-6 shadow-sm">
         <div class="flex items-start justify-between">
           <div>
-            <p class="text-sm font-medium text-gray-600">Pending Approval Investments</p>
+            <p class="text-sm font-medium text-gray-600">Pending Approval</p>
             <!-- Show skeleton loader when filtering -->
             <div v-if="fetchingApprovalsList" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
             <p v-else class="mt-2 text-2xl font-semibold">
               {{ pendingApprovalsList || 0 }}
-              <!-- {{ formatNumber(pendingApprovalsList?.total || 0) }} -->
             </p>
           </div>
           <div class="flex items-center gap-2">
             <div class="rounded-full bg-orange-100 p-2">
               <Clock class="h-5 w-5 text-orange-600" />
             </div>
-            <!-- Dropdown Filter -->
-            <div class="relative">
-              <select
-                v-model="pendingApprovalFilter"
-                @change="updatePendingApprovalFilter"
-                class="rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
-              >
-                <option value="YTD">Year to Date</option>
-                <option value="MTD">Month to Date</option>
-                <option value="WTD">Week to Date</option>
-                <option value="Today">Today</option>
-              </select>
-              <ChevronDown class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+          </div>
+        </div>
+        
+        <!-- Dropdown Filter (Moved to bottom) -->
+        <div class="mt-4">
+          <div class="relative w-full">
+            <select
+              v-model="pendingApprovalFilter"
+              @change="updatePendingApprovalFilter"
+              class="w-full rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+            >
+              <option value="YTD">Year to Date</option>
+              <option value="MTD">Month to Date</option>
+              <option value="WTD">Week to Date</option>
+              <option value="Today">Today</option>
+            </select>
+            <!-- <svg class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z"></path></svg> -->
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z"></path></svg> -->
+          </div>
+        </div>
+      </div>
+
+    <!-- 6. Total Transactions Card -->
+            <div class="rounded-lg border bg-white p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total Transactions</p>
+            <!-- Show skeleton loader when filtering -->
+            <div v-if="fetchingTotalTransactions" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
+            <p v-else class="mt-2 text-2xl font-semibold">
+              {{ totalTransactions || 0 }}
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-orange-100 p-2">
+              <Clock class="h-5 w-5 text-orange-600" />
             </div>
           </div>
         </div>
-        <div class="mt-4 flex items-center gap-2">
-          <div class="flex items-center" :class="pendingApprovalsList?.trend > 0 ? 'text-green-600' : 'text-red-600'">
-            <component :is="pendingApprovalsList?.trend > 0 ? TrendingUp : TrendingDown" class="h-4 w-4" />
-            <span class="ml-1 text-sm">{{ Math.abs(pendingApprovalsList?.trend || 0) }}%</span>
+        
+        <!-- Dropdown Filter (Moved to bottom) -->
+        <div class="mt-4">
+          <div class="relative w-full">
+            <select
+              v-model="totalTransactionsFilter"
+              @change="updateTotalTransactionsFilter"
+              class="w-full rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+            >
+              <option value="YTD">Year to Date</option>
+              <option value="MTD">Month to Date</option>
+              <option value="WTD">Week to Date</option>
+              <option value="Today">Today</option>
+            </select>
+            <!-- <svg class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z"></path></svg> -->
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z"></path></svg> -->
           </div>
-          <span class="text-sm text-gray-500">vs last period</span>
+        </div>
+      </div>
+
+
+  <!-- 7. Total wallet balance Card -->
+          <div class="rounded-lg border bg-white p-6 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Total Wallet Balance</p>
+            <!-- Show skeleton loader when filtering -->
+            <div v-if="fetchingTotalWalletBalance" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
+            <p v-else class="mt-2 text-2xl font-semibold">
+              {{ totalWalletBalance || 0 }}
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-orange-100 p-2">
+              <Clock class="h-5 w-5 text-orange-600" />
+            </div>
+          </div>
+        </div>
+        
+        <!-- Dropdown Filter (Moved to bottom) -->
+        <div class="mt-4">
+          <div class="relative w-full">
+            <select
+              v-model="totalWalletBalanceFilter"
+              @change="updateTotalWalletBalanceFilter"
+              class="w-full rounded-md border-[0.5px] border-gray-300 py-1.5 pl-3 pr-8 text-sm outline-none focus:border-primary focus:ring-primary"
+            >
+              <option value="YTD">Year to Date</option>
+              <option value="MTD">Month to Date</option>
+              <option value="WTD">Week to Date</option>
+              <option value="Today">Today</option>
+            </select>
+            <!-- <svg class="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z"></path></svg> -->
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z"></path></svg> -->
+          </div>
         </div>
       </div>
     </div>
@@ -279,6 +334,8 @@ import { useFetchInvestmentsPendingApprovals } from '@/composables/modules/dashb
 import { useFetchActiveCustomers } from '@/composables/modules/dashboard/useGetActiveCustomers'
 import { useFetchActiveInvestments } from '@/composables/modules/dashboard/useGetActiveInvestments'
 import { useFetchLiquidatedInvestments } from '@/composables/modules/dashboard/useGetLiquidatedInvestments'
+import { useFetchTotalWalletBalance } from '@/composables/modules/dashboard/useFetchTotalWalletBalance'
+import { useFetchTotalTransactions } from '@/composables/modules/dashboard/useFetchTotalTransactions'
 import {
   Users,
   UserCheck,
@@ -300,6 +357,8 @@ const { pendingApprovalsList, loading: fetchingApprovalsList, filter: pendingApp
 const { activeCustomers, loading: fetchingActiveCustomers, filter: activeCustomersFilter } = useFetchActiveCustomers()
 const { activeInvestments, loading: fetchingActiveInvestments, filter: activeInvestmentsFilter } = useFetchActiveInvestments()
 const { liquidatedInvestments, loading: fetchingLiquidatedInvestments, filter: liquidatedInvestmentsFilter } = useFetchLiquidatedInvestments()
+const { totalWalletBalance, loading: fetchingTotalWalletBalance, filter: totalWalletBalanceFilter } = useFetchTotalWalletBalance()
+const { totalTransactions, loading: fetchingTotalTransactions, filter: totalTransactionsFilter } = useFetchTotalTransactions()
 
 // Notifications
 const showNotifications = ref(false)
@@ -330,11 +389,11 @@ const notifications = ref([
 // Initialize filters with default values
 onMounted(() => {
   // Set default timeframe to 'YTD' for all filters
-  customerBaseFilter.timeframe = 'YTD'
-  pendingApprovalFilter.timeframe = 'YTD'
-  activeCustomersFilter.timeframe = 'YTD'
-  activeInvestmentsFilter.timeframe = 'YTD'
-  liquidatedInvestmentsFilter.timeframe = 'YTD'
+  customerBaseFilter.value = 'YTD'
+  pendingApprovalFilter.value = 'YTD'
+  activeCustomersFilter.value = 'YTD'
+  activeInvestmentsFilter.value = 'YTD'
+  liquidatedInvestmentsFilter.value = 'YTD'
 })
 
 // Filter update methods
@@ -356,6 +415,14 @@ const updateActiveInvestmentsFilter = () => {
 
 const updateLiquidatedInvestmentsFilter = () => {
   liquidatedInvestmentsFilter.apply()
+}
+
+const updateTotalWalletBalanceFilter = () => {
+  totalWalletBalanceFilter.apply()
+}
+
+const updateTotalTransactionsFilter = () => {
+  totalTransactionsFilter.apply()
 }
 
 // Helper methods

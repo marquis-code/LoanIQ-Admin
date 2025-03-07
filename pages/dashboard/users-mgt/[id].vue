@@ -18,7 +18,7 @@
             <h1 class="text-xl font-semibold text-gray-900">
               {{ user?.firstName }} {{ user?.lastName }}
             </h1>
-            <p class="text-sm text-gray-500">ID: {{ user?.id }}</p>
+            <!-- <p class="text-sm text-gray-500">ID: {{ user?.id }}</p> -->
           </div>
         </div>
         <div class="flex flex-wrap gap-2">

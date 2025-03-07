@@ -17,7 +17,7 @@ export const investment_api = {
     let url = `/investment/deactivated-investments?page=${metadata.page}&pageSize=${metadata.pageSize}`;
     return GATEWAY_ENDPOINT.get(url);
   },
-  $_investment_summary: (id: string) => {
+  $_investment_summary: (id: string | any) => {
     let url = `/investment/summary/${id}`;
     return GATEWAY_ENDPOINT.get(url);
   },
@@ -25,8 +25,16 @@ export const investment_api = {
     let url = `/investment/get-remaining-amount/${amount}`;
     return GATEWAY_ENDPOINT.post(url, payload);
   },
-  $_get_investment_details: (id: string) => {
-    let url = `admin/investment/product/${id}`;
+  $_get_investment_details: (id: string | any) => {
+    let url = `/investment/${id}`;
     return GATEWAY_ENDPOINT.get(url);
-  }
+  },
+  $_rollover_investment: (id: string | any, payload: InvestmentData) => {
+    let url = `/investment/rollover/${id}`;
+    return GATEWAY_ENDPOINT.post(url, payload);
+  },
+  $_topup_investment: (id: string | any, payload: InvestmentData) => {
+    let url = `/investment/topup/${id}`;
+    return GATEWAY_ENDPOINT.post(url, payload);
+  },
 };

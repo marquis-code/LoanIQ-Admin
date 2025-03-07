@@ -1,6 +1,11 @@
 <template>
-    <div class="p-4 sm:p-6 lg:p-8">
-      <!-- Metrics Cards -->
+  <main>
+    <div class="container mx-auto p-4">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Investments</h1>
+        <button class="bg-teal-700 hover:bg-teal-800 text-white px-4 py-2 rounded-md">Add New</button>
+      </div>
+  
       <div class="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div
           v-for="metric in metrics"
@@ -41,176 +46,473 @@
         </div>
       </div>
   
-      <!-- Actions -->
-      <div class="mb-6 flex flex-wrap gap-4">
-        <button
-          @click="showBookingModal = true"
-          class="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
-        >
-          <Plus class="mr-2 h-4 w-4" />
-          Book Investment
+      <div class="flex gap-4 mb-6">
+        <button @click="openAddInvestmentModal = true" class="bg-teal-700 hover:bg-teal-800 text-white px-4 py-2 rounded-md flex items-center gap-2">
+          <span class="text-lg">+</span> Book Investment
         </button>
-        <button
-          @click="showCalculator = true"
-          class="inline-flex items-center rounded-md border bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        >
-          <Calculator class="mr-2 h-4 w-4" />
+        <button @click="showCalculator = true" class="border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-md flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
+            <path d="M3 6h18"></path>
+            <path d="M7 12h10"></path>
+            <path d="M10 18h4"></path>
+          </svg>
           Investment Calculator
         </button>
       </div>
   
-      <!-- Active Investments Table -->
-      <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold text-gray-900">Active Investments</h2>
-          <div class="flex items-center gap-4">
-            <div class="relative">
-              <Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-              <input
-                v-model="search"
-                type="text"
-                placeholder="Search investments..."
-                class="pl-9 rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
-              />
-            </div>
-            <select
-              v-model="filters.status"
-              class="rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+      <div class="mb-6">
+        <div class="border-b">
+          <div class="flex">
+            <button 
+              v-for="tab in tabs" 
+              :key="tab.value" 
+              @click="handleTabChange(tab.value)"
+              :class="[
+                'px-4 py-2 border-b-2',
+                activeTab === tab.value 
+                  ? 'border-teal-700 bg-teal-700 text-white' 
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              ]"
             >
-              <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="matured">Matured</option>
-              <option value="liquidated">Liquidated</option>
-            </select>
+              {{ tab.label }}
+            </button>
           </div>
         </div>
   
-        <div class="rounded-lg border bg-white shadow-sm">
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th
-                    v-for="header in tableHeaders"
-                    :key="header.key"
-                    class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
-                  >
-                    <div class="flex items-center gap-2">
-                      {{ header.label }}
-                      <button
-                        v-if="header.sortable"
-                        @click="sortBy(header.key)"
-                        class="text-gray-400 hover:text-gray-600"
-                      >
-                        <ArrowUpDown class="h-4 w-4" />
-                      </button>
-                    </div>
-                  </th>
-                  <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200 bg-white">
-                <tr v-for="investment in filteredInvestments" :key="investment.id">
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ investment.client }}
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ investment.product }}
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ formatCurrency(investment.amount) }}
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ investment.returns }}%
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ formatDate(investment.startDate) }}
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4">
-                    {{ formatDate(investment.maturityDate) }}
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4">
-                    <span
-                      :class="{
-                        'bg-green-100 text-green-800': investment.status === 'active',
-                        'bg-blue-100 text-blue-800': investment.status === 'matured',
-                        'bg-red-100 text-red-800': investment.status === 'liquidated'
-                      }"
-                      class="rounded-full px-2 py-1 text-xs font-medium"
-                    >
-                      {{ investment.status }}
-                    </span>
-                  </td>
-                  <td class="whitespace-nowrap px-6 py-4 text-right">
-                    <div class="flex justify-end gap-2">
-                      <NuxtLink
-                        :to="`/dashboard/investment-mgt/clients/${investment.id}`"
-                        class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
-                        title="View Details"
-                      >
-                        <Eye class="h-4 w-4" />
-                      </NuxtLink>
-                      <button
-                        v-if="investment.status === 'active'"
-                        @click="showTopUpModal(investment)"
-                        class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
-                        title="Top Up"
-                      >
-                        <PlusCircle class="h-4 w-4" />
-                      </button>
-                      <button
-                        v-if="investment.status === 'active'"
-                        @click="showLiquidationModal(investment)"
-                        class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-red-500"
-                        title="Liquidate"
-                      >
-                        <Ban class="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <div class="mt-6">
+          <!-- Search bar -->
+          <div class="mb-4 relative">
+            <div class="relative">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </svg>
+              <input
+                type="text"
+                placeholder="Search investments..."
+                class="pl-10 w-full py-3.5 border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                v-model="searchQuery"
+              />
+            </div>
           </div>
   
-          <!-- Pagination -->
-          <div class="flex items-center justify-between border-t px-6 py-3">
-            <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-700">
-                Showing
-                <span class="font-medium">{{ paginationStart }}</span>
-                to
-                <span class="font-medium">{{ paginationEnd }}</span>
-                of
-                <span class="font-medium">{{ totalInvestments }}</span>
-                results
-              </span>
-            </div>
+          <!-- Loading Spinner -->
+          <div v-if="isLoading" class="flex justify-center items-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-700"></div>
+          </div>
   
-            <div class="flex items-center gap-2">
-              <button
-                @click="prevPage"
-                :disabled="currentPage === 1"
-                class="rounded-md border px-3 py-1 text-sm disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <button
-                @click="nextPage"
-                :disabled="currentPage === totalPages"
-                class="rounded-md border px-3 py-1 text-sm disabled:opacity-50"
-              >
-                Next
-              </button>
+          <!-- Active Tab Content -->
+          <div v-else-if="activeTab === 'active'" class="mt-4">
+            <div v-if="paginatedInvestments.length > 0" class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      v-for="header in tableHeaders"
+                      :key="header.key"
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                    >
+                      <div class="flex items-center gap-2">
+                        {{ header.label }}
+                        <button
+                          v-if="header.sortable"
+                          @click="sortBy(header.key)"
+                          class="text-gray-400 hover:text-gray-600"
+                        >
+                          <ArrowUpDown class="h-4 w-4" />
+                        </button>
+                      </div>
+                    </th>
+                    <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 bg-white">
+                  <tr v-for="investment in paginatedInvestments" :key="investment.id">
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ investment.name }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ investment.productName }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ formatCurrency(investment.amount) }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ investment.interestRate }}%
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ formatDate(investment.startDate) }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ formatDate(investment.maturityDate) }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      <span
+                        :class="{
+                          'bg-green-100 text-green-800': investment.status === 'active',
+                          'bg-blue-100 text-blue-800': investment.status === 'completed',
+                          'bg-red-100 text-red-800': investment.status === 'deactivated'
+                        }"
+                        class="rounded-full px-2 py-1 text-xs font-medium"
+                      >
+                        {{ investment.status }}
+                      </span>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-right">
+                      <div class="flex justify-end gap-2">
+                        <NuxtLink
+                          :to="`/dashboard/investment-mgt/clients/${investment.id}`"
+                          class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                          title="View Details"
+                        >
+                          <Eye class="h-4 w-4" />
+                        </NuxtLink>
+                        <button
+                          v-if="investment.status === 'active'"
+                          @click="showTopUpModal(investment)"
+                          class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                          title="Top Up"
+                        >
+                          <PlusCircle class="h-4 w-4" />
+                        </button>
+                        <button
+                          v-if="investment.status === 'active'"
+                          @click="showLiquidationModal(investment)"
+                          class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-red-500"
+                          title="Liquidate"
+                        >
+                          <Ban class="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Empty State -->
+            <div v-else class="border rounded-lg flex flex-col items-center justify-center h-64 bg-white">
+              <div class="p-6 mb-4 animate-bounce">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="h-16 w-16 text-gray-300">
+                  <path d="M20.91 8.84 8.56 2.23a1.93 1.93 0 0 0-1.81 0L3.1 4.13a2.12 2.12 0 0 0-.05 3.69l12.22 6.93a2 2 0 0 0 1.94 0L21 12.51a2.12 2.12 0 0 0-.09-3.67Z"></path>
+                  <path d="m3.09 8.84 12.35-6.61a1.93 1.93 0 0 1 1.81 0l3.65 1.9a2.12 2.12 0 0 1 .1 3.69L8.73 14.75a2 2 0 0 1-1.94 0L3 12.51a2.12 2.12 0 0 1 .09-3.67Z"></path>
+                  <line x1="12" y1="22" x2="12" y2="13"></line>
+                  <path d="M20 13.5v3.37a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13.5"></path>
+                </svg>
+              </div>
+              <p class="text-gray-700 font-medium">
+                {{ searchQuery ? "No matching investments found" : "No Active Investments Available" }}
+              </p>
+              <p v-if="searchQuery" class="text-gray-500 text-sm mt-2">
+                Try adjusting your search criteria
+              </p>
+            </div>
+            
+            <!-- Pagination -->
+            <div v-if="totalPages > 1" class="mt-4 flex items-center justify-between">
+              <div class="text-sm text-gray-500">
+                Showing {{ paginationStart }} to {{ paginationEnd }} of {{ totalInvestments }} results
+              </div>
+              <div class="flex gap-1">
+                <button
+                  @click="currentPage = Math.max(1, currentPage - 1)"
+                  :disabled="currentPage === 1"
+                  class="rounded px-2 py-1 text-sm disabled:opacity-50"
+                  :class="currentPage === 1 ? 'text-gray-400' : 'text-gray-700 hover:bg-gray-100'"
+                >
+                  Previous
+                </button>
+                <button
+                  v-for="page in totalPages"
+                  :key="page"
+                  @click="currentPage = page"
+                  class="rounded px-2 py-1 text-sm"
+                  :class="currentPage === page ? 'bg-teal-700 text-white' : 'text-gray-700 hover:bg-gray-100'"
+                >
+                  {{ page }}
+                </button>
+                <button
+                  @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                  :disabled="currentPage === totalPages"
+                  class="rounded px-2 py-1 text-sm disabled:opacity-50"
+                  :class="currentPage === totalPages ? 'text-gray-400' : 'text-gray-700 hover:bg-gray-100'"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Completed Tab Content -->
+          <div v-else-if="activeTab === 'completed'" class="mt-4">
+            <div v-if="paginatedInvestments.length > 0" class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      v-for="header in tableHeaders"
+                      :key="header.key"
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                    >
+                      <div class="flex items-center gap-2">
+                        {{ header.label }}
+                        <button
+                          v-if="header.sortable"
+                          @click="sortBy(header.key)"
+                          class="text-gray-400 hover:text-gray-600"
+                        >
+                          <ArrowUpDown class="h-4 w-4" />
+                        </button>
+                      </div>
+                    </th>
+                    <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 bg-white">
+                  <tr v-for="investment in paginatedInvestments" :key="investment.id">
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ investment.name }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ investment.productName }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ formatCurrency(investment.amount) }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ investment.interestRate }}%
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ formatDate(investment.startDate) }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ formatDate(investment.maturityDate) }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      <span
+                        :class="{
+                          'bg-green-100 text-green-800': investment.status === 'active',
+                          'bg-blue-100 text-blue-800': investment.status === 'completed',
+                          'bg-red-100 text-red-800': investment.status === 'deactivated'
+                        }"
+                        class="rounded-full px-2 py-1 text-xs font-medium"
+                      >
+                        {{ investment.status }}
+                      </span>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-right">
+                      <div class="flex justify-end gap-2">
+                        <NuxtLink
+                          :to="`/dashboard/investment-mgt/clients/${investment.id}`"
+                          class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                          title="View Details"
+                        >
+                          <Eye class="h-4 w-4" />
+                        </NuxtLink>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Empty State -->
+            <div v-else class="border rounded-lg flex flex-col items-center justify-center h-64 bg-white">
+              <div class="p-6 mb-4 animate-pulse">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="h-16 w-16 text-gray-300">
+                  <path d="M20.91 8.84 8.56 2.23a1.93 1.93 0 0 0-1.81 0L3.1 4.13a2.12 2.12 0 0 0-.05 3.69l12.22 6.93a2 2 0 0 0 1.94 0L21 12.51a2.12 2.12 0 0 0-.09-3.67Z"></path>
+                  <path d="m3.09 8.84 12.35-6.61a1.93 1.93 0 0 1 1.81 0l3.65 1.9a2.12 2.12 0 0 1 .1 3.69L8.73 14.75a2 2 0 0 1-1.94 0L3 12.51a2.12 2.12 0 0 1 .09-3.67Z"></path>
+                  <line x1="12" y1="22" x2="12" y2="13"></line>
+                  <path d="M20 13.5v3.37a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13.5"></path>
+                </svg>
+              </div>
+              <p class="text-gray-700 font-medium">
+                {{ searchQuery ? "No matching investments found" : "No Completed Investments Available" }}
+              </p>
+              <p v-if="searchQuery" class="text-gray-500 text-sm mt-2">
+                Try adjusting your search criteria
+              </p>
+            </div>
+            
+            <!-- Pagination -->
+            <div v-if="totalPages > 1" class="mt-4 flex items-center justify-between">
+              <div class="text-sm text-gray-500">
+                Showing {{ paginationStart }} to {{ paginationEnd }} of {{ totalInvestments }} results
+              </div>
+              <div class="flex gap-1">
+                <button
+                  @click="currentPage = Math.max(1, currentPage - 1)"
+                  :disabled="currentPage === 1"
+                  class="rounded px-2 py-1 text-sm disabled:opacity-50"
+                  :class="currentPage === 1 ? 'text-gray-400' : 'text-gray-700 hover:bg-gray-100'"
+                >
+                  Previous
+                </button>
+                <button
+                  v-for="page in totalPages"
+                  :key="page"
+                  @click="currentPage = page"
+                  class="rounded px-2 py-1 text-sm"
+                  :class="currentPage === page ? 'bg-teal-700 text-white' : 'text-gray-700 hover:bg-gray-100'"
+                >
+                  {{ page }}
+                </button>
+                <button
+                  @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                  :disabled="currentPage === totalPages"
+                  class="rounded px-2 py-1 text-sm disabled:opacity-50"
+                  :class="currentPage === totalPages ? 'text-gray-400' : 'text-gray-700 hover:bg-gray-100'"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Deactivated Tab Content -->
+          <div v-else-if="activeTab === 'deactivated'" class="mt-4">
+            <div v-if="paginatedInvestments.length > 0" class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      v-for="header in tableHeaders"
+                      :key="header.key"
+                      class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                    >
+                      <div class="flex items-center gap-2">
+                        {{ header.label }}
+                        <button
+                          v-if="header.sortable"
+                          @click="sortBy(header.key)"
+                          class="text-gray-400 hover:text-gray-600"
+                        >
+                          <ArrowUpDown class="h-4 w-4" />
+                        </button>
+                      </div>
+                    </th>
+                    <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 bg-white">
+                  <tr v-for="investment in paginatedInvestments" :key="investment.id">
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ investment.name }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ investment.productName }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ formatCurrency(investment.amount) }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ investment.interestRate }}%
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ formatDate(investment.startDate) }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      {{ formatDate(investment.maturityDate) }}
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4">
+                      <span
+                        :class="{
+                          'bg-green-100 text-green-800': investment.status === 'active',
+                          'bg-blue-100 text-blue-800': investment.status === 'completed',
+                          'bg-red-100 text-red-800': investment.status === 'deactivated'
+                        }"
+                        class="rounded-full px-2 py-1 text-xs font-medium"
+                      >
+                        {{ investment.status }}
+                      </span>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-4 text-right">
+                      <div class="flex justify-end gap-2">
+                        <NuxtLink
+                          :to="`/dashboard/investment-mgt/clients/${investment.id}`"
+                          class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                          title="View Details"
+                        >
+                          <Eye class="h-4 w-4" />
+                        </NuxtLink>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Empty State -->
+            <div v-else class="border rounded-lg flex flex-col items-center justify-center h-64 bg-white">
+              <div class="p-6 mb-4 animate-spin">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="h-16 w-16 text-gray-300">
+                  <path d="M20.91 8.84 8.56 2.23a1.93 1.93 0 0 0-1.81 0L3.1 4.13a2.12 2.12 0 0 0-.05 3.69l12.22 6.93a2 2 0 0 0 1.94 0L21 12.51a2.12 2.12 0 0 0-.09-3.67Z"></path>
+                  <path d="m3.09 8.84 12.35-6.61a1.93 1.93 0 0 1 1.81 0l3.65 1.9a2.12 2.12 0 0 1 .1 3.69L8.73 14.75a2 2 0 0 1-1.94 0L3 12.51a2.12 2.12 0 0 1 .09-3.67Z"></path>
+                  <line x1="12" y1="22" x2="12" y2="13"></line>
+                  <path d="M20 13.5v3.37a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13.5"></path>
+                </svg>
+              </div>
+              <p class="text-gray-700 font-medium">
+                {{ searchQuery ? "No matching investments found" : "No Deactivated Investments Available" }}
+              </p>
+              <p v-if="searchQuery" class="text-gray-500 text-sm mt-2">
+                Try adjusting your search criteria
+              </p>
+            </div>
+            
+            <!-- Pagination -->
+            <div v-if="totalPages > 1" class="mt-4 flex items-center justify-between">
+              <div class="text-sm text-gray-500">
+                Showing {{ paginationStart }} to {{ paginationEnd }} of {{ totalInvestments }} results
+              </div>
+              <div class="flex gap-1">
+                <button
+                  @click="currentPage = Math.max(1, currentPage - 1)"
+                  :disabled="currentPage === 1"
+                  class="rounded px-2 py-1 text-sm disabled:opacity-50"
+                  :class="currentPage === 1 ? 'text-gray-400' : 'text-gray-700 hover:bg-gray-100'"
+                >
+                  Previous
+                </button>
+                <button
+                  v-for="page in totalPages"
+                  :key="page"
+                  @click="currentPage = page"
+                  class="rounded px-2 py-1 text-sm"
+                  :class="currentPage === page ? 'bg-teal-700 text-white' : 'text-gray-700 hover:bg-gray-100'"
+                >
+                  {{ page }}
+                </button>
+                <button
+                  @click="currentPage = Math.min(totalPages, currentPage + 1)"
+                  :disabled="currentPage === totalPages"
+                  class="rounded px-2 py-1 text-sm disabled:opacity-50"
+                  :class="currentPage === totalPages ? 'text-gray-400' : 'text-gray-700 hover:bg-gray-100'"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
   
-      <!-- Investment Calculator Modal -->
-      <TransitionRoot appear :show="showCalculator" as="template">
+  
+      <!-- Overlay for dropdown -->
+      <div
+        v-if="activeDropdown !== null"
+        @click="closeDropdown"
+        class="fixed inset-0 z-40 bg-black opacity-25"
+      ></div>
+    </div>
+  
+    <TransitionRoot appear :show="showCalculator" as="template">
         <Dialog
           as="div"
           @close="showCalculator = false"
@@ -237,7 +539,7 @@
                 leave-from="opacity-100 scale-100"
                 leave-to="opacity-0 scale-95"
               >
-                <DialogPanel class="w-full max-w-md rounded-lg bg-white p-6">
+                <DialogPanel class="w-[90%] sm:w-[85%] md:w-[80%] rounded-xl mx-auto lg:w-[500px] max-w-[5200px]  bg-white p-6">
                   <DialogTitle class="text-lg font-medium">
                     Investment Calculator
                   </DialogTitle>
@@ -299,7 +601,6 @@
         </Dialog>
       </TransitionRoot>
   
-      <!-- Investment Booking Modal -->
       <TransitionRoot appear :show="showBookingModal" as="template">
         <Dialog
           as="div"
@@ -327,7 +628,7 @@
                 leave-from="opacity-100 scale-100"
                 leave-to="opacity-0 scale-95"
               >
-                <DialogPanel class="w-full max-w-md rounded-lg bg-white p-6">
+                <DialogPanel class="w-[90%] sm:w-[85%] md:w-[80%] rounded-xl mx-auto lg:w-[500px] max-w-[5200px]  bg-white p-6">
                   <DialogTitle class="text-lg font-medium">
                     Book New Investment
                   </DialogTitle>
@@ -440,7 +741,6 @@
         </Dialog>
       </TransitionRoot>
   
-      <!-- Top Up Modal -->
       <TransitionRoot appear :show="!!topUpInvestment" as="template">
         <Dialog
           as="div"
@@ -468,7 +768,7 @@
                 leave-from="opacity-100 scale-100"
                 leave-to="opacity-0 scale-95"
               >
-                <DialogPanel class="w-full max-w-md rounded-lg bg-white p-6">
+                <DialogPanel class="w-[90%] sm:w-[85%] md:w-[80%] rounded-xl mx-auto lg:w-[500px] max-w-[5200px]  bg-white p-6">
                   <DialogTitle class="text-lg font-medium">
                     Top Up Investment
                   </DialogTitle>
@@ -489,7 +789,7 @@
                         v-model="topUpForm.amount"
                         type="number"
                         required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                        class="mt-1 py-3 rounded-lg border-[0.5px] outline-none block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
                       />
                     </div>
                     <div class="mt-6 flex justify-end gap-3">
@@ -515,7 +815,6 @@
         </Dialog>
       </TransitionRoot>
   
-      <!-- Liquidation Modal -->
       <TransitionRoot appear :show="!!liquidatingInvestment" as="template">
         <Dialog
           as="div"
@@ -543,7 +842,7 @@
                 leave-from="opacity-100 scale-100"
                 leave-to="opacity-0 scale-95"
               >
-                <DialogPanel class="w-full max-w-md rounded-lg bg-white p-6">
+                <DialogPanel class="w-[90%] sm:w-[85%] md:w-[80%] rounded-xl mx-auto lg:w-[500px] max-w-[5200px]  bg-white p-6">
                   <DialogTitle class="text-lg font-medium">
                     Liquidate Investment
                   </DialogTitle>
@@ -588,11 +887,49 @@
           </div>
         </Dialog>
       </TransitionRoot>
-    </div>
+  
+      <TransitionRoot appear :show="!!openAddInvestmentModal" as="template">
+        <Dialog
+          as="div"
+          @close="openAddInvestmentModal = false"
+          class="relative z-50"
+        >
+        <TransitionChild
+            enter="duration-300 ease-out"
+            enter-from="opacity-0"
+            enter-to="opacity-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100"
+            leave-to="opacity-0"
+          >
+            <div class="fixed inset-0 bg-black/25" />
+          </TransitionChild>
+          <div class="fixed inset-0 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4">
+              <TransitionChild
+                enter="duration-300 ease-out"
+                enter-from="opacity-0 scale-95"
+                enter-to="opacity-100 scale-100"
+                leave="duration-200 ease-in"
+                leave-from="opacity-100 scale-100"
+                leave-to="opacity-0 scale-95"
+              >
+                <DialogPanel class="w-[90%] sm:w-[85%] md:w-[80%] rounded-xl mx-auto lg:w-[500px] max-w-[5200px]  bg-white p-6">
+                  <DialogTitle class="text-lg font-medium">
+                    Book Investment
+                  </DialogTitle>
+                  <ModulesUserInvestmentCreate @cancel="openAddInvestmentModal = false" />
+                </DialogPanel>
+              </TransitionChild>
+            </div>
+          </div>
+      </Dialog>
+        </TransitionRoot>
+  </main>
   </template>
   
   <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
   import {
     Dialog,
     DialogPanel,
@@ -616,12 +953,57 @@
     AlertTriangle,
   } from 'lucide-vue-next'
   
+  const openAddInvestmentModal = ref(false)
+  
+  // Table configuration
+  const tableHeaders = [
+    { key: 'name', label: 'Name', sortable: true },
+    { key: 'productName', label: 'Product', sortable: true },
+    { key: 'amount', label: 'Amount', sortable: true },
+    { key: 'interestRate', label: 'Interest Rate', sortable: true },
+    { key: 'startDate', label: 'Start Date', sortable: true },
+    { key: 'maturityDate', label: 'Maturity Date', sortable: true },
+    { key: 'status', label: 'Status', sortable: true },
+  ]
+  
+  // Tab configuration
+  const tabs = [
+    { label: 'Active', value: 'active' },
+    { label: 'Completed', value: 'completed' },
+    { label: 'Deactivated', value: 'deactivated' }
+  ];
+  
+  // Import composables for investments
+  import { useActiveInvestments } from '@/composables/modules/investments/useActiveInvestments'
+  import { useCompletedInvestments } from '@/composables/modules/investments/useCompletedInvestments'
+  import { useDeactivatedInvestments } from '@/composables/modules/investments/useDeactivatedInvestments'
+  
+  // Initialize composables
+  const { activeInvestments, loading: fetchingActiveInvestments } = useActiveInvestments()
+  const { completedInvestments, loading: fetchingCompletedInvestments } = useCompletedInvestments()
+  const { deactivatedInvestments, loading: fetchingDeactivatedInvestments } = useDeactivatedInvestments()
+  
+  // State
+  const activeTab = ref('active');
+  const searchQuery = ref('');
+  const activeDropdown = ref<number | null>(null);
+  const sortKey = ref('startDate')
+  const sortOrder = ref('desc')
+  const currentPage = ref(1)
+  const itemsPerPage = 10
+  const isLoading = ref(false)
+  
+  const showCalculator = ref(false)
+  const showBookingModal = ref(false)
+  const topUpInvestment = ref(null)
+  const liquidatingInvestment = ref(null)
+  
   // Metrics
   const metrics = [
     {
       id: 1,
       title: 'Total Active Investments',
-      value: '$8.2M',
+      value: computed(() => formatCurrency(activeInvestments.value.reduce((sum, inv) => sum + inv.amount, 0))),
       icon: Wallet,
       trend: 15,
       bgColor: 'bg-blue-100',
@@ -630,7 +1012,7 @@
     {
       id: 2,
       title: 'Active Clients',
-      value: '324',
+      value: computed(() => activeInvestments.value.length.toString()),
       icon: Users,
       trend: 8,
       bgColor: 'bg-green-100',
@@ -639,7 +1021,11 @@
     {
       id: 3,
       title: 'Average Returns',
-      value: '15.2%',
+      value: computed(() => {
+        const avg = activeInvestments.value.reduce((sum, inv) => sum + inv.interestRate, 0) / 
+                   (activeInvestments.value.length || 1);
+        return `${avg.toFixed(1)}%`;
+      }),
       icon: ArrowUpRight,
       trend: 5,
       bgColor: 'bg-indigo-100',
@@ -648,13 +1034,99 @@
     {
       id: 4,
       title: 'Pending Liquidations',
-      value: '12',
+      value: '0',
       icon: AlertTriangle,
-      trend: -2,
+      trend: 0,
       bgColor: 'bg-red-100',
       iconColor: 'text-red-600',
     },
   ]
+  
+  // Handle tab change with loading state
+  const handleTabChange = (tabValue) => {
+    if (activeTab.value === tabValue) return;
+    
+    isLoading.value = true;
+    activeTab.value = tabValue;
+    
+    // Simulate loading delay for better UX
+    setTimeout(() => {
+      isLoading.value = false;
+    }, 800);
+    
+    // Reset pagination
+    currentPage.value = 1;
+  }
+  
+  // Get investments based on active tab
+  const currentInvestments = computed(() => {
+    switch (activeTab.value) {
+      case 'active':
+        return activeInvestments.value
+      case 'completed':
+        return completedInvestments.value
+      case 'deactivated':
+        return deactivatedInvestments.value
+      default:
+        return []
+    }
+  })
+  
+  // Filtered investments based on search query
+  const filteredInvestments = computed(() => {
+    if (!searchQuery.value) return currentInvestments.value;
+    
+    const query = searchQuery.value.toLowerCase();
+    return currentInvestments.value.filter(investment => 
+      investment.name.toLowerCase().includes(query) ||
+      investment.productName?.toLowerCase().includes(query) ||
+      investment.amount.toString().includes(query) ||
+      investment.interestRate.toString().includes(query) ||
+      investment.status.toLowerCase().includes(query)
+    );
+  })
+  
+  // Sorted investments
+  const sortedInvestments = computed(() => {
+    return [...filteredInvestments.value].sort((a, b) => {
+      let aValue = a[sortKey.value];
+      let bValue = b[sortKey.value];
+      
+      // Handle dates
+      if (sortKey.value === 'startDate' || sortKey.value === 'maturityDate') {
+        aValue = new Date(aValue).getTime();
+        bValue = new Date(bValue).getTime();
+      }
+      
+      // Handle strings
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+      
+      if (aValue < bValue) return sortOrder.value === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortOrder.value === 'asc' ? 1 : -1;
+      return 0;
+    });
+  })
+  
+  // Paginated investments
+  const paginatedInvestments = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return sortedInvestments.value.slice(start, end);
+  })
+  
+  const totalInvestments = computed(() => filteredInvestments.value.length)
+  const totalPages = computed(() => Math.max(1, Math.ceil(totalInvestments.value / itemsPerPage)))
+  
+  const paginationStart = computed(() => 
+    totalInvestments.value === 0 ? 0 : (currentPage.value - 1) * itemsPerPage + 1
+  )
+  
+  const paginationEnd = computed(() =>
+    Math.min(currentPage.value * itemsPerPage, totalInvestments.value)
+  )
   
   // Available Products
   const availableProducts = ref([
@@ -675,46 +1147,103 @@
     // Add more products...
   ])
   
-  // Table configuration
-  const tableHeaders = [
-    { key: 'client', label: 'Client', sortable: true },
-    { key: 'product', label: 'Product', sortable: true },
-    { key: 'amount', label: 'Amount', sortable: true },
-    { key: 'returns', label: 'Returns', sortable: true },
-    { key: 'startDate', label: 'Start Date', sortable: true },
-    { key: 'maturityDate', label: 'Maturity Date', sortable: true },
-    { key: 'status', label: 'Status', sortable: true },
-  ]
-  
-  // Dummy investments data
-  const investments = ref([
-    {
-      id: 1,
-      client: 'John Doe',
-      product: 'Fixed Income Plus',
-      amount: 50000,
-      returns: 15,
-      startDate: '2024-01-01',
-      maturityDate: '2024-12-31',
-      status: 'active',
-    },
-    // Add more investments...
-  ])
-  
-  // State
-  const search = ref('')
-  const filters = ref({
-    status: '',
+  // Selected product for booking form
+  const selectedProduct = computed(() => {
+    if (!bookingForm.value.productId) return null;
+    return availableProducts.value.find(p => p.id.toString() === bookingForm.value.productId.toString()) || null;
   })
-  const sortKey = ref('startDate')
-  const sortOrder = ref('desc')
-  const currentPage = ref(1)
-  const itemsPerPage = 10
   
-  const showCalculator = ref(false)
-  const showBookingModal = ref(false)
-  const topUpInvestment = ref(null)
-  const liquidatingInvestment = ref(null)
+  // Calculator computed values
+  const calculatedReturns = computed(() => {
+    const amount = parseFloat(calculator.value.amount) || 0;
+    const returns = parseFloat(calculator.value.returns) || 0;
+    const tenor = parseFloat(calculator.value.tenor) || 0;
+    return amount * (returns / 100) * (tenor / 12);
+  })
+  
+  const calculatedMaturityAmount = computed(() => {
+    const amount = parseFloat(calculator.value.amount) || 0;
+    return amount + calculatedReturns.value;
+  })
+  
+  const calculatedMonthlyReturns = computed(() => {
+    const tenor = parseFloat(calculator.value.tenor) || 1;
+    return calculatedReturns.value / tenor;
+  })
+  
+  // Liquidation computed values
+  const liquidationFee = computed(() => {
+    if (!liquidatingInvestment.value) return 0;
+    // Example: 2% early liquidation fee
+    return liquidatingInvestment.value.amount * 0.02;
+  })
+  
+  const liquidationAmount = computed(() => {
+    if (!liquidatingInvestment.value) return 0;
+    return liquidatingInvestment.value.amount - liquidationFee.value;
+  })
+  
+  // Methods
+  const sortBy = (key: string) => {
+    if (sortKey.value === key) {
+      sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortKey.value = key;
+      sortOrder.value = 'asc';
+    }
+  }
+  
+  const calculateMaturityDate = (startDate: string, tenor: number) => {
+    if (!startDate) return '';
+    const date = new Date(startDate);
+    date.setMonth(date.getMonth() + tenor);
+    return date.toLocaleDateString();
+  }
+  
+  const calculateReturns = (amount: number, returns: number, tenor: number) => {
+    return amount * (returns / 100) * (tenor / 12);
+  }
+  
+  const showTopUpModal = (investment: any) => {
+    topUpInvestment.value = investment;
+    topUpForm.value.amount = '';
+  }
+  
+  const showLiquidationModal = (investment: any) => {
+    liquidatingInvestment.value = investment;
+  }
+  
+  const closeDropdown = () => {
+    activeDropdown.value = null;
+  }
+  
+  const handleBooking = () => {
+    // Implementation would go here
+    console.log('Booking investment:', bookingForm.value);
+    showBookingModal.value = false;
+    // Reset form
+    bookingForm.value = {
+      client: '',
+      productId: '',
+      amount: '',
+      startDate: '',
+    };
+  }
+  
+  const handleTopUp = () => {
+    // Implementation would go here
+    console.log('Topping up investment:', {
+      investment: topUpInvestment.value,
+      amount: topUpForm.value.amount
+    });
+    topUpInvestment.value = null;
+  }
+  
+  const confirmLiquidation = () => {
+    // Implementation would go here
+    console.log('Liquidating investment:', liquidatingInvestment.value);
+    liquidatingInvestment.value = null;
+  }
   
   // Forms
   const calculator = ref({
@@ -734,182 +1263,46 @@
     amount: '',
   })
   
-  // Computed
-  const selectedProduct = computed(() => {
-    return availableProducts.value.find(p => p.id === bookingForm.value.productId)
-  })
-  
-  const filteredInvestments = computed(() => {
-    let result = [...investments.value]
-  
-    if (search.value) {
-      const query = search.value.toLowerCase()
-      result = result.filter(
-        investment =>
-          investment.client.toLowerCase().includes(query) ||
-          investment.product.toLowerCase().includes(query)
-      )
-    }
-  
-    if (filters.value.status) {
-      result = result.filter(
-        investment => investment.status === filters.value.status
-      )
-    }
-  
-    result.sort((a: any, b: any) => {
-      const modifier = sortOrder.value === 'asc' ? 1 : -1
-      return a[sortKey.value] > b[sortKey.value] ? modifier : -modifier
-    })
-  
-    return result
-  })
-  
-  const totalInvestments = computed(() => filteredInvestments.value.length)
-  const totalPages = computed(() => Math.ceil(totalInvestments.value / itemsPerPage))
-  const paginationStart = computed(() => (currentPage.value - 1) * itemsPerPage + 1)
-  const paginationEnd = computed(() =>
-    Math.min(currentPage.value * itemsPerPage, totalInvestments.value)
-  )
-  
-  // Calculator computed
-  const calculatedReturns = computed(() => {
-    if (!calculator.value.amount || !calculator.value.returns || !calculator.value.tenor) {
-      return 0
-    }
-    return (
-      Number(calculator.value.amount) *
-      (Number(calculator.value.returns) / 100) *
-      (Number(calculator.value.tenor) / 12)
-    )
-  })
-  
-  const calculatedMaturityAmount = computed(() => {
-    return Number(calculator.value.amount) + calculatedReturns.value
-  })
-  
-  const calculatedMonthlyReturns = computed(() => {
-    return calculatedReturns.value / Number(calculator.value.tenor)
-  })
-  
-  // Liquidation computed
-  const liquidationFee = computed(() => {
-    if (!liquidatingInvestment.value) return 0
-    return liquidatingInvestment.value.amount * 0.05 // 5% liquidation fee
-  })
-  
-  const liquidationAmount = computed(() => {
-    if (!liquidatingInvestment.value) return 0
-    return liquidatingInvestment.value.amount - liquidationFee.value
-  })
-  
-  // Methods
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(value)
-  }
-  
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString()
+    if (!date) return '';
+    return new Date(date).toLocaleDateString();
   }
   
-  const sortBy = (key: string) => {
-    if (sortKey.value === key) {
-      sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
-    } else {
-      sortKey.value = key
-      sortOrder.value = 'asc'
-    }
+  const formatCurrency = (amount: number): string => {
+    if (amount === undefined || amount === null) return '₦0.00';
+    return new Intl.NumberFormat('en-NG', {
+      style: 'currency',
+      currency: 'NGN',
+      minimumFractionDigits: 2
+    }).format(amount).replace('NGN', '₦');
   }
   
-  const calculateMaturityDate = (startDate: string, tenor: number) => {
-    if (!startDate) return ''
-    const date = new Date(startDate)
-    date.setMonth(date.getMonth() + tenor)
-    return date.toLocaleDateString()
-  }
+  // Reset pagination when search changes
+  watch(searchQuery, () => {
+    currentPage.value = 1;
+  })
   
-  const calculateReturns = (amount: number, returns: number, tenor: number) => {
-    return amount * (returns / 100) * (tenor / 12)
-  }
-  
-  const showTopUpModal = (investment: any) => {
-    topUpInvestment.value = investment
-    topUpForm.value.amount = ''
-  }
-  
-  const showLiquidationModal = (investment: any) => {
-    liquidatingInvestment.value = investment
-  }
-  
-  const handleBooking = () => {
-    if (!selectedProduct.value) return
-  
-    const investment = {
-      id: Date.now(),
-      client: bookingForm.value.client,
-      product: selectedProduct.value.name,
-      amount: Number(bookingForm.value.amount),
-      returns: selectedProduct.value.returns,
-      startDate: bookingForm.value.startDate,
-      maturityDate: calculateMaturityDate(bookingForm.value.startDate, selectedProduct.value.tenor),
-      status: 'active',
-    }
-  
-    investments.value.push(investment)
-    showBookingModal.value = false
-    bookingForm.value = {
-      client: '',
-      productId: '',
-      amount: '',
-      startDate: '',
-    }
-  }
-  
-  const handleTopUp = () => {
-    if (!topUpInvestment.value) return
-  
-    const index = investments.value.findIndex(i => i.id === topUpInvestment.value.id)
-    if (index !== -1) {
-      investments.value[index] = {
-        ...investments.value[index],
-        amount: investments.value[index].amount + Number(topUpForm.value.amount),
+  // Lifecycle hooks
+  onMounted(() => {
+    document.addEventListener("click", (event: MouseEvent) => {
+      if (activeDropdown.value !== null) {
+        activeDropdown.value = null;
       }
-    }
+    });
+  })
   
-    topUpInvestment.value = null
-  }
-  
-  const confirmLiquidation = () => {
-    if (!liquidatingInvestment.value) return
-  
-    const index = investments.value.findIndex(i => i.id === liquidatingInvestment.value.id)
-    if (index !== -1) {
-      investments.value[index] = {
-        ...investments.value[index],
-        status: 'liquidated',
+  onBeforeUnmount(() => {
+    document.removeEventListener("click", (event: MouseEvent) => {
+      if (activeDropdown.value !== null) {
+        activeDropdown.value = null;
       }
-    }
+    });
+  })
   
-    liquidatingInvestment.value = null
-  }
-  
-  const prevPage = () => {
-    if (currentPage.value > 1) {
-      currentPage.value--
-    }
-  }
-  
-  const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-      currentPage.value++
-    }
-  }
-
   definePageMeta({
-          layout: 'admin-dashboard',
-           middleware: 'auth'
-      })
+    layout: 'admin-dashboard',
+    middleware: 'auth'
+  })
   </script>
+  
+  
