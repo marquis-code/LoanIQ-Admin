@@ -125,9 +125,9 @@
                   <td class="whitespace-nowrap px-6 py-4">
                     {{ user.phoneNumber }}
                   </td>
-                  <td class="whitespace-nowrap px-6 py-4">
+                  <!-- <td class="whitespace-nowrap px-6 py-4">
                     {{ user.id }}
-                  </td>
+                  </td> -->
                   <td class="whitespace-nowrap px-6 py-4">
                     <span class="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800">
                       Tier {{ user.tier }}
@@ -281,7 +281,7 @@ import {
     { key: 'name', label: 'Name', sortable: true },
     { key: 'email', label: 'Email', sortable: true },
     { key: 'phone', label: 'Phone', sortable: false },
-    { key: 'userId', label: 'User ID', sortable: true },
+    // { key: 'userId', label: 'User ID', sortable: true },
     { key: 'kycTier', label: 'KYC Tier', sortable: true },
     { key: 'status', label: 'Status', sortable: true },
     { key: 'dateOnboarded', label: 'Date Onboarded', sortable: true },

@@ -294,7 +294,7 @@
             <!-- Show skeleton loader when filtering -->
             <div v-if="fetchingTotalWalletBalance" class="mt-2 h-8 w-24 animate-pulse rounded bg-gray-200"></div>
             <p v-else class="mt-2 text-2xl font-semibold">
-              {{ totalWalletBalance || 0 }}
+              {{ formatCurrency(totalWalletBalance) || 0 }}
             </p>
           </div>
           <div class="flex items-center gap-2">
@@ -328,7 +328,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { formatCurrency } from '@/utils/currencyUtils'
+// import { formatCurrency } from '@/utils/currencyUtils'
 import { useFetchCustomerBase } from '@/composables/modules/dashboard/useFetchCustomerBase'
 import { useFetchInvestmentsPendingApprovals } from '@/composables/modules/dashboard/useFetchInvestmentsPendingApprovals'
 import { useFetchActiveCustomers } from '@/composables/modules/dashboard/useGetActiveCustomers'
@@ -350,6 +350,7 @@ import {
   AlertCircle,
   CheckCircle
 } from 'lucide-vue-next'
+import { useCurrencyFormatter } from '@/composables/core/useCurrencyFormatter'
 
 // Fetch data using composables
 const { customers, loading: fetchingCustomerBse, filter: customerBaseFilter } = useFetchCustomerBase()
@@ -359,7 +360,7 @@ const { activeInvestments, loading: fetchingActiveInvestments, filter: activeInv
 const { liquidatedInvestments, loading: fetchingLiquidatedInvestments, filter: liquidatedInvestmentsFilter } = useFetchLiquidatedInvestments()
 const { totalWalletBalance, loading: fetchingTotalWalletBalance, filter: totalWalletBalanceFilter } = useFetchTotalWalletBalance()
 const { totalTransactions, loading: fetchingTotalTransactions, filter: totalTransactionsFilter } = useFetchTotalTransactions()
-
+const { formatCurrency } = useCurrencyFormatter()
 // Notifications
 const showNotifications = ref(false)
 const notifications = ref([
