@@ -60,6 +60,7 @@ export const useUser = () => {
   const logOut = () => {
     localStorage.clear();
     runtimeData.user.value = null;
+    window.location.href = "/"
   };
                                                                                               
   const setToken = (token: string) => {
