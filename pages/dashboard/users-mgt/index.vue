@@ -75,6 +75,21 @@
             <RefreshCw class="mr-2 h-4 w-4" />
             Reset Filters
           </button>
+
+         <div>
+          <button 
+              @click="downloadAllUsers" 
+              :disabled="isDownloading"
+              class="download-btn flex items-center border py-3 px-4 rounded-lg justify-center gap-x-2"
+            >
+              {{ isDownloading ? `Downloading... ${progress}%` : 'Export All Users' }}
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000" viewBox="0 0 256 256"><path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96H80a8,8,0,0,1,0,16H56v96H200V112H176a8,8,0,0,1,0-16h24A16,16,0,0,1,216,112ZM93.66,69.66,120,43.31V136a8,8,0,0,0,16,0V43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,69.66Z"></path></svg>
+            </button>
+
+            <div v-if="isDownloading" class="progress-bar">
+              <div class="progress" :style="{ width: `${progress}%` }"></div>
+            </div>
+         </div>
         </div>
     
         <!-- Users Table -->
@@ -252,7 +267,9 @@
   import { ref, computed } from 'vue'
   import { useGetUsers } from '@/composables/modules/users/useGetUsers'
     import { usePermissions } from '@/composables/core/usePermissions'
+    import { useCSVDownload } from '@/composables/useCSVDownload'
     const { canView, canCreate } = usePermissions()
+    const { isDownloading, progress, downloadPaginatedCSV } = useCSVDownload()
     import {
   Dialog,
   DialogPanel,
@@ -395,4 +412,62 @@ import {
     layout: 'admin-dashboard',
     middleware: 'auth'
 })
+
+
+const formatHeader = (header: string): string => {
+  const withSpaces = header.replace(/([A-Z])/g, ' $1')
+  return withSpaces.charAt(0).toUpperCase() + withSpaces.slice(1).trim()
+}
+
+// // Only include specific fields
+// downloadCSV(data, {
+//   title: 'User Data',
+//   flattenObjects: true,
+//   includeFields: [
+//     'id', 
+//     'name', 
+//     'wallet_balance', 
+//     'investments_*_type',  // Include type for all investments
+//     'investments_*_amount' // Include amount for all investments
+//   ]
+// })
+
+// // Or use a function for more complex filtering
+// downloadCSV(data, {
+//   title: 'User Data',
+//   flattenObjects: true,
+//   includeFields: (field) => {
+//     // Include all fields except email
+//     if (field === 'email') return false
+    
+//     // Include only specific investment details
+//     if (field.includes('investments') && field.includes('details')) {
+//       return field.includes('company') || field.includes('issuer')
+//     }
+
+const downloadAllUsers = async () => {
+  try {
+    await downloadPaginatedCSV(
+      '/user',
+      {
+        title: 'All Users',
+        filename: 'all_users.csv',
+        dataPath: 'data.users',
+        flattenObjects: true,
+        nestedDelimiter: '_',
+        includeHeaders: true,
+        transformHeaders: (headers) => {
+          return headers.map(header => {
+            if (header === 'firstName') return 'First Name'
+            if (header === 'lastName') return 'Last Name'
+            if (header === 'email') return 'Email'
+            return formatHeader(header)
+          })
+        }
+      },
+      { sort: 'name', order: 'asc' } // Optional query parameters
+    )
+  } finally {
+  }
+}
   </script>
