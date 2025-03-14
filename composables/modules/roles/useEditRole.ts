@@ -9,24 +9,25 @@ export const useEditRole = () => {
 
     const editRole = async (id: string, payload: Record<string, any>) => {
         loading.value = true;
-        try {
-            await $_edit_roles(id, payload);
+        const response = await $_edit_roles(id, payload) as any
+        console.log(response, 'res here')
+        if(response.status === 200 || response.statusText === 'OK'){
             showToast({
                 title: "Success",
                 message: 'Role was updated successfully.',
                 toastType: "success",
                 duration: 3000
               });
-        } catch (error) {
+        } else {
             showToast({
                 title: "Error",
-                message: `Error editing role, ${error}`,
+                message: `Error editing role, ${response.error}`,
                 toastType: "error",
                 duration: 3000
               });
-        } finally {
-            loading.value = false;
         }
+        loading.value = false
+        return response
     };
 
     return {

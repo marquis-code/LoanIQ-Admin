@@ -25,6 +25,7 @@ export const useBlockAdmin = () => {
         });
       }
       loading.value = false;
+      return response
     };
   
     return {

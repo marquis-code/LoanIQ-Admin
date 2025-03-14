@@ -25,6 +25,7 @@ export const useDeleteAdmin = () => {
         });
       }
       loading.value = false;
+      return response
     };
   
     return {

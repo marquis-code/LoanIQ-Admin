@@ -7,6 +7,47 @@
       </div>
   
       <div class="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+  <div
+    v-for="metric in metrics"
+    :key="metric.id"
+    class="rounded-lg border bg-white p-6 shadow-sm"
+  >
+    <div class="flex items-start justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600">{{ metric.title }}</p>
+        <p class="mt-2 text-2xl font-semibold" v-text="metric.getValue()"></p>
+      </div>
+      <div
+        class="rounded-full p-2"
+        :class="metric.bgColor"
+      >
+        <component
+          :is="metric.icon"
+          class="h-5 w-5"
+          :class="metric.iconColor"
+        />
+      </div>
+    </div>
+    <div class="mt-4 flex items-center gap-2">
+      <div
+        class="flex items-center"
+        :class="metric.trend > 0 ? 'text-green-600' : 'text-red-600'"
+      >
+        <component
+          :is="metric.trend > 0 ? TrendingUp : TrendingDown"
+          class="h-4 w-4"
+        />
+        <span class="ml-1 text-sm">
+          {{ Math.abs(metric.trend) }}%
+        </span>
+      </div>
+      <span class="text-sm text-gray-500">vs last month</span>
+    </div>
+  </div>
+</div>
+
+
+      <!-- <div class="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div
           v-for="metric in metrics"
           :key="metric.id"
@@ -44,7 +85,7 @@
             <span class="text-sm text-gray-500">vs last month</span>
           </div>
         </div>
-      </div>
+      </div> -->
   
       <div class="flex gap-4 mb-6">
         <button @click="openAddInvestmentModal = true" class="bg-teal-700 hover:bg-teal-800 text-white px-4 py-2 rounded-md flex items-center gap-2">
@@ -929,6 +970,7 @@
   </template>
   
   <script setup lang="ts">
+  import { formatCurrency } from "@/utils/formatter"
   import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
   import {
     Dialog,
@@ -998,58 +1040,14 @@
   const topUpInvestment = ref(null)
   const liquidatingInvestment = ref(null)
   
-  // Metrics
-  // const metrics = [
-  //   {
-  //     id: 1,
-  //     title: 'Total Active Investments',
-  //     value: computed(() => formatCurrency(activeInvestments.value.reduce((sum, inv) => sum + inv.amount, 0))),
-  //     icon: Wallet,
-  //     trend: 15,
-  //     bgColor: 'bg-blue-100',
-  //     iconColor: 'text-blue-600',
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Active Clients',
-  //     value: computed(() => activeInvestments.value.length.toString()),
-  //     icon: Users,
-  //     trend: 8,
-  //     bgColor: 'bg-green-100',
-  //     iconColor: 'text-green-600',
-  //   },
-  //   {
-  //     id: 3,
-  //     title: 'Average Returns',
-  //     value: computed(() => {
-  //       const avg = activeInvestments.value.reduce((sum, inv) => sum + inv.interestRate, 0) / 
-  //                  (activeInvestments.value.length || 1);
-  //       return `${avg.toFixed(1)}%`;
-  //     }),
-  //     icon: ArrowUpRight,
-  //     trend: 5,
-  //     bgColor: 'bg-indigo-100',
-  //     iconColor: 'text-indigo-600',
-  //   },
-  //   {
-  //     id: 4,
-  //     title: 'Pending Liquidations',
-  //     value: '0',
-  //     icon: AlertTriangle,
-  //     trend: 0,
-  //     bgColor: 'bg-red-100',
-  //     iconColor: 'text-red-600',
-  //   },
-  // ]
-
-  // Metrics
+// Metrics
 // const metrics = [
 //   {
 //     id: 1,
 //     title: 'Total Active Investments',
 //     value: computed(() => {
 //       const total = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0);
-//       return formatCurrency(total);  // Ensure correct currency formatting
+//       return formatCurrency(total); // Ensure correct currency formatting
 //     }),
 //     icon: Wallet,
 //     trend: 15,
@@ -1059,7 +1057,7 @@
 //   {
 //     id: 2,
 //     title: 'Active Clients',
-//     value: computed(() => activeInvestments.value.length.toString()),
+//     value: computed(() => activeInvestments.value.length), // Directly return number
 //     icon: Users,
 //     trend: 8,
 //     bgColor: 'bg-green-100',
@@ -1069,10 +1067,10 @@
 //     id: 3,
 //     title: 'Average Returns',
 //     value: computed(() => {
-//       if (activeInvestments.value.length === 0) return "0.0%";  // Handle empty case
+//       if (activeInvestments.value.length === 0) return `0.0%`;  // Handle empty case
 //       const avg = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / 
 //                  activeInvestments.value.length;
-//       return `${avg.toFixed(1)}%`;
+//       return `${avg.toFixed(1)}%`;  // Ensure formatted percentage
 //     }),
 //     icon: ArrowUpRight,
 //     trend: 5,
@@ -1082,7 +1080,7 @@
 //   {
 //     id: 4,
 //     title: 'Pending Liquidations',
-//     value: '0',
+//     value: 0, // Ensure direct number to avoid extra quotes
 //     icon: AlertTriangle,
 //     trend: 0,
 //     bgColor: 'bg-red-100',
@@ -1090,53 +1088,115 @@
 //   },
 // ];
 
-// Metrics
+// const metrics = [
+//   {
+//     id: 1,
+//     title: "Total Active Investments",
+//     value: computed(() => {
+//       return activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0)
+//     }),
+//     formattedValue: computed(() => {
+//       const total = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0)
+//       return formatCurrency(total)
+//     }),
+//     icon: Wallet,
+//     trend: 15,
+//     bgColor: "bg-blue-100",
+//     iconColor: "text-blue-600",
+//   },
+//   {
+//     id: 2,
+//     title: "Active Clients",
+//     value: computed(() => activeInvestments.value.length),
+//     formattedValue: computed(() => activeInvestments.value.length),
+//     icon: Users,
+//     trend: 8,
+//     bgColor: "bg-green-100",
+//     iconColor: "text-green-600",
+//   },
+//   {
+//     id: 3,
+//     title: "Average Returns",
+//     value: computed(() => {
+//       if (activeInvestments.value.length === 0) return 0
+//       return (
+//         activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / activeInvestments.value.length
+//       )
+//     }),
+//     formattedValue: computed(() => {
+//       if (activeInvestments.value.length === 0) return "0.0%"
+//       const avg =
+//         activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / activeInvestments.value.length
+//       return `${avg.toFixed(1)}%`
+//     }),
+//     icon: ArrowUpRight,
+//     trend: 5,
+//     bgColor: "bg-indigo-100",
+//     iconColor: "text-indigo-600",
+//   },
+//   {
+//     id: 4,
+//     title: "Pending Liquidations",
+//     value: 0,
+//     formattedValue: 0,
+//     icon: AlertTriangle,
+//     trend: 0,
+//     bgColor: "bg-red-100",
+//     iconColor: "text-red-600",
+//   },
+// ]
+
 const metrics = [
   {
     id: 1,
-    title: 'Total Active Investments',
-    value: computed(() => {
-      const total = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0);
-      return formatCurrency(total); // Ensure correct currency formatting
-    }),
+    title: "Total Active Investments",
+    // Use a method instead of a computed property to avoid string literal rendering
+    getValue() {
+      const total = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0)
+      return formatCurrency(total)
+    },
     icon: Wallet,
     trend: 15,
-    bgColor: 'bg-blue-100',
-    iconColor: 'text-blue-600',
+    bgColor: "bg-blue-100",
+    iconColor: "text-blue-600",
   },
   {
     id: 2,
-    title: 'Active Clients',
-    value: computed(() => activeInvestments.value.length), // Directly return number
+    title: "Active Clients",
+    getValue() {
+      return activeInvestments.value.length
+    },
     icon: Users,
     trend: 8,
-    bgColor: 'bg-green-100',
-    iconColor: 'text-green-600',
+    bgColor: "bg-green-100",
+    iconColor: "text-green-600",
   },
   {
     id: 3,
-    title: 'Average Returns',
-    value: computed(() => {
-      if (activeInvestments.value.length === 0) return `0.0%`;  // Handle empty case
-      const avg = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / 
-                 activeInvestments.value.length;
-      return `${avg.toFixed(1)}%`;  // Ensure formatted percentage
-    }),
+    title: "Average Returns",
+    getValue() {
+      if (activeInvestments.value.length === 0) return "0.0%"
+      const avg =
+        activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / activeInvestments.value.length
+      return `${avg.toFixed(1)}%`
+    },
     icon: ArrowUpRight,
     trend: 5,
-    bgColor: 'bg-indigo-100',
-    iconColor: 'text-indigo-600',
+    bgColor: "bg-indigo-100",
+    iconColor: "text-indigo-600",
   },
   {
     id: 4,
-    title: 'Pending Liquidations',
-    value: 0, // Ensure direct number to avoid extra quotes
+    title: "Pending Liquidations",
+    getValue() {
+      return 0
+    },
     icon: AlertTriangle,
     trend: 0,
-    bgColor: 'bg-red-100',
-    iconColor: 'text-red-600',
+    bgColor: "bg-red-100",
+    iconColor: "text-red-600",
   },
-];
+]
 
 
   

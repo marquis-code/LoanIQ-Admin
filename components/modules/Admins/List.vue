@@ -240,7 +240,7 @@
       @continue="confirmBlockingAction(selectedadmin)"
       :loading="blocking" 
       title="Confirm Action" 
-      :description="`Are you sure you want to ${admins.block ? 'Un-Block' : 'Block'} ${selectedadmin.firstName ?? 'Nil'} ${selectedadmin.lastName ?? 'Nil' } account`" 
+      :description="`Are you sure you want to ${!admins.block ? 'Un-Block' : 'Block'} ${selectedadmin.firstName ?? 'Nil'} ${selectedadmin.lastName ?? 'Nil' } account`" 
       :show="isBlockingModalOpen" 
     />
   </div>
@@ -288,11 +288,17 @@ const clearSearch = () => {
 };
 
 const confirmDeleteAction = async (item: any) => {
-  await deleteAdmin(item.id);
+  await deleteAdmin(item.id).then((res: any) => {
+    console.log(res, 'res here')
+    isDeleteModalOpen.value = false
+  })
 };
 
 const confirmBlockingAction = async (item: any) => {
-  await blockAdmin(item.id);
+  await blockAdmin(item.id).then((res: any) => {
+    console.log(res, 'res here')
+    isBlockingModalOpen.value = false
+  })
 };
 
 const selectedadmin = ref({});
