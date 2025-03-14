@@ -1,22 +1,18 @@
 <!-- <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
-
     <header class="bg-white dark:bg-gray-800 shadow">
       <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <h1 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Tasks</h1>
       </div>
     </header>
 
-
     <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-
       <div v-if="loading" class="flex justify-center items-center h-64">
         <div class="relative">
           <div class="h-16 w-16 rounded-full border-t-4 border-b-4 border-primary animate-spin"></div>
           <div class="absolute top-0 left-0 h-16 w-16 rounded-full border-t-4 border-b-4 border-primary opacity-40 animate-ping"></div>
         </div>
       </div>
-
 
       <div v-else class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
         <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
@@ -76,7 +72,6 @@
         </div>
       </div>
     </main>
-
 
     <TransitionRoot appear :show="showTaskModal" as="template">
       <Dialog as="div" @close="closeTaskModal" class="relative z-10">
@@ -169,16 +164,18 @@
                   <div class="mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
                     <button 
                       v-if="canApprove(selectedTask)"
-                      @click="openConfirmationModal('approve')" 
+                      @click="openConfirmationModal('approve', selectedTask)" 
                       class="inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors duration-200"
+                      :disabled="updatingInvestmentStatus || updatingWalletStatus"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       Approve
                     </button>
                     <button 
                       v-if="canReject(selectedTask)"
-                      @click="openConfirmationModal('reject')" 
+                      @click="openConfirmationModal('reject', selectedTask)" 
                       class="inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-white font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200"
+                      :disabled="updatingInvestmentStatus || updatingWalletStatus"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                       Reject
@@ -197,7 +194,6 @@
         </div>
       </Dialog>
     </TransitionRoot>
-
 
     <TransitionRoot appear :show="showConfirmationModal" as="template">
       <Dialog as="div" @close="closeConfirmationModal" class="relative z-20">
@@ -234,18 +230,23 @@
                     {{ confirmationAction === 'approve' ? 'Approve Task' : 'Reject Task' }}
                   </DialogTitle>
                 </div>
-
+                
                 <div class="mt-2">
                   <p class="text-gray-600 dark:text-gray-400">
                     Are you sure you want to {{ confirmationAction === 'approve' ? 'approve' : 'reject' }} this task? This action cannot be undone.
                   </p>
+                  <div v-if="selectedTask" class="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <p class="text-sm font-medium">Task: {{ selectedTask.action }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">ID: {{ selectedTask.id }}</p>
+                  </div>
                 </div>
 
                 <div class="mt-6 flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2">
                   <button 
-                    @click="confirmAction" 
+                    @click="confirmAction()" 
                     :class="confirmationAction === 'approve' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : 'bg-red-600 hover:bg-red-700 focus:ring-red-500'"
                     class="inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 text-white font-medium focus:outline-none focus:ring-2 transition-colors duration-200"
+                    :disabled="updatingInvestmentStatus || updatingWalletStatus"
                   >
                     {{ confirmationAction === 'approve' ? 'Yes, Approve' : 'Yes, Reject' }}
                   </button>
@@ -267,9 +268,15 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useApproveRejectExternalInvestment } from '@/composables/modules/finance-mgt/useApproveRejectExternalInvestment'
+import { useUpdateFlaggingStatus } from '@/composables/modules/finance-mgt/useUpdateWalletSttaus'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { useFetchTasks } from '@/composables/modules/finance-mgt/useFetchTasks'
 import { useToast } from '@/composables/useToast'
+
+// Import the composables
+const { approveRejectExternalInvestment, approvalResult, loading: updatingInvestmentStatus } = useApproveRejectExternalInvestment()
+const { updateFlaggingStatus, updateResult, loading: updatingWalletStatus } = useUpdateFlaggingStatus()
 
 // Define types
 interface Task {
@@ -284,7 +291,7 @@ interface Task {
 }
 
 // Fetch tasks
-const { tasks: tasksList, loading, updateTaskStatus } = useFetchTasks()
+const { tasks: tasksList, loading } = useFetchTasks()
 const { showToast } = useToast()
 
 // Search functionality
@@ -320,8 +327,10 @@ const closeTaskModal = () => {
 const showConfirmationModal = ref(false)
 const confirmationAction = ref<'approve' | 'reject'>('approve')
 
-const openConfirmationModal = (action: 'approve' | 'reject') => {
+const openConfirmationModal = (action: 'approve' | 'reject', task: Task) => {
   confirmationAction.value = action
+  // Make sure the task is set in the selectedTask ref
+  selectedTask.value = task
   showConfirmationModal.value = true
 }
 
@@ -331,11 +340,52 @@ const closeConfirmationModal = () => {
 
 // Action handlers
 const confirmAction = async () => {
-  if (!selectedTask.value) return
+  if (!selectedTask.value) {
+    showToast({
+      title: 'Error',
+      description: 'No task selected',
+      type: 'error'
+    })
+    return
+  }
   
   try {
     const newStatus = confirmationAction.value === 'approve' ? 'completed' : 'rejected'
-    await updateTaskStatus(selectedTask.value.id, newStatus)
+    console.log(`Processing ${confirmationAction.value} action for task:`, selectedTask.value)
+    
+    // Handle different task actions with appropriate composables
+    if (selectedTask.value.action === 'add-external-investment') {
+      // For external investment tasks, use the investment composable
+      await approveRejectExternalInvestment(
+        selectedTask.value.actionId, 
+        { status: newStatus }
+      )
+      
+      // Check if the operation was successful
+      if (approvalResult.value) {
+        await updateTaskStatus(selectedTask.value.id, newStatus)
+      } else {
+        throw new Error('Failed to update investment status')
+      }
+    } 
+    else if (selectedTask.value.action === 'unflag-wallet') {
+      // For wallet flagging tasks, use the wallet status composable
+      await updateFlaggingStatus(
+        selectedTask.value.actionId, 
+        { status: newStatus }
+      )
+      
+      // Check if the operation was successful
+      if (updateResult.value) {
+        await updateTaskStatus(selectedTask.value.id, newStatus)
+      } else {
+        throw new Error('Failed to update wallet flagging status')
+      }
+    } 
+    else {
+      // For other task types, just update the task status
+      await updateTaskStatus(selectedTask.value.id, newStatus)
+    }
     
     // Update the task in the local state
     if (selectedTask.value) {
@@ -352,6 +402,7 @@ const confirmAction = async () => {
     
     closeConfirmationModal()
   } catch (error) {
+    console.error('Error processing task:', error)
     showToast({
       title: 'Action Failed',
       description: `Failed to ${confirmationAction.value} the task. Please try again.`,
@@ -412,9 +463,11 @@ definePageMeta({
   layout: 'admin-dashboard',
   middleware: 'auth',
 })
-</script> -->
+</script>
+ -->
 
-<template>
+
+ <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
     <header class="bg-white dark:bg-gray-800 shadow">
@@ -585,7 +638,7 @@ definePageMeta({
                   <div class="mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2">
                     <button 
                       v-if="canApprove(selectedTask)"
-                      @click="openConfirmationModal('approve')" 
+                      @click="openConfirmationModal('approve', selectedTask)" 
                       class="inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-white font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors duration-200"
                       :disabled="updatingInvestmentStatus || updatingWalletStatus"
                     >
@@ -594,7 +647,7 @@ definePageMeta({
                     </button>
                     <button 
                       v-if="canReject(selectedTask)"
-                      @click="openConfirmationModal('reject')" 
+                      @click="openConfirmationModal('reject', selectedTask)" 
                       class="inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-white font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200"
                       :disabled="updatingInvestmentStatus || updatingWalletStatus"
                     >
@@ -652,25 +705,34 @@ definePageMeta({
                     {{ confirmationAction === 'approve' ? 'Approve Task' : 'Reject Task' }}
                   </DialogTitle>
                 </div>
-
+                
                 <div class="mt-2">
                   <p class="text-gray-600 dark:text-gray-400">
                     Are you sure you want to {{ confirmationAction === 'approve' ? 'approve' : 'reject' }} this task? This action cannot be undone.
                   </p>
+                  <div v-if="selectedTask" class="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <p class="text-sm font-medium">Task: {{ selectedTask.action }}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">ID: {{ selectedTask.id }}</p>
+                  </div>
                 </div>
 
                 <div class="mt-6 flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-2">
                   <button 
-                    @click="confirmAction" 
+                    @click="confirmAction()" 
                     :class="confirmationAction === 'approve' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : 'bg-red-600 hover:bg-red-700 focus:ring-red-500'"
                     class="inline-flex justify-center items-center rounded-md border border-transparent shadow-sm px-4 py-2 text-white font-medium focus:outline-none focus:ring-2 transition-colors duration-200"
-                    :disabled="updatingInvestmentStatus || updatingWalletStatus"
+                    :disabled="isProcessing"
                   >
+                    <svg v-if="isProcessing" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
                     {{ confirmationAction === 'approve' ? 'Yes, Approve' : 'Yes, Reject' }}
                   </button>
                   <button 
                     @click="closeConfirmationModal" 
                     class="inline-flex justify-center items-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-200"
+                    :disabled="isProcessing"
                   >
                     Cancel
                   </button>
@@ -745,8 +807,10 @@ const closeTaskModal = () => {
 const showConfirmationModal = ref(false)
 const confirmationAction = ref<'approve' | 'reject'>('approve')
 
-const openConfirmationModal = (action: 'approve' | 'reject') => {
+const openConfirmationModal = (action: 'approve' | 'reject', task: Task) => {
   confirmationAction.value = action
+  // Make sure the task is set in the selectedTask ref
+  selectedTask.value = task
   showConfirmationModal.value = true
 }
 
@@ -754,21 +818,32 @@ const closeConfirmationModal = () => {
   showConfirmationModal.value = false
 }
 
-// Action handlers
+// Add a new ref for tracking processing state
+const isProcessing = ref(false)
+
 const confirmAction = async () => {
-  if (!selectedTask.value) return
+  if (!selectedTask.value) {
+    showToast({
+      title: 'Error',
+      description: 'No task selected',
+      type: 'error'
+    })
+    return
+  }
+  
+  isProcessing.value = true
   
   try {
     const newStatus = confirmationAction.value === 'approve' ? 'completed' : 'rejected'
-    const statusPayload = { status: newStatus }
+    console.log(`Processing ${confirmationAction.value} action for task:`, selectedTask.value)
     
     // Handle different task actions with appropriate composables
     if (selectedTask.value.action === 'add-external-investment') {
       // For external investment tasks, use the investment composable
-      await approveRejectExternalInvestment({
-        investmentId: selectedTask.value.actionId,
-        payload: statusPayload
-      })
+      await approveRejectExternalInvestment(
+        selectedTask.value.actionId, 
+        { status: newStatus }
+      )
       
       // Check if the operation was successful
       if (approvalResult.value) {
@@ -779,10 +854,10 @@ const confirmAction = async () => {
     } 
     else if (selectedTask.value.action === 'unflag-wallet') {
       // For wallet flagging tasks, use the wallet status composable
-      await updateFlaggingStatus({
-        walletId: selectedTask.value.actionId,
-        payload: statusPayload
-      })
+      await updateFlaggingStatus(
+        selectedTask.value.actionId, 
+        { status: newStatus }
+      )
       
       // Check if the operation was successful
       if (updateResult.value) {
@@ -809,13 +884,20 @@ const confirmAction = async () => {
       type: confirmationAction.value === 'approve' ? 'success' : 'error'
     })
     
+    // Close both modals
     closeConfirmationModal()
+    closeTaskModal()
   } catch (error) {
+    console.error('Error processing task:', error)
     showToast({
       title: 'Action Failed',
       description: `Failed to ${confirmationAction.value} the task. Please try again.`,
       type: 'error'
     })
+  } finally {
+    closeConfirmationModal()
+    closeTaskModal()
+    isProcessing.value = false
   }
 }
 
@@ -872,3 +954,4 @@ definePageMeta({
   middleware: 'auth',
 })
 </script>
+

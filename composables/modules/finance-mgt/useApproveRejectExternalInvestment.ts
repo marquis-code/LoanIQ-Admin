@@ -5,10 +5,10 @@ export const useApproveRejectExternalInvestment = () => {
     const approvalResult = ref<any>(null);
     const { $_approve_reject_external_investment } = finance_api;
   
-    const approveRejectExternalInvestment = async (investmentId: string, status: string) => {
+    const approveRejectExternalInvestment = async (investmentId: string, status: any) => {
       loading.value = true;
       try {
-        const res = await $_approve_reject_external_investment(investmentId, { status }) as any
+        const res = await $_approve_reject_external_investment(investmentId, { status: status.status === 'completed' ? 'approved' : 'rejected' }) as any
         if (res.type !== 'ERROR') {
           approvalResult.value = res?.data?.result;
         }

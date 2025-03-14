@@ -4,18 +4,14 @@ export const useUpdateFlaggingStatus = () => {
     const updateResult = ref<any>(null);
     const { $_update_flagging_status } = finance_api;
   
-    const updateFlaggingStatus = async (walletId: string, status: string) => {
+    const updateFlaggingStatus = async (walletId: string, status: any) => {
       loading.value = true;
-      try {
-        const res = await $_update_flagging_status(walletId, { status }) as any
-        if (res.type !== 'ERROR') {
+      const res = await $_update_flagging_status(walletId, { status: status.status === 'completed' ? 'approved' : 'rejected' }) as any
+      if (res.type !== 'ERROR') {
           updateResult.value = res?.data?.result;
         }
-      } catch (error) {
-        console.error('Error updating flagging status:', error);
-      } finally {
-        loading.value = false;
-      }
+        loading.value = false
+        return res
     };
   
     return { updateFlaggingStatus, updateResult, loading };

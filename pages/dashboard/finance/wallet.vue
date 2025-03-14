@@ -27,6 +27,7 @@
       <button @click="openWithdrawModal" class="bg-green-500 text-white px-4 py-2 rounded-md">Withdraw Funds</button>
       <button @click="openTransferModal" class="bg-yellow-500 text-white px-4 py-2 rounded-md">Transfer Funds</button>
     </div> -->
+    <!-- {{ transactionHistory }} -->
 
     <!-- Recent Transactions -->
     <div class="bg-white p-6 rounded-lg shadow-md">
@@ -111,7 +112,9 @@
 </template>
 
 <script setup lang="ts">
+import { useWalletTransactionHistory } from '@/composables/modules/wallet/useWalletTransactionHistory'
 import { ref } from 'vue'
+const { fetchTransactionHistory, loading, transactionHistory } = useWalletTransactionHistory()
 
 interface WalletSummary {
   totalBalance: number

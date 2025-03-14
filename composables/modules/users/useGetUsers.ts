@@ -11,7 +11,7 @@ export const useGetUsers = () => {
   );
   const metadata = ref({
     page: 1,
-    pageSize: 7,
+    pageSize: 10000,
     total: 0,
     pages: 0,
   });

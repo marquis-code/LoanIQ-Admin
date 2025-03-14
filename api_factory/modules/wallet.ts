@@ -1,8 +1,8 @@
 import { GATEWAY_ENDPOINT } from "../axios.config";
 export const wallet_api = {
-  $_fetch_wallet_transaction_history: (payload: Record<string, any>) => {
+  $_fetch_wallet_transaction_history: () => {
     let url = '/wallet/transaction-history';
-    return GATEWAY_ENDPOINT.post(url, payload);
+    return GATEWAY_ENDPOINT.get(url);
   },
   $_get_bank_list: () => {
     let url = '/wallet/get-bank-list';
