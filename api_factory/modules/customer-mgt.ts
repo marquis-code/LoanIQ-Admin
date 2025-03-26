@@ -40,10 +40,20 @@ export const users_api = {
     let url = `/user/unblock/${id}`;
     return GATEWAY_ENDPOINT.post(url);
   },
-  $_get_user_transactions: (id: string, metadata: { page: number; pageSize: number }) => {
-    let url = `/user/transactions/${id}?page=${metadata.page}&pageSize=${metadata.pageSize}`
+  $_get_user_transactions: (id: string, metadata: { page?: number; pageSize?: number }) => {
+    let url = `/user/transactions/${id}`;
+  
+    if (metadata.page) {
+      url += `?page=${metadata.page}`;
+    }
+  
+    if (metadata.pageSize) {
+      url += metadata.page ? `&pageSize=${metadata.pageSize}` : `?pageSize=${metadata.pageSize}`;
+    }
+  
     return GATEWAY_ENDPOINT.get(url);
   },
+  
   $_get_user_investments: (id: string, metadata: { page: number; pageSize: number }) => {
         let url = `/user/investments/${id}?page=${metadata.page}&pageSize=${metadata.pageSize}`
     return GATEWAY_ENDPOINT.get(url);
@@ -58,6 +68,14 @@ export const users_api = {
   },
   $_get_user_kyc_documents: (id: string, metadata: { page: number; pageSize: number }) => {
     let url = `/user/kyc_documents/${id}?page=${metadata.page}&pageSize=${metadata.pageSize}`
+    return GATEWAY_ENDPOINT.get(url);
+  },
+  $_create_user_without_wallet: (payload: any) => {
+    let url = `/user/add-user`;
+    return GATEWAY_ENDPOINT.post(url, payload);
+  },
+  $_get_wallets: () => {
+    let url = `/users/wallets`
     return GATEWAY_ENDPOINT.get(url);
   },
 };

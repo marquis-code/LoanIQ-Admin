@@ -14,8 +14,8 @@ export const useGetTransactions = () => {
     const { $_get_user_transactions } = users_api;
     const route = useRoute()
   
-    const getTransactions = async () => {
-      const id = route.params.id as string
+    const getTransactions = async (userId?: any) => {
+      const id = route.params.id || userId
       loading.value = true;
       try {
         const response = await $_get_user_transactions(id, metadata.value) as any
