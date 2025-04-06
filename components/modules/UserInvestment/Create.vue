@@ -302,7 +302,8 @@ watch(selectedInvestmentProduct, () => {
 
 // Validation for each step
 const isStep1Valid = computed(() => {
-  return payload.value.email && payload.value.name;
+  return payload.value.email
+  //  && payload.value.name;
 });
 
 const isStep2Valid = computed(() => {

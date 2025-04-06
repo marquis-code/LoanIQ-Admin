@@ -93,8 +93,17 @@
                   <button
                     @click="viewInvestmentDetails(investment)"
                     class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-primary"
+                    title="View Details"
                   >
                     <Eye class="h-4 w-4" />
+                  </button>
+                  <!-- New Wealth Manager Button -->
+                  <button
+                    @click="openWealthManagerModal(investment)"
+                    class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-emerald-600"
+                    title="Assign Wealth Manager"
+                  >
+                    <UserPlus class="h-4 w-4" />
                   </button>
                 </div>
               </td>
@@ -424,6 +433,15 @@
                         {{ selectedInvestment.investmentStatus || 'Active' }}
                       </p>
                     </div>
+
+                    <!-- Wealth Manager Section (if assigned) -->
+                    <div v-if="selectedInvestment.wealthManagerId">
+                      <p class="text-sm font-medium text-gray-500">Wealth Manager</p>
+                      <p class="text-sm font-semibold flex items-center">
+                        <UserCheck class="h-4 w-4 mr-1 text-emerald-600" />
+                        {{ getWealthManagerName(selectedInvestment.wealthManagerId) }}
+                      </p>
+                    </div>
                   </div>
                   
                   <div class="mt-6 flex justify-end">
@@ -441,6 +459,102 @@
         </div>
       </Dialog>
     </TransitionRoot>
+
+    <!-- Wealth Manager Modal -->
+    <TransitionRoot appear :show="showWealthManagerModal" as="template">
+      <Dialog
+        as="div"
+        @close="closeWealthManagerModal"
+        class="relative z-50"
+      >
+        <TransitionChild
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div class="flex min-h-full items-center justify-center p-4">
+            <TransitionChild
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel class="w-[90%] sm:w-[85%] md:w-[80%] rounded-xl mx-auto lg:w-[500px] max-w-[5200px] bg-white p-6 shadow-xl">
+                <DialogTitle class="text-lg font-medium flex items-center">
+                  <UserPlus class="h-5 w-5 mr-2 text-emerald-600" />
+                  Assign Wealth Manager
+                </DialogTitle>
+                
+                <div class="mt-4">
+                  <p class="text-sm text-gray-500 mb-4">
+                    Assign a wealth manager to manage this investment.
+                  </p>
+                  
+                  <div v-if="selectedInvestmentForWM" class="mb-4 p-3 bg-gray-50 rounded-lg">
+                    <p class="text-sm font-medium text-gray-700">Investment</p>
+                    <p class="text-base font-semibold">{{ selectedInvestmentForWM.company }}</p>
+                    <p class="text-sm text-gray-500">{{ formatCurrency(selectedInvestmentForWM.amount) }}</p>
+                  </div>
+                  
+                  <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Select Wealth Manager
+                    </label>
+                    <div class="relative">
+                      <select
+                        v-model="selectedWealthManagerId"
+                        class="block w-full rounded-md border border-gray-300 py-2 pl-3 pr-10 text-base focus:border-emerald-500 focus:outline-none focus:ring-emerald-500 sm:text-sm"
+                        required
+                      >
+                        <option value="" disabled>Select a wealth manager</option>
+                        <option v-for="manager in wealthManagers" :key="manager.id" :value="manager.id">
+                          {{ manager?.firstName }} {{ manager?.lastName }}
+                        </option>
+                      </select>
+                      <ChevronDown class="pointer-events-none absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="mt-6 flex justify-end gap-3">
+                  <button
+                    type="button"
+                    @click="closeWealthManagerModal"
+                    class="rounded-md border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    :disabled="isAssigningManager"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    @click="assignWealthManager"
+                    class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 flex items-center"
+                    :disabled="!selectedWealthManagerId || isAssigningManager"
+                  >
+                    <span v-if="isAssigningManager" class="mr-2">
+                      <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    </span>
+                    Assign Manager
+                  </button>
+                </div>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
   </div>
 </template>
 
@@ -448,6 +562,8 @@
 import { ref, computed, watch } from 'vue';
 import { useAddExternalInvestment } from '@/composables/modules/finance-mgt/useAddExternalInvestment';
 import { useFetchExternalInvestments } from '@/composables/modules/finance-mgt/useGetExternalInvestments';
+import { useFetchWealthManagers } from '@/composables/modules/wealth-managers/useFetchWealthManagers';
+import { useAssignWealthManagerToInvestment } from '@/composables/modules/wealth-managers/useAssignWealthManagerToInvestment';
 import {
   Dialog,
   DialogPanel,
@@ -461,11 +577,16 @@ import {
   Eye,
   FileX,
   Search,
+  UserPlus,
+  UserCheck,
+  ChevronDown,
 } from 'lucide-vue-next';
 
 // Fetch investments
 const { externalInvestments, loading } = useFetchExternalInvestments();
 const { addExternalInvestment, loading: isSubmitting } = useAddExternalInvestment();
+const { assignWealthManagerToInvestment, loading: isAssigningManager } = useAssignWealthManagerToInvestment();
+const { wealthManagersList: wealthManagers, loading: fetchingWealthManagers } = useFetchWealthManagers()
 
 // Table configuration
 const tableHeaders = [
@@ -488,6 +609,9 @@ const searchQuery = ref('');
 // Modal states
 const showCreateModal = ref(false);
 const selectedInvestment = ref(null);
+const showWealthManagerModal = ref(false);
+const selectedInvestmentForWM = ref(null);
+const selectedWealthManagerId = ref('');
 
 // Form state with sliders
 const createForm = ref({
@@ -631,6 +755,53 @@ const handleCreateSubmit = async () => {
   }
 };
 
+// Wealth Manager Functions
+const openWealthManagerModal = (investment) => {
+  console.log(investment, 'investment here');
+  selectedInvestmentForWM.value = investment;
+  selectedWealthManagerId.value = investment.wealthManagerId || '';
+  showWealthManagerModal.value = true;
+};
+
+const closeWealthManagerModal = () => {
+  showWealthManagerModal.value = false;
+  selectedInvestmentForWM.value = null;
+  selectedWealthManagerId.value = '';
+};
+
+// Direct assignment without confirmation modal
+const assignWealthManager = async () => {
+  try {
+    if (selectedWealthManagerId.value && selectedInvestmentForWM.value) {
+      await assignWealthManagerToInvestment(selectedInvestmentForWM.value.id, {
+        wealthManagerId: selectedWealthManagerId.value
+      });
+      
+      // Update the local investment data
+      const index = externalInvestments.value.findIndex(inv => inv.id === selectedInvestmentForWM.value.id);
+      if (index !== -1) {
+        externalInvestments.value[index].wealthManagerId = selectedWealthManagerId.value;
+      }
+      
+      // Close modal
+      closeWealthManagerModal();
+      
+      // Show success notification (if you have a notification system)
+      // showNotification({ type: 'success', message: 'Wealth manager assigned successfully' });
+    }
+  } catch (error) {
+    console.error('Error assigning wealth manager:', error);
+    // Show error notification (if you have a notification system)
+    // showNotification({ type: 'error', message: 'Failed to assign wealth manager' });
+  }
+};
+
+const getWealthManagerName = (id) => {
+  if (!id) return 'None';
+  const manager = wealthManagers.value.find(m => m.id === id);
+  return manager ? `${manager.firstName} ${manager.lastName}` : 'Unknown';
+};
+
 definePageMeta({
   layout: 'admin-dashboard',
   middleware: 'auth'
@@ -675,5 +846,35 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 input[type="range"]::-moz-range-thumb:hover {
   background: var(--primary-hover-color, #4338ca);
+}
+
+/* Animation for modals */
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+
+/* Dropdown animation */
+select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Button hover animations */
+button {
+  transition: all 0.2s ease;
+}
+
+/* Card hover effect */
+.bg-white {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bg-white:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 </style>

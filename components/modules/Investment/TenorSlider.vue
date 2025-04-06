@@ -50,7 +50,7 @@
     setup(props, { emit }) {
       // Default values for min and max tenor range
       const minTenorValue = 3;
-      const maxTenorValue = 6;
+      const maxTenorValue = 24;
   
       // Reactive properties to hold the selected values
       const minTenor = ref(minTenorValue);

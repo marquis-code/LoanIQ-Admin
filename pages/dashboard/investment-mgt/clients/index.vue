@@ -7,47 +7,6 @@
       </div>
   
       <div class="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-  <div
-    v-for="metric in metrics"
-    :key="metric.id"
-    class="rounded-lg border bg-white p-6 shadow-sm"
-  >
-    <div class="flex items-start justify-between">
-      <div>
-        <p class="text-sm font-medium text-gray-600">{{ metric.title }}</p>
-        <p class="mt-2 text-2xl font-semibold" v-text="metric.getValue()"></p>
-      </div>
-      <div
-        class="rounded-full p-2"
-        :class="metric.bgColor"
-      >
-        <component
-          :is="metric.icon"
-          class="h-5 w-5"
-          :class="metric.iconColor"
-        />
-      </div>
-    </div>
-    <div class="mt-4 flex items-center gap-2">
-      <div
-        class="flex items-center"
-        :class="metric.trend > 0 ? 'text-green-600' : 'text-red-600'"
-      >
-        <component
-          :is="metric.trend > 0 ? TrendingUp : TrendingDown"
-          class="h-4 w-4"
-        />
-        <span class="ml-1 text-sm">
-          {{ Math.abs(metric.trend) }}%
-        </span>
-      </div>
-      <span class="text-sm text-gray-500">vs last month</span>
-    </div>
-  </div>
-</div>
-
-
-      <!-- <div class="mb-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div
           v-for="metric in metrics"
           :key="metric.id"
@@ -56,7 +15,7 @@
           <div class="flex items-start justify-between">
             <div>
               <p class="text-sm font-medium text-gray-600">{{ metric.title }}</p>
-              <p class="mt-2 text-2xl font-semibold">{{ metric.value }}</p>
+              <p class="mt-2 text-2xl font-semibold" v-text="metric.getValue()"></p>
             </div>
             <div
               class="rounded-full p-2"
@@ -85,10 +44,11 @@
             <span class="text-sm text-gray-500">vs last month</span>
           </div>
         </div>
-      </div> -->
+      </div>
   
-      <div class="flex gap-4 mb-6">
-        <button @click="openAddInvestmentModal = true" class="bg-teal-700 hover:bg-teal-800 text-white px-4 py-2 rounded-md flex items-center gap-2">
+      <div class="flex gap-4 justify-between mb-6 w-full">
+<div class="flex items-center space-x-3">
+  <button @click="openAddInvestmentModal = true" class="bg-teal-700 hover:bg-teal-800 text-white px-4 py-2 rounded-md flex items-center gap-2">
           <span class="text-lg">+</span> Book Investment
         </button>
         <button @click="showCalculator = true" class="border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-md flex items-center gap-2">
@@ -99,6 +59,73 @@
           </svg>
           Investment Calculator
         </button>
+</div>
+
+        <!-- Updated Export dropdown button -->
+        <div class="relative">
+          <button 
+            @click.stop="toggleExportDropdown"
+            class="download-btn text-sm flex items-center border py-3 px-4 rounded-md justify-center gap-x-2 hover:bg-gray-50 transition-colors duration-300"
+          >
+            <span>Export Investments</span>
+            <ChevronDown class="h-4 w-4" />
+          </button>
+          
+          <!-- Export dropdown menu -->
+          <div 
+            v-if="showExportDropdown" 
+            class="absolute right-0 mt-2 w-56 rounded-md z-50 shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+            @click.stop
+          >
+            <div class="py-1" role="menu" aria-orientation="vertical">
+              <button
+                @click="downloadInvestments('active')"
+                :disabled="isDownloading"
+                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                role="menuitem"
+              >
+                <span v-if="downloadType === 'active' && isDownloading" class="text-teal-600">
+                  Downloading... {{ progress }}%
+                </span>
+                <span v-else>Active Investments</span>
+              </button>
+              <button
+                @click="downloadInvestments('completed')"
+                :disabled="isDownloading"
+                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                role="menuitem"
+              >
+                <span v-if="downloadType === 'completed' && isDownloading" class="text-teal-600">
+                  Downloading... {{ progress }}%
+                </span>
+                <span v-else>Completed Investments</span>
+              </button>
+              <button
+                @click="downloadInvestments('deactivated')"
+                :disabled="isDownloading"
+                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                role="menuitem"
+              >
+                <span v-if="downloadType === 'deactivated' && isDownloading" class="text-teal-600">
+                  Downloading... {{ progress }}%
+                </span>
+                <span v-else>Deactivated Investments</span>
+              </button>
+              <!-- <div class="border-t border-gray-100 my-1"></div>
+              <button
+                @click="downloadInvestments('all')"
+                :disabled="isDownloading"
+                class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2 font-medium"
+                role="menuitem"
+              >
+                <span v-if="downloadType === 'all' && isDownloading" class="text-teal-600">
+                  Downloading... {{ progress }}%
+                </span>
+                <span v-else>All Investments</span>
+              </button>
+            </div> -->
+          </div>
+        </div>
       </div>
   
       <div class="mb-6">
@@ -120,10 +147,10 @@
           </div>
         </div>
   
-        <div class="mt-6">
+        <div class="mt-6 z-0">
           <!-- Search bar -->
-          <div class="mb-4 relative">
-            <div class="relative">
+          <div class="mb-4 relativ w-1/2 z-0">
+            <div class="relative z-0">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400">
                 <circle cx="11" cy="11" r="8"></circle>
                 <path d="m21 21-4.3-4.3"></path>
@@ -226,6 +253,13 @@
                         >
                           <Ban class="h-4 w-4" />
                         </button>
+                        <button
+                          @click="downloadSingleInvestment(investment)"
+                          class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                          title="Download Report"
+                        >
+                          <Download class="h-4 w-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -288,8 +322,10 @@
   
           <!-- Completed Tab Content -->
           <div v-else-if="activeTab === 'completed'" class="mt-4">
+            <!-- Similar table structure as active tab with download button in actions -->
             <div v-if="paginatedInvestments.length > 0" class="overflow-x-auto">
               <table class="min-w-full divide-y divide-gray-200">
+                <!-- Table headers same as active tab -->
                 <thead class="bg-gray-50">
                   <tr>
                     <th
@@ -315,6 +351,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
                   <tr v-for="investment in paginatedInvestments" :key="investment.id">
+                    <!-- Same row structure as active tab -->
                     <td class="whitespace-nowrap px-6 py-4">
                       {{ investment.name }}
                     </td>
@@ -354,6 +391,13 @@
                         >
                           <Eye class="h-4 w-4" />
                         </NuxtLink>
+                        <button
+                          @click="downloadSingleInvestment(investment)"
+                          class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                          title="Download Report"
+                        >
+                          <Download class="h-4 w-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -361,7 +405,7 @@
               </table>
             </div>
             
-            <!-- Empty State -->
+            <!-- Empty State (same as active tab) -->
             <div v-else class="border rounded-lg flex flex-col items-center justify-center h-64 bg-white">
               <div class="p-6 mb-4 animate-pulse">
                 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="h-16 w-16 text-gray-300">
@@ -379,7 +423,7 @@
               </p>
             </div>
             
-            <!-- Pagination -->
+            <!-- Pagination (same as active tab) -->
             <div v-if="totalPages > 1" class="mt-4 flex items-center justify-between">
               <div class="text-sm text-gray-500">
                 Showing {{ paginationStart }} to {{ paginationEnd }} of {{ totalInvestments }} results
@@ -416,8 +460,10 @@
   
           <!-- Deactivated Tab Content -->
           <div v-else-if="activeTab === 'deactivated'" class="mt-4">
+            <!-- Similar table structure as active tab with download button in actions -->
             <div v-if="paginatedInvestments.length > 0" class="overflow-x-auto">
               <table class="min-w-full divide-y divide-gray-200">
+                <!-- Table headers same as active tab -->
                 <thead class="bg-gray-50">
                   <tr>
                     <th
@@ -443,6 +489,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
                   <tr v-for="investment in paginatedInvestments" :key="investment.id">
+                    <!-- Same row structure as active tab -->
                     <td class="whitespace-nowrap px-6 py-4">
                       {{ investment.name }}
                     </td>
@@ -482,6 +529,13 @@
                         >
                           <Eye class="h-4 w-4" />
                         </NuxtLink>
+                        <button
+                          @click="downloadSingleInvestment(investment)"
+                          class="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500"
+                          title="Download Report"
+                        >
+                          <Download class="h-4 w-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -489,7 +543,7 @@
               </table>
             </div>
             
-            <!-- Empty State -->
+            <!-- Empty State (same as active tab) -->
             <div v-else class="border rounded-lg flex flex-col items-center justify-center h-64 bg-white">
               <div class="p-6 mb-4 animate-spin">
                 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="h-16 w-16 text-gray-300">
@@ -507,7 +561,7 @@
               </p>
             </div>
             
-            <!-- Pagination -->
+            <!-- Pagination (same as active tab) -->
             <div v-if="totalPages > 1" class="mt-4 flex items-center justify-between">
               <div class="text-sm text-gray-500">
                 Showing {{ paginationStart }} to {{ paginationEnd }} of {{ totalInvestments }} results
@@ -544,15 +598,16 @@
         </div>
       </div>
   
-  
       <!-- Overlay for dropdown -->
       <div
-        v-if="activeDropdown !== null"
-        @click="closeDropdown"
-        class="fixed inset-0 z-40 bg-black opacity-25"
+        v-if="showExportDropdown"
+        @click="closeAllDropdowns"
+        class="fixed inset-0 z-40"
+        style="background: transparent"
       ></div>
     </div>
   
+    <!-- Modals remain the same as in the original code -->
     <TransitionRoot appear :show="showCalculator" as="template">
         <Dialog
           as="div"
@@ -970,6 +1025,7 @@
   </template>
   
   <script setup lang="ts">
+  import { useCSVDownload } from '@/composables/useCSVDownload'
   import { formatCurrency } from "@/utils/formatter"
   import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
   import {
@@ -979,6 +1035,7 @@
     TransitionChild,
     TransitionRoot,
   } from '@headlessui/vue'
+  const { isDownloading, progress, downloadPaginatedCSV } = useCSVDownload()
   import {
     Plus,
     ArrowUpDown,
@@ -993,6 +1050,8 @@
     Wallet,
     ArrowUpRight,
     AlertTriangle,
+    Download,
+    ChevronDown
   } from 'lucide-vue-next'
   
   const openAddInvestmentModal = ref(false)
@@ -1040,165 +1099,167 @@
   const topUpInvestment = ref(null)
   const liquidatingInvestment = ref(null)
   
-// Metrics
-// const metrics = [
-//   {
-//     id: 1,
-//     title: 'Total Active Investments',
-//     value: computed(() => {
-//       const total = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0);
-//       return formatCurrency(total); // Ensure correct currency formatting
-//     }),
-//     icon: Wallet,
-//     trend: 15,
-//     bgColor: 'bg-blue-100',
-//     iconColor: 'text-blue-600',
-//   },
-//   {
-//     id: 2,
-//     title: 'Active Clients',
-//     value: computed(() => activeInvestments.value.length), // Directly return number
-//     icon: Users,
-//     trend: 8,
-//     bgColor: 'bg-green-100',
-//     iconColor: 'text-green-600',
-//   },
-//   {
-//     id: 3,
-//     title: 'Average Returns',
-//     value: computed(() => {
-//       if (activeInvestments.value.length === 0) return `0.0%`;  // Handle empty case
-//       const avg = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / 
-//                  activeInvestments.value.length;
-//       return `${avg.toFixed(1)}%`;  // Ensure formatted percentage
-//     }),
-//     icon: ArrowUpRight,
-//     trend: 5,
-//     bgColor: 'bg-indigo-100',
-//     iconColor: 'text-indigo-600',
-//   },
-//   {
-//     id: 4,
-//     title: 'Pending Liquidations',
-//     value: 0, // Ensure direct number to avoid extra quotes
-//     icon: AlertTriangle,
-//     trend: 0,
-//     bgColor: 'bg-red-100',
-//     iconColor: 'text-red-600',
-//   },
-// ];
+  // New state for export dropdown
+  const showExportDropdown = ref(false)
+  const downloadType = ref('')
 
-// const metrics = [
-//   {
-//     id: 1,
-//     title: "Total Active Investments",
-//     value: computed(() => {
-//       return activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0)
-//     }),
-//     formattedValue: computed(() => {
-//       const total = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0)
-//       return formatCurrency(total)
-//     }),
-//     icon: Wallet,
-//     trend: 15,
-//     bgColor: "bg-blue-100",
-//     iconColor: "text-blue-600",
-//   },
-//   {
-//     id: 2,
-//     title: "Active Clients",
-//     value: computed(() => activeInvestments.value.length),
-//     formattedValue: computed(() => activeInvestments.value.length),
-//     icon: Users,
-//     trend: 8,
-//     bgColor: "bg-green-100",
-//     iconColor: "text-green-600",
-//   },
-//   {
-//     id: 3,
-//     title: "Average Returns",
-//     value: computed(() => {
-//       if (activeInvestments.value.length === 0) return 0
-//       return (
-//         activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / activeInvestments.value.length
-//       )
-//     }),
-//     formattedValue: computed(() => {
-//       if (activeInvestments.value.length === 0) return "0.0%"
-//       const avg =
-//         activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / activeInvestments.value.length
-//       return `${avg.toFixed(1)}%`
-//     }),
-//     icon: ArrowUpRight,
-//     trend: 5,
-//     bgColor: "bg-indigo-100",
-//     iconColor: "text-indigo-600",
-//   },
-//   {
-//     id: 4,
-//     title: "Pending Liquidations",
-//     value: 0,
-//     formattedValue: 0,
-//     icon: AlertTriangle,
-//     trend: 0,
-//     bgColor: "bg-red-100",
-//     iconColor: "text-red-600",
-//   },
-// ]
+  // Function to toggle export dropdown
+  const toggleExportDropdown = (event) => {
+    // Stop event propagation to prevent immediate closing
+    event.stopPropagation()
+    showExportDropdown.value = !showExportDropdown.value
+    if (showExportDropdown.value) {
+      activeDropdown.value = null
+    }
+  }
 
-const metrics = [
-  {
-    id: 1,
-    title: "Total Active Investments",
-    // Use a method instead of a computed property to avoid string literal rendering
-    getValue() {
-      const total = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0)
-      return formatCurrency(total)
-    },
-    icon: Wallet,
-    trend: 15,
-    bgColor: "bg-blue-100",
-    iconColor: "text-blue-600",
-  },
-  {
-    id: 2,
-    title: "Active Clients",
-    getValue() {
-      return activeInvestments.value.length
-    },
-    icon: Users,
-    trend: 8,
-    bgColor: "bg-green-100",
-    iconColor: "text-green-600",
-  },
-  {
-    id: 3,
-    title: "Average Returns",
-    getValue() {
-      if (activeInvestments.value.length === 0) return "0.0%"
-      const avg =
-        activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / activeInvestments.value.length
-      return `${avg.toFixed(1)}%`
-    },
-    icon: ArrowUpRight,
-    trend: 5,
-    bgColor: "bg-indigo-100",
-    iconColor: "text-indigo-600",
-  },
-  {
-    id: 4,
-    title: "Pending Liquidations",
-    getValue() {
-      return 0
-    },
-    icon: AlertTriangle,
-    trend: 0,
-    bgColor: "bg-red-100",
-    iconColor: "text-red-600",
-  },
-]
+  // Function to close all dropdowns
+  const closeAllDropdowns = () => {
+    activeDropdown.value = null
+    showExportDropdown.value = false
+  }
 
+  // Function to download investments by type
+  const downloadInvestments = async (type: string) => {
+    downloadType.value = type
+    try {
+      let endpoint = ''
+      let filename = ''
+      let title = ''
+      
+      switch (type) {
+        case 'active':
+          endpoint = '/investment/active-investments'
+          filename = 'active_investments.csv'
+          title = 'Active Investments'
+          break
+        case 'completed':
+          endpoint = '/investment/completed-investments'
+          filename = 'completed_investments.csv'
+          title = 'Completed Investments'
+          break
+        case 'deactivated':
+          endpoint = '/investment/deactivated-investments'
+          filename = 'deactivated_investments.csv'
+          title = 'Deactivated Investments'
+          break
+        // case 'all':
+        //   endpoint = '/investment/all-investments'
+        //   filename = 'all_investments.csv'
+        //   title = 'All Investments'
+        //   break
+        default:
+          endpoint = '/investment/active-investments'
+          filename = 'investments.csv'
+          title = 'Investments'
+      }
+      
+      await downloadPaginatedCSV(
+        endpoint,
+        {
+          title,
+          filename,
+          dataPath: `data.${type}Investments`,
+          flattenObjects: true,
+          nestedDelimiter: '_',
+          includeHeaders: true,
+          transformHeaders: (headers) => {
+            return headers.map(header => {
+              if (header === 'firstName') return 'First Name'
+              if (header === 'lastName') return 'Last Name'
+              if (header === 'email') return 'Email'
+              return formatHeader(header)
+            })
+          }
+        },
+        { sort: 'name', order: 'asc' }
+      )
+    } finally {
+      showExportDropdown.value = false
+      setTimeout(() => {
+        downloadType.value = ''
+      }, 1000)
+    }
+  }
 
+  // Function to download a single investment report
+  const downloadSingleInvestment = async (investment) => {
+    try {
+      await downloadPaginatedCSV(
+        `/investment/${investment.id}/report`,
+        {
+          title: `${investment.name} Investment Report`,
+          filename: `investment_${investment.id}_report.csv`,
+          dataPath: 'data.investment',
+          flattenObjects: true,
+          nestedDelimiter: '_',
+          includeHeaders: true
+        }
+      )
+    } catch (error) {
+      console.error('Error downloading investment report:', error)
+    }
+  }
+
+  // Helper function to format header names
+  const formatHeader = (header: string): string => {
+    return header
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
+
+  const metrics = [
+    {
+      id: 1,
+      title: "Total Active Investments",
+      // Use a method instead of a computed property to avoid string literal rendering
+      getValue() {
+        const total = activeInvestments.value.reduce((sum, inv) => sum + Number(inv.amount), 0)
+        return formatCurrency(total)
+      },
+      icon: Wallet,
+      trend: 15,
+      bgColor: "bg-blue-100",
+      iconColor: "text-blue-600",
+    },
+    {
+      id: 2,
+      title: "Active Clients",
+      getValue() {
+        return activeInvestments.value.length
+      },
+      icon: Users,
+      trend: 8,
+      bgColor: "bg-green-100",
+      iconColor: "text-green-600",
+    },
+    {
+      id: 3,
+      title: "Average Returns",
+      getValue() {
+        if (activeInvestments.value.length === 0) return "0.0%"
+        const avg =
+          activeInvestments.value.reduce((sum, inv) => sum + Number(inv.interestRate), 0) / activeInvestments.value.length
+        return `${avg.toFixed(1)}%`
+      },
+      icon: ArrowUpRight,
+      trend: 5,
+      bgColor: "bg-indigo-100",
+      iconColor: "text-indigo-600",
+    },
+    {
+      id: 4,
+      title: "Pending Liquidations",
+      getValue() {
+        return 0
+      },
+      icon: AlertTriangle,
+      trend: 0,
+      bgColor: "bg-red-100",
+      iconColor: "text-red-600",
+    },
+  ]
   
   // Handle tab change with loading state
   const handleTabChange = (tabValue) => {
@@ -1442,19 +1503,16 @@ const metrics = [
   
   // Lifecycle hooks
   onMounted(() => {
-    document.addEventListener("click", (event: MouseEvent) => {
-      if (activeDropdown.value !== null) {
-        activeDropdown.value = null;
-      }
-    });
+  // Add click event listener to document to close dropdowns when clicking outside
+    document.addEventListener("click", (event) => {
+      // Close dropdowns when clicking outside
+      closeAllDropdowns()
+    })
   })
   
   onBeforeUnmount(() => {
-    document.removeEventListener("click", (event: MouseEvent) => {
-      if (activeDropdown.value !== null) {
-        activeDropdown.value = null;
-      }
-    });
+    // Remove event listener when component is unmounted
+    document.removeEventListener("click", closeAllDropdowns)
   })
   
   definePageMeta({
@@ -1462,5 +1520,11 @@ const metrics = [
     middleware: 'auth'
   })
   </script>
-  
-  
+
+<style scoped>
+/* Add this to ensure dropdown appears above other elements */
+.relative {
+  position: relative;
+  z-index: 50;
+}
+</style>
