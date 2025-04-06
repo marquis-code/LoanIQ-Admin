@@ -111,7 +111,7 @@
                 </span>
                 <span v-else>Deactivated Investments</span>
               </button>
-              <!-- <div class="border-t border-gray-100 my-1"></div>
+              <div class="border-t border-gray-100 my-1"></div>
               <button
                 @click="downloadInvestments('all')"
                 :disabled="isDownloading"
@@ -123,7 +123,7 @@
                 </span>
                 <span v-else>All Investments</span>
               </button>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>

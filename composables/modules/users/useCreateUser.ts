@@ -5,16 +5,18 @@ const { showToast } = useCustomToast();
 
 const payload = ref({
     email: "",
-    bvn: ""
+    bvn: "",
+    phoneNumber: ""
 })
 
 export const useCreateUser = () => {
     const loading = ref(false);
-
-    const createUser = async () => {
+    
+    const createUser = async (payloadItem: any) => {
+        const payloadObj = payloadItem || payload.value
         loading.value = true;
         try {
-           const response = await users_api.$_create_user(payload.value) as any
+           const response = await users_api.$_create_user(payloadObj) as any
             if (response.type !== "ERROR") {
                 showToast({
                     title: "Success",
