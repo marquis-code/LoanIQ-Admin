@@ -64,6 +64,16 @@
                     <li>
                       <NuxtLink
                         @click="closeSidebar"
+                        to="/dashboard/tasks"
+                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                      >
+                        <ClipboardDocumentListIcon class="h-6 w-6 shrink-0" />
+                        Tasks Management
+                      </NuxtLink>
+                    </li>
+                    <li>
+                      <NuxtLink
+                        @click="closeSidebar"
                         to="/dashboard/wealth-managers"
                         class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
                       >
@@ -161,6 +171,15 @@
                   >
                     <Users class="h-6 w-6 shrink-0" />
                     User Management
+                  </NuxtLink>
+                </li>
+                <li v-if="hasPermission('user-management')">
+                  <NuxtLink
+                    to="/dashboard/tasks"
+                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                  >
+                    <ClipboardDocumentListIcon class="h-6 w-6 shrink-0" />
+                    Tasks Management
                   </NuxtLink>
                 </li>
                 <li v-if="hasPermission('user-management')">
@@ -442,7 +461,7 @@ const menuItems: MenuItem[] = [
     icon: BanknotesIcon,
   },
   {
-    name: "Revenue Streams",
+    name: "Compaany Portfolio",
     path: "/dashboard/finance/revenue-streams",
     icon: ChartBarIcon,
   },
@@ -451,11 +470,11 @@ const menuItems: MenuItem[] = [
     path: "/dashboard/finance/wallet",
     icon: FlagIcon,
   },
-  {
-    name: "Tasks",
-    path: "/dashboard/finance/tasks",
-    icon: ClipboardDocumentListIcon,
-  },
+  // {
+  //   name: "Tasks",
+  //   path: "/dashboard/finance/tasks",
+  //   icon: ClipboardDocumentListIcon,
+  // },
 ];
 
 const toggleDropdown = () => {
@@ -511,11 +530,11 @@ const investmentMenuItems: MenuItem[] = [
     path: '/dashboard/investment-mgt/clients',
     icon: Users
   },
-  {
-    name: 'Company Portfolio',
-    path: '/dashboard/investment-mgt/portfolio',
-    icon: Building2
-  }
+  // {
+  //   name: 'Company Portfolio',
+  //   path: '/dashboard/investment-mgt/portfolio',
+  //   icon: Building2
+  // }
 ]
 
 const currentPage = computed(() => {

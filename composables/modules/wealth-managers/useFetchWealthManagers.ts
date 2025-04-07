@@ -13,7 +13,8 @@ export const useFetchWealthManagers = () => {
     loading.value = true;
     try {
       const res = await $_get_wealth_managers();
-      wealthManagersList.value = res?.data?.data || [];
+      console.log(res,'wealth managers here')
+      wealthManagersList.value = res?.data?.data?.wealthManagers || [];
     } catch (error) {
       showToast({
         title: "Error",

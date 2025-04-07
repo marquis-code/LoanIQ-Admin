@@ -273,7 +273,7 @@
                     </section>
                     
                     <div>
-                      <label for="preLiquidationFee" class="block text-sm font-medium text-gray-700">Pre Liquidation Fee</label>
+                      <label for="preLiquidationFee" class="block text-sm font-medium text-gray-700">Pre Liquidation Charge (%)</label>
                       <input
                         type="text"
                         v-model="formattedPreLiquidationFee"
@@ -367,10 +367,10 @@
                   <button
                     v-else
                     @click="submitForm"
-                    :disabled="loading"
+                    :disabled="creatingProduct"
                     class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {{ loading ? "Creating..." : "Create Product" }}
+                    {{ creatingProduct ? "Creating..." : "Create Product" }}
                   </button>
                 </div>
               </DialogPanel>

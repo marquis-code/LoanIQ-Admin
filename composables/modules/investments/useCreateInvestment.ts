@@ -9,9 +9,12 @@ const payload = ref({
     email: "",
     productId: "",
     principal: '',
-    automatedFrequency: "",
+    wealthManagerId: "",
+    tenor: "",
+    // automatedFrequency: "",
+    interestRate: "",
     interestPaymentSchedule: "",
-     paymentMethod: "",
+    //  paymentMethod: "",
   });
 
 export const useCreateInvestment = () => {

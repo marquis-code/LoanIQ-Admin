@@ -1,5 +1,6 @@
 <template>
     <div class="wealth-managers-dashboard">
+      <!-- {{wealthManagersList}} -->
       <!-- Header Section -->
       <div class="relative overflow-hidden bg-gradient-to-r from-teal-600 to-teal-800 mb-6 rounded-xl">
         <div class="px-6 py-8 md:px-8 md:py-12">
@@ -12,13 +13,13 @@
                 Manage your team of wealth management professionals
               </p>
             </div>
-            <button
+            <!-- <button
               @click="openCreateModal"
               class="flex items-center justify-center gap-2 bg-white text-teal-700 px-4 py-2.5 rounded-lg font-medium shadow-sm hover:bg-teal-50 transition-all duration-300 transform hover:scale-105 active:scale-95"
             >
               <UserPlus class="h-5 w-5" />
               <span>Add Wealth Manager</span>
-            </button>
+            </button> -->
           </div>
         </div>
         <!-- Decorative elements -->
@@ -27,7 +28,7 @@
       </div>
   
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div 
           v-for="(stat, index) in stats" 
           :key="stat.title"
@@ -52,7 +53,7 @@
             <span class="text-sm text-gray-500">vs last month</span>
           </div>
         </div>
-      </div>
+      </div> -->
   
       <!-- Search and Filter Section -->
       <div class="bg-white rounded-xl p-4 mb-6 shadow-sm border border-gray-100">
@@ -67,7 +68,7 @@
             />
           </div>
           <div class="flex flex-col sm:flex-row gap-3">
-            <div class="relative">
+            <!-- <div class="relative">
               <select
                 v-model="filterStatus"
                 class="appearance-none pl-3 pr-10 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-white transition-all duration-300"
@@ -90,7 +91,7 @@
                 <option value="performance">Sort by Performance</option>
               </select>
               <ChevronDown class="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -98,13 +99,13 @@
       <!-- Table Section -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-500">
         <!-- Loading State -->
-        <div v-if="isLoading" class="flex flex-col items-center justify-center py-20">
+        <div v-if="loading" class="flex flex-col items-center justify-center py-20">
           <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600 mb-4"></div>
           <p class="text-gray-500 font-medium">Loading wealth managers...</p>
         </div>
   
         <!-- Empty State -->
-        <div v-else-if="filteredManagers.length === 0" class="flex flex-col items-center justify-center py-20">
+        <div v-else-if="wealthManagersList.length === 0" class="flex flex-col items-center justify-center py-20">
           <div class="rounded-full bg-gray-100 p-6 mb-4">
             <Users class="h-12 w-12 text-gray-400" />
           </div>
@@ -130,9 +131,18 @@
               <thead class="bg-gray-50">
                 <tr>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Wealth Manager
+                    First Name
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Last Name
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Created At
+                  </th>
+                  <!-- <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Contact
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -146,7 +156,7 @@
                   </th>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
-                  </th>
+                  </th> -->
                   <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
@@ -154,14 +164,15 @@
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <tr 
-                  v-for="(manager, index) in paginatedManagers" 
+                  v-for="(manager, index) in wealthManagersList" 
                   :key="manager.id"
                   class="hover:bg-gray-50 transition-colors duration-150"
-                  :class="{'animate-fade-in': isLoaded}"
+                  :class="{'animate-fade-in': loading}"
                   :style="{ animationDelay: `${index * 50}ms` }"
                 >
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
+                    <div class="font-medium text-gray-900">{{ manager.firstName }}</div>
+                    <!-- <div class="flex items-center">
                       <div class="h-10 w-10 flex-shrink-0">
                         <img
                           :src="manager.avatar || '/placeholder.svg?height=40&width=40'"
@@ -173,13 +184,18 @@
                         <div class="font-medium text-gray-900">{{ manager.firstName }} {{ manager.lastName }}</div>
                         <div class="text-sm text-gray-500">{{ manager.title }}</div>
                       </div>
-                    </div>
+                    </div> -->
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="font-medium text-gray-900">{{ manager.lastName }}</div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900">{{ manager.email }}</div>
-                    <div class="text-sm text-gray-500">{{ manager.phone }}</div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-900">{{ manager?.createdAt }}</div>
+                  </td>
+                  <!-- <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900">{{ manager.clientCount }}</div>
                     <div class="text-sm text-gray-500">{{ manager.clientChange > 0 ? '+' : '' }}{{ manager.clientChange }} this month</div>
                   </td>
@@ -188,8 +204,8 @@
                     <div class="text-sm" :class="manager.aumChange > 0 ? 'text-green-600' : 'text-red-600'">
                       {{ manager.aumChange > 0 ? '+' : '' }}{{ manager.aumChange }}%
                     </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  </td> -->
+                  <!-- <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                       <div class="w-full bg-gray-200 rounded-full h-2.5">
                         <div 
@@ -200,38 +216,37 @@
                       </div>
                       <span class="ml-2 text-sm text-gray-900">{{ manager.performance }}%</span>
                     </div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
+                  </td> -->
+                  <!-- <td class="px-6 py-4 whitespace-nowrap">
                     <span
                       class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                       :class="getStatusClass(manager.status)"
                     >
                       {{ manager.status }}
                     </span>
-                  </td>
+                  </td> -->
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div class="flex justify-end space-x-2">
-                      <button
+                      <!-- <button
                         @click="openEditModal(manager)"
                         class="text-gray-500 hover:text-teal-600 transition-colors duration-200"
                         title="Edit"
                       >
                         <Edit class="h-5 w-5" />
-                      </button>
-                      <button
-                        @click="openViewModal(manager)"
+                      </button> -->
+                      <NuxtLink
+                       :to="`/wealth-managers/${manager.id}/investments`"
                         class="text-gray-500 hover:text-teal-600 transition-colors duration-200"
-                        title="View Details"
                       >
-                        <Eye class="h-5 w-5" />
-                      </button>
-                      <button
+                        View Investments
+                      </NuxtLink>
+                      <!-- <button
                         @click="confirmDelete(manager)"
                         class="text-gray-500 hover:text-red-600 transition-colors duration-200"
                         title="Delete"
                       >
                         <Trash2 class="h-5 w-5" />
-                      </button>
+                      </button> -->
                     </div>
                   </td>
                 </tr>
@@ -821,6 +836,7 @@
   
   <script setup lang="ts">
   import { ref, computed, onMounted, watch } from 'vue'
+  import { useFetchWealthManagers } from "@/composables/modules/wealth-managers/useFetchWealthManagers"
   import {
     Dialog,
     DialogPanel,
@@ -854,6 +870,7 @@
     Award,
     DollarSign
   } from 'lucide-vue-next'
+  const { wealthManagersList, loading} = useFetchWealthManagers()
   
   // Types
   interface WealthManager {
@@ -1069,36 +1086,36 @@
   })
   
   // Methods
-  const fetchManagers = async () => {
-    isLoading.value = true
+  // const fetchManagers = async () => {
+  //   isLoading.value = true
     
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
+  //   try {
+  //     // Simulate API call
+  //     await new Promise(resolve => setTimeout(resolve, 1500))
       
-      // Mock data
-      managers.value = Array.from({ length: 25 }, (_, i) => ({
-        id: i + 1,
-        firstName: ['John', 'Sarah', 'Michael', 'Emma', 'David'][Math.floor(Math.random() * 5)],
-        lastName: ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones'][Math.floor(Math.random() * 5)],
-        title: ['Senior Wealth Manager', 'Wealth Advisor', 'Financial Consultant', 'Investment Strategist', 'Portfolio Manager'][Math.floor(Math.random() * 5)],
-        email: `example${i + 1}@fintech.com`,
-        phone: `+1 (555) ${Math.floor(100 + Math.random() * 900)}-${Math.floor(1000 + Math.random() * 9000)}`.substring(0, 14),
-        status: ['active', 'inactive', 'onboarding'][Math.floor(Math.random() * 3)] as 'active' | 'inactive' | 'onboarding',
-        clientCount: Math.floor(10 + Math.random() * 90),
-        clientChange: Math.floor(Math.random() * 10) * (Math.random() > 0.3 ? 1 : -1),
-        aum: Math.floor(1000000 + Math.random() * 9000000),
-        aumChange: Math.floor(Math.random() * 15) * (Math.random() > 0.3 ? 1 : -1),
-        performance: parseFloat((Math.random() * 20 - 5).toFixed(2)),
-      }))
+  //     // Mock data
+  //     managers.value = Array.from({ length: 25 }, (_, i) => ({
+  //       id: i + 1,
+  //       firstName: ['John', 'Sarah', 'Michael', 'Emma', 'David'][Math.floor(Math.random() * 5)],
+  //       lastName: ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones'][Math.floor(Math.random() * 5)],
+  //       title: ['Senior Wealth Manager', 'Wealth Advisor', 'Financial Consultant', 'Investment Strategist', 'Portfolio Manager'][Math.floor(Math.random() * 5)],
+  //       email: `example${i + 1}@fintech.com`,
+  //       phone: `+1 (555) ${Math.floor(100 + Math.random() * 900)}-${Math.floor(1000 + Math.random() * 9000)}`.substring(0, 14),
+  //       status: ['active', 'inactive', 'onboarding'][Math.floor(Math.random() * 3)] as 'active' | 'inactive' | 'onboarding',
+  //       clientCount: Math.floor(10 + Math.random() * 90),
+  //       clientChange: Math.floor(Math.random() * 10) * (Math.random() > 0.3 ? 1 : -1),
+  //       aum: Math.floor(1000000 + Math.random() * 9000000),
+  //       aumChange: Math.floor(Math.random() * 15) * (Math.random() > 0.3 ? 1 : -1),
+  //       performance: parseFloat((Math.random() * 20 - 5).toFixed(2)),
+  //     }))
       
-      isLoaded.value = true
-    } catch (error) {
-      showToastMessage('Failed to load wealth managers', 'error')
-    } finally {
-      isLoading.value = false
-    }
-  }
+  //     isLoaded.value = true
+  //   } catch (error) {
+  //     showToastMessage('Failed to load wealth managers', 'error')
+  //   } finally {
+  //     isLoading.value = false
+  //   }
+  // }
   
   const openCreateModal = () => {
     editingManager.value = null

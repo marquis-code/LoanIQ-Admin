@@ -65,6 +65,28 @@
                 />
               </div>
             </div>
+
+            <div>
+              <label for="interestRate" class="block text-sm font-medium text-gray-700 flex items-center">
+                Interest Rate
+                <InfoTooltip message="The annual interest rate for this investment product." />
+              </label>
+              <div class="mt-1 relative rounded-md shadow-sm">
+                <input
+                  type="text"
+                  v-model="formattedInterestRate"
+                  id="interestRate"
+                  class="block w-full pr-12 py-3 px-3 rounded-md border border-gray-300 focus:ring-primary focus:border-primary sm:text-sm"
+                  placeholder="0.00"
+                  @input="formatInterestRate"
+                  @blur="updateInterestRate"
+                />
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <span class="text-gray-500 sm:text-sm">%</span>
+                </div>
+              </div>
+            </div>
+
           </div>
 
           <!-- Step 3: Investment Product -->
@@ -118,21 +140,24 @@
             
             <div v-if="Object.keys(selectedInvestmentProduct).length">
               <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
-                <select 
-                  v-model="payload.automatedFrequency"
-                  class="w-full p-3 border border-gray-300 rounded-md bg-[#F4F5F7] focus:outline-none focus:ring-2 focus:ring-[#2F6D67]"
-                >
-                  <option value="">Please select Frequency</option>
-                  <option 
-                    :value="item" 
-                    v-for="(item, idx) in selectedInvestmentProduct?.automatedFrequency" 
-                    :key="idx"
-                  >
-                    {{ item }}
-                  </option>
-                </select>
-              </div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Select Wealth Manager
+                    </label>
+                    <!-- {{wealthManagers}} -->
+                    <div class="relative">
+                      <select
+                        v-model="payload.wealthManagerId"
+                        class="block w-full rounded-md border border-gray-300 py-2 pl-3 pr-10 text-base focus:border-emerald-500 focus:outline-none focus:ring-emerald-500 sm:text-sm"
+                        required
+                      >
+                        <option value="" disabled>Select a wealth manager</option>
+                        <option v-for="manager in wealthManagers" :key="manager.id" :value="manager.id">
+                          {{ manager?.firstName }} {{ manager?.lastName }}
+                        </option>
+                      </select>
+                      <ChevronDown class="pointer-events-none absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
+                    </div>
+                  </div>
 
               <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Interest Payment Option</label>
@@ -152,6 +177,30 @@
               </div>
 
               <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                      Tenor: {{ payload.tenor }} months
+                    </label>
+                    <div class="px-2">
+                      <input
+                        v-model="payload.tenor"
+                        type="range"
+                        min="3"
+                        max="24"
+                        step="1"
+                        class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <div class="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>3</span>
+                        <span>12</span>
+                        <span>24</span>
+                        <!-- <span>36</span> -->
+                      </div>
+                    </div>
+                  </div>
+
+
+<!-- 
+              <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
                 <select 
                   v-model="payload.paymentMethod"
@@ -166,7 +215,7 @@
                     {{ item }}
                   </option>
                 </select>
-              </div>
+              </div> -->
             </div>
             <div v-else class="text-center py-4 text-red-500">
               Please select an investment product first
@@ -174,7 +223,7 @@
           </div>
 
           <!-- Step 5: Review and Submit -->
-          <div v-else-if="currentStep === 5" key="step5" class="space-y-6">
+          <div v-else-if="currentStep === 5" key="step5" class="space-y-10 text-sm">
             <h2 class="text-base font-medium">Review Your Investment</h2>
             
             <div class="bg-gray-50 p-4 rounded-lg space-y-3">
@@ -195,16 +244,21 @@
                 <span class="font-medium">{{ selectedInvestmentProduct?.name || 'Not selected' }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-600">Frequency:</span>
-                <span class="font-medium">{{ payload.automatedFrequency || 'Not selected' }}</span>
+                <span class="text-gray-600">Interest Rate:</span>
+                <span class="font-medium">{{ payload.interestRate || 'Not selected' }}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-600">Interest Payment:</span>
                 <span class="font-medium">{{ payload.interestPaymentSchedule || 'Not selected' }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-600">Payment Method:</span>
-                <span class="font-medium">{{ payload.paymentMethod || 'Not selected' }}</span>
+                <span class="text-gray-600">Tenor:</span>
+                <span class="font-medium">{{ payload.tenor || 'Not selected' }}</span>
+              </div>
+
+              <div class="flex justify-between">
+                <span class="text-gray-600">Wealth Manager:</span>
+                <span class="font-medium">{{ payload.wealthManagerId || 'Not selected' }}</span>
               </div>
             </div>
           </div>
@@ -254,6 +308,7 @@
 </template>
 
 <script setup lang="ts">
+import { useFetchWealthManagers } from '@/composables/modules/wealth-managers/useFetchWealthManagers';
 import { useCreateInvestment } from '@/composables/modules/investments/useCreateInvestment';
 import { useFetchInvestmentProducts } from '@/composables/modules/investment-products/useFetchInvestmentProducts';
 import { ref, computed, watch } from 'vue';
@@ -262,10 +317,14 @@ const emit = defineEmits(['cancel']);
 
 const { payload, loading: creating, createInvestment } = useCreateInvestment();
 const { investmentProducts: products, loading: fetchingInvestmentsProducts } = useFetchInvestmentProducts();
+const { wealthManagersList: wealthManagers, loading: fetchingWealthManagers } = useFetchWealthManagers()
 
 const selectedInvestmentProduct = ref({});
 const formattedPrincipal = ref('');
 const paymentMethods = ref(['manual']);
+const tenorValue = ref(3);
+const maxTenorValue = ref(24);
+const formattedInterestRate = ref('');
 
 // Multi-step form management
 const currentStep = ref(1);
@@ -316,9 +375,9 @@ const isStep3Valid = computed(() => {
 
 const isStep4Valid = computed(() => {
   return (
-    payload.value.automatedFrequency &&
+    payload.value.wealthManagerId &&
     payload.value.interestPaymentSchedule &&
-    payload.value.paymentMethod
+    payload.value.tenor
   );
 });
 
@@ -387,6 +446,16 @@ const handleSubmit = async (e: Event) => {
     await createInvestment();
   }
 };
+
+const formatInterestRate = () => {
+    const numericValue = formattedInterestRate.value.replace(/[^0-9.]/g, '');
+    formattedInterestRate.value = numericValue;
+  };
+  
+  const updateInterestRate = () => {
+    const rawValue = formattedInterestRate.value.replace(/[^\d.-]/g, '');
+    payload.value.interestRate = Math.min(parseFloat(rawValue), 100);
+  };
 </script>
 
 <style scoped>
