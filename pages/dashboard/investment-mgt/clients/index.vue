@@ -910,8 +910,104 @@
           </div>
         </Dialog>
       </TransitionRoot>
-  
+
+    
       <TransitionRoot appear :show="!!liquidatingInvestment" as="template">
+  <Dialog
+    as="div"
+    @close="liquidatingInvestment = null"
+    class="relative z-50"
+  >
+    <TransitionChild
+      enter="duration-300 ease-out"
+      enter-from="opacity-0"
+      enter-to="opacity-100"
+      leave="duration-200 ease-in"
+      leave-from="opacity-100"
+      leave-to="opacity-0"
+    >
+      <div class="fixed inset-0 bg-black/25" />
+    </TransitionChild>
+
+    <div class="fixed inset-0 overflow-y-auto">
+      <div class="flex min-h-full items-center justify-center p-4">
+        <TransitionChild
+          enter="duration-300 ease-out"
+          enter-from="opacity-0 scale-95"
+          enter-to="opacity-100 scale-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100 scale-100"
+          leave-to="opacity-0 scale-95"
+        >
+          <DialogPanel class="w-[90%] sm:w-[85%] md:w-[80%] rounded-xl mx-auto lg:w-[500px] max-w-[5200px] bg-white p-6 shadow-lg">
+            <DialogTitle class="text-lg font-medium">
+              Liquidate Investment
+            </DialogTitle>
+            <div class="mt-4 space-y-4">
+              <p class="text-sm text-gray-500">
+                Are you sure you want to liquidate this investment? This action cannot be undone.
+              </p>
+              <div class="rounded-lg bg-gray-50 p-4">
+                <div class="space-y-2">
+                  <div class="flex justify-between">
+                    <span class="text-sm text-gray-500">Investment Amount:</span>
+                    <span class="font-medium">{{ formatCurrency(liquidatingInvestment?.amount) }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-sm text-gray-500">Early Liquidation Fee:</span>
+                    <span class="font-medium text-red-600">{{ formatCurrency(liquidationFee) }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-sm text-gray-500">Net Amount:</span>
+                    <span class="font-medium">{{ formatCurrency(liquidationAmount) }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Toggle Component -->
+              <div class="mt-4 flex items-center">
+                <button 
+                  type="button" 
+                  @click="acceptTerms = !acceptTerms"
+                  class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  :class="acceptTerms ? 'bg-indigo-600' : 'bg-gray-200'"
+                  role="switch"
+                  :aria-checked="acceptTerms"
+                >
+                  <span 
+                    aria-hidden="true" 
+                    class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                    :class="acceptTerms ? 'translate-x-5' : 'translate-x-0'"
+                  ></span>
+                </button>
+                <span class="ml-3 text-sm text-gray-700">
+                  Would you want the Liquidation fee should be removed from the investment interest ?
+                </span>
+              </div>
+              
+              <div class="mt-6 flex justify-end gap-3">
+                <button
+                  @click="liquidatingInvestment = null"
+                  class="rounded-md border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  @click="confirmLiquidation"
+                  class="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+                >
+                  Confirm Liquidation
+                </button>
+              </div>
+            </div>
+          </DialogPanel>
+        </TransitionChild>
+      </div>
+    </div>
+  </Dialog>
+</TransitionRoot>
+  
+      <!-- <TransitionRoot appear :show="!!liquidatingInvestment" as="template">
         <Dialog
           as="div"
           @close="liquidatingInvestment = null"
@@ -982,7 +1078,7 @@
             </div>
           </div>
         </Dialog>
-      </TransitionRoot>
+      </TransitionRoot> -->
   
       <TransitionRoot appear :show="!!openAddInvestmentModal" as="template">
         <Dialog
@@ -1457,11 +1553,19 @@
     });
     topUpInvestment.value = null;
   }
+
+  // Add this to your ref declarations
+const acceptTerms = ref(false)
   
   const confirmLiquidation = () => {
     // Implementation would go here
     console.log('Liquidating investment:', liquidatingInvestment.value);
     liquidatingInvestment.value = null;
+    const payload = {
+      pre_liquidation_charge: acceptTerms.value ? 'Yes' : 'No'
+    }
+    //Call endpoint to liquidate investment on admin
+    acceptTerms.value = false; // Reset toggle state
   }
   
   // Forms

@@ -37,4 +37,8 @@ export const investment_api = {
     let url = `/investment/topup/${id}`;
     return GATEWAY_ENDPOINT.post(url, payload);
   },
+  $_get_maturing_investments: () => {
+    let url = `/investment/maturing-investments`;
+    return GATEWAY_ENDPOINT.get(url);
+  },
 };

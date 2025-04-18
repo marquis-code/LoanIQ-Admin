@@ -1,4 +1,5 @@
 <template>
+<main>
   <div class="min-h-screen bg-gray-50 p-4">
     <!-- Header with Date Filter and Notifications -->
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -323,12 +324,18 @@
         </div>
       </div>
     </div>
+    <section class="border rouded-xl bg-white space-y-4 p-4 mt-6">
+      <p class="text-xl font-semibold">Maturing Investments</p>
+      <InvestmentsTable :investments="investmentsList" @view="handleViewInvestment" />
+    </section>
   </div>
+</main>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 // import { formatCurrency } from '@/utils/currencyUtils'
+import { useMaturingInvestments } from "@/composables/modules/investments/useFetchMaturingInvestments"
 import { useFetchCustomerBase } from '@/composables/modules/dashboard/useFetchCustomerBase'
 import { useFetchInvestmentsPendingApprovals } from '@/composables/modules/dashboard/useFetchInvestmentsPendingApprovals'
 import { useFetchActiveCustomers } from '@/composables/modules/dashboard/useGetActiveCustomers'
@@ -348,7 +355,8 @@ import {
   ChevronDown,
   AlertTriangle,
   AlertCircle,
-  CheckCircle
+  CheckCircle,
+  Router
 } from 'lucide-vue-next'
 import { useCurrencyFormatter } from '@/composables/core/useCurrencyFormatter'
 
@@ -361,6 +369,8 @@ const { liquidatedInvestments, loading: fetchingLiquidatedInvestments, filter: l
 const { totalWalletBalance, loading: fetchingTotalWalletBalance, filter: totalWalletBalanceFilter } = useFetchTotalWalletBalance()
 const { totalTransactions, loading: fetchingTotalTransactions, filter: totalTransactionsFilter } = useFetchTotalTransactions()
 const { formatCurrency } = useCurrencyFormatter()
+const {investmentsList, loading: fetching } = useMaturingInvestments()
+const router = useRouter()
 // Notifications
 const showNotifications = ref(false)
 const notifications = ref([
@@ -449,6 +459,11 @@ definePageMeta({
   layout: 'admin-dashboard',
   middleware: 'auth'
 })
+
+const handleViewInvestment = (investment: any) => {
+  console.log(investment, 'ghjkl')
+   router.push(`/dashboard/investment-mgt/clients/${investment}`)
+}
 </script>
 
 <style scoped>
