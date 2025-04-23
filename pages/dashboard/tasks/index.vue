@@ -327,7 +327,9 @@
   <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useApproveRejectExternalInvestment } from '@/composables/modules/finance-mgt/useApproveRejectExternalInvestment'
-    import { useApproveRejectLiquidateInvestment } from '@/composables/modules/investments/useApproveLiquidateInvestment'
+  import { useApproveRejectLiquidateInvestment } from '@/composables/modules/investments/useApproveLiquidateInvestment'
+  import { useUpdateTopupStatus } from "@/composables/modules/investments/useUpdateTopupStatus"
+    import { useUpdateRolloverStatus } from "@/composables/modules/investments/useUpdateRolloverStatus"
   import { useUpdateFlaggingStatus } from '@/composables/modules/finance-mgt/useUpdateWalletSttaus'
   import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
   import { useFetchTasks } from '@/composables/modules/finance-mgt/useFetchTasks'
@@ -337,6 +339,8 @@
   const { approveRejectExternalInvestment, approvalResult, loading: updatingInvestmentStatus } = useApproveRejectExternalInvestment()
   const { updateFlaggingStatus, updateResult, loading: updatingWalletStatus } = useUpdateFlaggingStatus()
   const { approveRejectLiquidateInvestment, loading: updatingLiquidationStatus } = useApproveRejectLiquidateInvestment()
+  const { updateTopupStatus, loading: updatingTopupStatus } = useUpdateTopupStatus()
+  const { updateRolloverStatus, loading: updatingRolloverStatus } = useUpdateRolloverStatus()
   
   // Define types
   interface Task {
@@ -435,7 +439,17 @@
         break
         
       case 'investment-liquidation':
-        await approveRejectLiquidateInvestment(actionId, { status: newStatus })
+        await approveRejectLiquidateInvestment(id, { status: newStatus })
+        operationSuccess = updateResult.value
+        break
+
+      case 'topup-approval':
+        await updateTopupStatus(id, { status: newStatus })
+        operationSuccess = updateResult.value
+        break
+
+      case 'rollover-approval':
+        await updateRolloverStatus(id, { status: newStatus })
         operationSuccess = updateResult.value
         break
         

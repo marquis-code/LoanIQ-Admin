@@ -48,5 +48,14 @@ export const investment_api = {
   $_approve_reject_liquidate_investment: (taskId: string, payload: any) => {
     let url = `/investment/liquidation/${taskId}/approve`;
     return GATEWAY_ENDPOINT.post(url, payload);
+  },
+  $_approve__reject_topup_investment: (taskId: string, payload: any) => {
+    let url = `/investment/topup/${taskId}/approve`;
+    return GATEWAY_ENDPOINT.post(url, payload);
+  },
+  $_approve_reject_rollover_investment: (taskId: string, payload: any) => {
+    let url = `/investment/rollover/${taskId}/approve`;
+    return GATEWAY_ENDPOINT.post(url, payload);
   }
+  
 };
