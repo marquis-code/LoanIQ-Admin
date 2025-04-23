@@ -56,6 +56,10 @@ export const investment_api = {
   $_approve_reject_rollover_investment: (taskId: string, payload: any) => {
     let url = `/investment/rollover/${taskId}/approve`;
     return GATEWAY_ENDPOINT.post(url, payload);
+  },
+  $_approve_reject_create_investment: (taskId: string, payload: any) => {
+    let url = `/investment/creation/${taskId}/approve`;
+    return GATEWAY_ENDPOINT.post(url, payload);
   }
   
 };

@@ -332,6 +332,7 @@
     import { useUpdateRolloverStatus } from "@/composables/modules/investments/useUpdateRolloverStatus"
   import { useUpdateFlaggingStatus } from '@/composables/modules/finance-mgt/useUpdateWalletSttaus'
   import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
+  import { useApproveRejectCreateInvestment } from "@/composables/modules/investments/useApproveInvestmentCreation"
   import { useFetchTasks } from '@/composables/modules/finance-mgt/useFetchTasks'
   import { useToast } from '@/composables/useToast'
   
@@ -341,6 +342,7 @@
   const { approveRejectLiquidateInvestment, loading: updatingLiquidationStatus } = useApproveRejectLiquidateInvestment()
   const { updateTopupStatus, loading: updatingTopupStatus } = useUpdateTopupStatus()
   const { updateRolloverStatus, loading: updatingRolloverStatus } = useUpdateRolloverStatus()
+  const { updateInvestmentCreationStatus, loading: updatingInvestmentCreationStatus } = useApproveRejectCreateInvestment()
   
   // Define types
   interface Task {
@@ -443,13 +445,18 @@
         operationSuccess = updateResult.value
         break
 
-      case 'topup-approval':
+      case 'investment-topup':
         await updateTopupStatus(id, { status: newStatus })
         operationSuccess = updateResult.value
         break
 
-      case 'rollover-approval':
+      case 'investment-rollover':
         await updateRolloverStatus(id, { status: newStatus })
+        operationSuccess = updateResult.value
+        break
+
+      case 'investment-creation':
+        await updateInvestmentCreationStatus(id, { status: newStatus })
         operationSuccess = updateResult.value
         break
         
