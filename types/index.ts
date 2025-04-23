@@ -50,3 +50,33 @@ export interface Analytics {
     createdAt: string
     updatedAt: string
   }
+
+  // types/index.ts
+export interface Referral {
+  id: string;
+  code: string;
+  referrerId: string;
+  referrerName: string;
+  referredUserId: string | null;
+  referredUserName: string | null;
+  status: 'pending' | 'completed';
+  dateCreated: string;
+  dateUsed: string | null;
+  platform: string;
+}
+
+export interface ReferralStats {
+  totalReferrals: number;
+  pendingReferrals: number;
+  completedReferrals: number;
+  conversionRate: number;
+  topPlatforms: { platform: string; count: number }[];
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  referrals: Referral[];
+  referredBy: string | null;
+}

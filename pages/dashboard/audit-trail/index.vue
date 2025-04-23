@@ -13,6 +13,7 @@
   
   <script setup lang="ts">
   import AuditTrail from '@/components/AuditTrail.vue';
+
   definePageMeta({
     layout: 'admin-dashboard'
   })

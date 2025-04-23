@@ -15,7 +15,7 @@ export const finance_api = {
     return GATEWAY_ENDPOINT.patch(url);
   },
   $_get_all_tasks: () => {
-    let url = `/financial-management/tasks`;
+    let url = `/financial-management/tasks?page=1&pageSize=10000000000`;
     return GATEWAY_ENDPOINT.get(url);
   },
   $_unflag_wallet: (walletId: string) => {

@@ -33,7 +33,54 @@
               </span>
             </div>
           </div>
-          <div class="overflow-x-auto">
+          <!-- Replace the existing table in the Tasks Table section with this -->
+<div class="overflow-x-auto">
+  <div v-for="(tasks, date) in groupedTasks" :key="date" class="mb-6">
+    <div class="bg-gray-100 dark:bg-gray-700 px-6 py-2 rounded-t-lg">
+      <h4 class="font-medium text-gray-700 dark:text-gray-300">{{ date }}</h4>
+    </div>
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      <thead class="bg-gray-50 dark:bg-gray-700">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Action</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Created At</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Treated By</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+        <tr v-for="task in tasks" :key="task.id" class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+            {{ task.action }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span :class="getStatusClass(task.status)" class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full">
+              {{ task.status }}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+            {{ formatTime(task.createdAt) }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+            {{ task.treatedBy || 'N/A' }}
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <button @click="openTaskModal(task)" class="text-primary hover:text-primary-dark focus:outline-none transition-colors duration-200">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- No tasks found message -->
+  <div v-if="Object.keys(groupedTasks).length === 0" class="bg-white dark:bg-gray-800 px-6 py-10 text-center text-gray-500 dark:text-gray-400 rounded-lg">
+    No tasks found
+  </div>
+</div>
+          <!-- <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead class="bg-gray-50 dark:bg-gray-700">
                 <tr>
@@ -73,7 +120,7 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </div> -->
         </div>
       </main>
   
@@ -280,6 +327,7 @@
   <script setup lang="ts">
   import { ref, computed } from 'vue'
   import { useApproveRejectExternalInvestment } from '@/composables/modules/finance-mgt/useApproveRejectExternalInvestment'
+    import { useApproveRejectLiquidateInvestment } from '@/composables/modules/investments/useApproveLiquidateInvestment'
   import { useUpdateFlaggingStatus } from '@/composables/modules/finance-mgt/useUpdateWalletSttaus'
   import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
   import { useFetchTasks } from '@/composables/modules/finance-mgt/useFetchTasks'
@@ -288,6 +336,7 @@
   // Import the composables
   const { approveRejectExternalInvestment, approvalResult, loading: updatingInvestmentStatus } = useApproveRejectExternalInvestment()
   const { updateFlaggingStatus, updateResult, loading: updatingWalletStatus } = useUpdateFlaggingStatus()
+  const { approveRejectLiquidateInvestment, loading: updatingLiquidationStatus } = useApproveRejectLiquidateInvestment()
   
   // Define types
   interface Task {
@@ -307,16 +356,16 @@
   
   // Search functionality
   const searchQuery = ref('')
-  const filteredTasks = computed(() => {
-    if (!searchQuery.value) return tasksList.value
+  // const filteredTasks = computed(() => {
+  //   if (!searchQuery.value) return tasksList.value
     
-    const query = searchQuery.value.toLowerCase()
-    return tasksList.value.filter((task: Task) => 
-      task.action.toLowerCase().includes(query) || 
-      task.status.toLowerCase().includes(query) ||
-      (task.treatedBy && task.treatedBy.toLowerCase().includes(query))
-    )
-  })
+  //   const query = searchQuery.value.toLowerCase()
+  //   return tasksList.value.filter((task: Task) => 
+  //     task.action.toLowerCase().includes(query) || 
+  //     task.status.toLowerCase().includes(query) ||
+  //     (task.treatedBy && task.treatedBy.toLowerCase().includes(query))
+  //   )
+  // })
   
   // Task modal state
   const showTaskModal = ref(false)
@@ -353,84 +402,84 @@
   const isProcessing = ref(false)
   
   const confirmAction = async () => {
-    if (!selectedTask.value) {
-      showToast({
-        title: 'Error',
-        description: 'No task selected',
-        type: 'error'
-      })
-      return
-    }
-    
-    isProcessing.value = true
-    
-    try {
-      const newStatus = confirmationAction.value === 'approve' ? 'completed' : 'rejected'
-      console.log(`Processing ${confirmationAction.value} action for task:`, selectedTask.value)
-      
-      // Handle different task actions with appropriate composables
-      if (selectedTask.value.action === 'add-external-investment') {
-        // For external investment tasks, use the investment composable
-        await approveRejectExternalInvestment(
-          selectedTask.value.actionId, 
-          { status: newStatus }
-        )
-        
-        // Check if the operation was successful
-        if (approvalResult.value) {
-          await updateTaskStatus(selectedTask.value.id, newStatus)
-        } else {
-          throw new Error('Failed to update investment status')
-        }
-      } 
-      else if (selectedTask.value.action === 'unflag-wallet') {
-        // For wallet flagging tasks, use the wallet status composable
-        await updateFlaggingStatus(
-          selectedTask.value.actionId, 
-          { status: newStatus }
-        )
-        
-        // Check if the operation was successful
-        if (updateResult.value) {
-          await updateTaskStatus(selectedTask.value.id, newStatus)
-        } else {
-          throw new Error('Failed to update wallet flagging status')
-        }
-      } 
-      else {
-        // For other task types, just update the task status
-        await updateTaskStatus(selectedTask.value.id, newStatus)
-      }
-      
-      // Update the task in the local state
-      if (selectedTask.value) {
-        selectedTask.value.status = newStatus
-        selectedTask.value.treatedBy = 'Current User' // This would be the actual user in a real app
-        selectedTask.value.updatedAt = new Date().toISOString()
-      }
-      
-      showToast({
-        title: `Task ${confirmationAction.value === 'approve' ? 'Approved' : 'Rejected'}`,
-        description: `The task has been successfully ${confirmationAction.value === 'approve' ? 'approved' : 'rejected'}.`,
-        type: confirmationAction.value === 'approve' ? 'success' : 'error'
-      })
-      
-      // Close both modals
-      closeConfirmationModal()
-      closeTaskModal()
-    } catch (error) {
-      console.error('Error processing task:', error)
-      showToast({
-        title: 'Action Failed',
-        description: `Failed to ${confirmationAction.value} the task. Please try again.`,
-        type: 'error'
-      })
-    } finally {
-      closeConfirmationModal()
-      closeTaskModal()
-      isProcessing.value = false
-    }
+  if (!selectedTask.value) {
+    showToast({
+      title: 'Error',
+      description: 'No task selected',
+      type: 'error'
+    })
+    return
   }
+  
+  isProcessing.value = true
+  
+  try {
+    const { action, actionId, id } = selectedTask.value
+    const newStatus = confirmationAction.value === 'approve' ? 'completed' : 'rejected'
+    const isApproval = confirmationAction.value === 'approve'
+    
+    console.log(`Processing ${confirmationAction.value} action for task:`, selectedTask.value)
+    
+    let operationSuccess = true
+    
+    // Handle different task actions
+    switch (action) {
+      case 'add-external-investment':
+        await approveRejectExternalInvestment(actionId, { status: newStatus })
+        operationSuccess = approvalResult.value
+        break
+        
+      case 'unflag-wallet':
+        await updateFlaggingStatus(actionId, { status: newStatus })
+        operationSuccess = updateResult.value
+        break
+        
+      case 'investment-liquidation':
+        await approveRejectLiquidateInvestment(actionId, { status: newStatus })
+        operationSuccess = updateResult.value
+        break
+        
+      default:
+        // For other task types, just update the task status
+        await updateTaskStatus(id, newStatus)
+    }
+    
+    // If specialized operation failed, throw error
+    if (!operationSuccess && action !== 'default') {
+      throw new Error(`Failed to update ${action} status`)
+    }
+    
+    // Update common task status for add-external-investment and unflag-wallet
+    if (operationSuccess && ['add-external-investment', 'unflag-wallet'].includes(action)) {
+      await updateTaskStatus(id, newStatus)
+    }
+    
+    // Update the task in the local state
+    if (selectedTask.value) {
+      selectedTask.value.status = newStatus
+      selectedTask.value.treatedBy = 'Current User'
+      selectedTask.value.updatedAt = new Date().toISOString()
+    }
+    
+    showToast({
+      title: `Task ${isApproval ? 'Approved' : 'Rejected'}`,
+      description: `The task has been successfully ${isApproval ? 'approved' : 'rejected'}.`,
+      type: isApproval ? 'success' : 'error'
+    })
+    
+  } catch (error) {
+    console.error('Error processing task:', error)
+    showToast({
+      title: 'Action Failed',
+      description: `Failed to ${confirmationAction.value} the task. Please try again.`,
+      type: 'error'
+    })
+  } finally {
+    closeConfirmationModal()
+    closeTaskModal()
+    isProcessing.value = false
+  }
+}
   
   // Helper functions
   const formatDate = (date: string, includeTime = false) => {
@@ -480,6 +529,58 @@
     return ['pending', 'in-progress'].includes(task.status.toLowerCase())
   }
   
+
+  // Replace the existing filteredTasks computed property with this one
+const filteredTasks = computed(() => {
+  // First filter tasks based on search query
+  let filtered = tasksList.value;
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter((task) => 
+      task.action.toLowerCase().includes(query) || 
+      task.status.toLowerCase().includes(query) ||
+      (task.treatedBy && task.treatedBy.toLowerCase().includes(query))
+    );
+  }
+  
+  // Sort tasks with newest first (by createdAt date)
+  filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  
+  return filtered;
+});
+
+// Add this new computed property to group tasks by date
+const groupedTasks = computed(() => {
+  const groups = {};
+  
+  filteredTasks.value.forEach(task => {
+    const date = new Date(task.createdAt).toLocaleDateString(undefined, {
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric'
+    });
+    
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    
+    groups[date].push(task);
+  });
+  
+  return groups;
+});
+
+const formatTime = (date) => {
+  if (!date) return 'N/A';
+  
+  const options = { 
+    hour: '2-digit', 
+    minute: '2-digit'
+  };
+  
+  return new Date(date).toLocaleTimeString(undefined, options);
+};
+
   definePageMeta({
     layout: 'admin-dashboard',
     middleware: 'auth',

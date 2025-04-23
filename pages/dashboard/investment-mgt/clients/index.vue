@@ -994,9 +994,10 @@
                 </button>
                 <button
                   @click="confirmLiquidation"
-                  class="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+                  :disabled="processing"
+                  class="rounded-md bg-red-600 disabled:cursor-not-allowed disabled:opacity-25 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
                 >
-                  Confirm Liquidation
+                   {{ processing ? 'processing..' : 'Confirm Liquidation'}}
                 </button>
               </div>
             </div>
@@ -1122,6 +1123,7 @@
   
   <script setup lang="ts">
   import { useCSVDownload } from '@/composables/useCSVDownload'
+  import { useLiquidateInvestment } from "@/composables/modules/investments/useLiquidateInvestment"
   import { formatCurrency } from "@/utils/formatter"
   import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
   import {
@@ -1132,6 +1134,7 @@
     TransitionRoot,
   } from '@headlessui/vue'
   const { isDownloading, progress, downloadPaginatedCSV } = useCSVDownload()
+  const { liquidateInvestment, setLiquidatePayload, loading: processing } = useLiquidateInvestment()
   import {
     Plus,
     ArrowUpDown,
@@ -1557,15 +1560,17 @@
   // Add this to your ref declarations
 const acceptTerms = ref(false)
   
-  const confirmLiquidation = () => {
+  const confirmLiquidation = async () => {
     // Implementation would go here
     console.log('Liquidating investment:', liquidatingInvestment.value);
-    liquidatingInvestment.value = null;
+    // liquidatingInvestment.value = null;
     const payload = {
       pre_liquidation_charge: acceptTerms.value ? 'Yes' : 'No'
     }
+    setLiquidatePayload(payload)
+    await liquidateInvestment(liquidatingInvestment.value.id)
     //Call endpoint to liquidate investment on admin
-    acceptTerms.value = false; // Reset toggle state
+    // acceptTerms.value = false; // Reset toggle state
   }
   
   // Forms

@@ -41,4 +41,12 @@ export const investment_api = {
     let url = `/investment/maturing-investments`;
     return GATEWAY_ENDPOINT.get(url);
   },
+  $_liquidate_investment: (id: string | any, payload: any) => {
+    let url = `/investment/liquidate/${id}`;
+    return GATEWAY_ENDPOINT.post(url, payload);
+  },
+  $_approve_reject_liquidate_investment: (taskId: string, payload: any) => {
+    let url = `/investment/liquidation/${taskId}/approve`;
+    return GATEWAY_ENDPOINT.post(url, payload);
+  }
 };

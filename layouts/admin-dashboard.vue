@@ -282,6 +282,62 @@
                   </TransitionRoot>
                 </div>
 
+
+              <!-- Referral -->
+              <div
+                  class="relative"
+                  v-if="hasPermission('roles-and-permission')"
+                >
+                  <button
+                    @click="isOpenReferralDropdown = !isOpenReferralDropdown"
+                    class="group flex w-full items-center justify-between gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    :class="{ 'bg-gray-800 text-white': isOpenReferralDropdown }"
+                  >
+                    <div class="flex items-center gap-x-3">
+                      <Wallet class="h-6 w-6 shrink-0" />
+                      <span>Referral Campaign</span>
+                    </div>
+                    <ChevronDownIcon
+                      class="h-4 w-4 transition-transform duration-200"
+                      :class="{ 'rotate-180': isOpenReferralDropdown }"
+                    />
+                  </button>
+
+                  <TransitionRoot appear :show="isOpenReferralDropdown" as="template">
+                    <div
+                      class="absolute left-0 mt-1 w-full min-w-[200px] origin-top-right rounded-md bg-gray-900 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+                    >
+                      <TransitionChild
+                        as="template"
+                        enter="transition ease-out duration-200"
+                        enter-from="opacity-0 translate-y-1"
+                        enter-to="opacity-100 translate-y-0"
+                        leave="transition ease-in duration-150"
+                        leave-from="opacity-100 translate-y-0"
+                        leave-to="opacity-0 translate-y-1"
+                      >
+                        <div class="py-1">
+                          <NuxtLink
+                            v-for="item in referralMenuItems"
+                            :key="item.path"
+                            :to="item.path"
+                            @click="isOpenReferralDropdown = !isOpenReferralDropdown"
+                            class="group flex items-center gap-x-3 px-4 py-2 text-sm text-gray-400 hover:bg-gray-800 hover:text-white"
+                          >
+                            <component
+                              :is="item.icon"
+                              class="h-5 w-5"
+                              aria-hidden="true"
+                            />
+                            {{ item.name }}
+                          </NuxtLink>
+                        </div>
+                      </TransitionChild>
+                    </div>
+                  </TransitionRoot>
+                </div>
+
+
                 <div
                   class="relative mt-2"
                   v-if="hasPermission('roles-and-permission')"
@@ -461,6 +517,7 @@ interface MenuItem {
 }
 
 const isOpenDropdown = ref(false);
+const isOpenReferralDropdown = ref(false)
 const isInvestmentOpenDropdown = ref(false);
 
 const menuItems: MenuItem[] = [
@@ -485,6 +542,19 @@ const menuItems: MenuItem[] = [
   //   icon: ClipboardDocumentListIcon,
   // },
 ];
+
+const referralMenuItems = ref([
+{
+    name: "Referral",
+    path: "/dashboard/referral/",
+    icon: BanknotesIcon,
+  },
+  {
+    name: "Analytics",
+    path: "/dashboard/referral/analytics",
+    icon: ChartBarIcon,
+  }
+])
 
 const toggleDropdown = () => {
   isOpenDropdown.value = !isOpenDropdown.value;
