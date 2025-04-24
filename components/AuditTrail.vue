@@ -222,14 +222,108 @@
                 <p class="text-gray-800">{{ getActionDescription(selectedAudit.action) }}</p>
               </div>
               
-              <div v-if="selectedAuditDescription">
+              <!-- <div v-if="selectedAuditDescription">
                 <label class="block text-sm font-medium text-gray-600 mb-1">Details</label>
                 <div class="bg-gray-50 p-3 rounded text-sm text-gray-800 overflow-auto max-h-64">
                   <div v-for="(value, key) in selectedAuditDescription" :key="key" class="mb-2">
                     <span class="font-medium">{{ formatFieldName(key) }}:</span> {{ value }}
                   </div>
                 </div>
+              </div> -->
+
+              <!-- Replace the existing selectedAuditDescription section with this -->
+<div v-if="selectedAuditDescription">
+  <label class="block text-sm font-medium text-gray-600 mb-1">Details</label>
+  <div class="bg-gray-50 p-3 rounded text-sm text-gray-800 overflow-auto max-h-64">
+    <!-- Render the nested structure -->
+    <div v-for="item in auditDetailsStructure" :key="item.key" class="mb-2">
+      <div
+        v-if="item.isObject || item.isArray"
+        @click="toggleExpand(item)"
+        class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"
+      >
+        <span class="font-medium mr-2">{{ item.label }}:</span>
+        <span class="text-blue-600">{{ item.value }}</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4 ml-1 transform transition-transform duration-200"
+          :class="{'rotate-180': isExpanded(item.key)}"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+      <div v-else class="flex items-start">
+        <span class="font-medium mr-2">{{ item.label }}:</span>
+        <span>{{ item.value }}</span>
+      </div>
+      
+      <!-- Render children if expanded -->
+      <div
+        v-if="(item.isObject || item.isArray) && isExpanded(item.key)"
+        class="pl-4 border-l-2 border-gray-200 mt-2"
+      >
+        <div v-for="child in item.children" :key="child.key" class="mb-2">
+          <div
+            v-if="child.isObject || child.isArray"
+            @click="toggleExpand(child)"
+            class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"
+          >
+            <span class="font-medium mr-2">{{ child.label }}:</span>
+            <span class="text-blue-600">{{ child.value }}</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 ml-1 transform transition-transform duration-200"
+              :class="{'rotate-180': isExpanded(child.key)}"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+          <div v-else class="flex items-start">
+            <span class="font-medium mr-2">{{ child.label }}:</span>
+            <span>{{ child.value }}</span>
+          </div>
+          
+          <!-- Recursively render nested children (up to 2 levels for simplicity) -->
+          <div
+            v-if="(child.isObject || child.isArray) && isExpanded(child.key)"
+            class="pl-4 border-l-2 border-gray-200 mt-2"
+          >
+            <div v-for="grandchild in child.children" :key="grandchild.key" class="mb-2">
+              <div
+                v-if="grandchild.isObject || grandchild.isArray"
+                @click="toggleExpand(grandchild)"
+                class="flex items-center cursor-pointer hover:bg-gray-100 p-1 rounded"
+              >
+                <span class="font-medium mr-2">{{ grandchild.label }}:</span>
+                <span class="text-blue-600">{{ grandchild.value }}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 ml-1 transform transition-transform duration-200"
+                  :class="{'rotate-180': isExpanded(grandchild.key)}"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </div>
+              <div v-else class="flex items-start">
+                <span class="font-medium mr-2">{{ grandchild.label }}:</span>
+                <span>{{ grandchild.value }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
               
               <div>
                 <label class="block text-sm font-medium text-gray-600 mb-1">Date & Time</label>
@@ -444,16 +538,16 @@ const formatDetailDateTime = (datetime: string) => {
   });
 };
 
-const viewAuditDetails = (audit: AuditLog) => {
-  selectedAudit.value = audit;
+// const viewAuditDetails = (audit: AuditLog) => {
+//   selectedAudit.value = audit;
   
-  try {
-    // Parse the JSON description for display in the modal
-    selectedAuditDescription.value = JSON.parse(audit.description);
-  } catch (e) {
-    selectedAuditDescription.value = null;
-  }
-};
+//   try {
+//     // Parse the JSON description for display in the modal
+//     selectedAuditDescription.value = JSON.parse(audit.description);
+//   } catch (e) {
+//     selectedAuditDescription.value = null;
+//   }
+// };
 
 const prevPage = () => {
   if (currentPage.value > 1) {
@@ -466,6 +560,144 @@ const nextPage = () => {
     currentPage.value++;
   }
 };
+
+// Add this method to handle nested objects and arrays
+const formatAuditValue = (value) => {
+  if (value === null || value === undefined) return 'N/A';
+  
+  // Handle nested objects
+  if (typeof value === 'object' && !Array.isArray(value)) {
+    return Object.keys(value).length === 0 ? 'Empty object' : '{...}'; // Show placeholder for objects
+  }
+  
+  // Handle arrays
+  if (Array.isArray(value)) {
+    return value.length === 0 ? 'Empty array' : '[...]'; // Show placeholder for arrays
+  }
+  
+  // Format boolean values
+  if (typeof value === 'boolean') {
+    return value ? 'Yes' : 'No';
+  }
+  
+  // Format date strings
+  if (typeof value === 'string' && value.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)) {
+    return formatDateTime(value);
+  }
+  
+  // Return the value as string
+  return String(value);
+};
+
+// Updated nested object rendering component
+const renderNestedObject = (obj, path = '') => {
+  if (!obj || typeof obj !== 'object') return [];
+  
+  let result = [];
+  
+  Object.keys(obj).forEach(key => {
+    const value = obj[key];
+    const currentPath = path ? `${path}.${key}` : key;
+    
+    if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+      // This is a nested object
+      result.push({
+        key: currentPath,
+        label: formatFieldName(key),
+        value: '▼', // Dropdown indicator
+        isObject: true,
+        isExpanded: false,
+        children: renderNestedObject(value, currentPath)
+      });
+    } else if (Array.isArray(value)) {
+      // This is an array
+      result.push({
+        key: currentPath,
+        label: formatFieldName(key),
+        value: `Array (${value.length} items) ▼`,
+        isArray: true,
+        isExpanded: false,
+        children: value.map((item, index) => {
+          if (typeof item === 'object' && item !== null) {
+            return {
+              key: `${currentPath}[${index}]`,
+              label: `Item ${index + 1}`,
+              value: '▼',
+              isObject: true,
+              isExpanded: false,
+              children: renderNestedObject(item, `${currentPath}[${index}]`)
+            };
+          } else {
+            return {
+              key: `${currentPath}[${index}]`,
+              label: `Item ${index + 1}`,
+              value: formatAuditValue(item),
+              isSimple: true
+            };
+          }
+        })
+      });
+    } else {
+      // This is a simple value
+      result.push({
+        key: currentPath,
+        label: formatFieldName(key),
+        value: formatAuditValue(value),
+        isSimple: true
+      });
+    }
+  });
+  
+  return result;
+};
+
+// Update the viewAuditDetails method
+const viewAuditDetails = (audit) => {
+  selectedAudit.value = audit;
+  
+  try {
+    // Parse the JSON description
+    const parsedDescription = JSON.parse(audit.description);
+    
+    // Process and transform the description for better display
+    if (audit.action === 'liquidation-approval' && parsedDescription.task && parsedDescription.investment) {
+      // Special handling for liquidation-approval
+      selectedAuditDescription.value = {
+        'Task Details': parsedDescription.task,
+        'Investment Details': parsedDescription.investment
+      };
+    } else {
+      // Default handling for other types
+      selectedAuditDescription.value = parsedDescription;
+    }
+    
+    // Generate the nested structure for rendering
+    auditDetailsStructure.value = renderNestedObject(selectedAuditDescription.value);
+  } catch (e) {
+    console.error('Error parsing audit description:', e);
+    selectedAuditDescription.value = null;
+    auditDetailsStructure.value = [];
+  }
+};
+
+// Add this to your state declarations
+const auditDetailsStructure = ref([]);
+const expandedPaths = ref(new Set());
+
+// Toggle expansion of nested objects/arrays
+const toggleExpand = (item) => {
+  if (expandedPaths.value.has(item.key)) {
+    expandedPaths.value.delete(item.key);
+  } else {
+    expandedPaths.value.add(item.key);
+  }
+};
+
+// Check if an item is expanded
+const isExpanded = (key) => {
+  return expandedPaths.value.has(key);
+};
+
 </script>
 
 <style scoped>

@@ -14,10 +14,20 @@ export const finance_api = {
     let url = `/financial-management/flag-wallet/${walletId}`;
     return GATEWAY_ENDPOINT.patch(url);
   },
-  $_get_all_tasks: () => {
-    let url = `/financial-management/tasks?page=1&pageSize=10000000000`;
+  // $_get_all_tasks: () => {
+  //   let url = `/financial-management/tasks?page=1&pageSize=10000000000`;
+  //   return GATEWAY_ENDPOINT.get(url);
+  // },
+  $_get_all_tasks: (params?: { page?: number; pageSize?: number }) => {
+    const query = new URLSearchParams({
+      page: params?.page?.toString() || '1',
+      pageSize: params?.pageSize?.toString() || '10'
+    }).toString();
+  
+    const url = `/financial-management/tasks?${query}`;
     return GATEWAY_ENDPOINT.get(url);
   },
+  
   $_unflag_wallet: (walletId: string) => {
     let url = `/financial-management/unflag-wallet/${walletId}`;
     return GATEWAY_ENDPOINT.patch(url);
