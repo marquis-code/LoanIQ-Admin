@@ -2,8 +2,8 @@
 <template>
   <div class="bg-gray-50 min-h-screen">
     <header class="bg-white shadow">
-      <div class="container mx-auto px-4 py-6">
-        <h1 class="text-2xl font-bold text-gray-800">Referral Dashboard</h1>
+      <div class="container mx-auto px-4 py-2">
+        <h1 class="text-xl font-bold text-gray-800">Referral Dashboard</h1>
       </div>
     </header>
     
@@ -25,7 +25,7 @@
       
       <!-- Create Referral Code -->
       <div class="bg-white rounded-lg shadow p-6 mb-8 transform transition-all duration-300 hover:shadow-lg">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Generate New Referral Code</h2>
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Generate New Referral Code</h2>
         
         <div class="flex flex-col md:flex-row gap-4">
           <div class="flex-1">
@@ -33,7 +33,7 @@
             <input 
               id="name" 
               v-model="newCode.name" 
-              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              class="w-full px-4 py-3 border outline-none border-gray-100 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-200"
               placeholder="Enter a name for this code"
             />
           </div>
@@ -43,7 +43,7 @@
             <input 
               id="email" 
               v-model="newCode.email" 
-              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              class="w-full px-4 py-3 border outline-none border-gray-100 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-200"
               placeholder="Your email address"
               type="email"
             />
@@ -54,7 +54,7 @@
             <select 
               id="platform" 
               v-model="newCode.code" 
-              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              class="w-full px-4 py-3 border outline-none border-gray-100 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-200"
             >
               <option value="facebook">Facebook</option>
               <option value="twitter">Twitter</option>
@@ -69,7 +69,7 @@
             <button 
               @click="handleCreateReferral" 
               :disabled="createLoading || !isFormValid"
-              class="w-full md:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition duration-200"
+              class="w-full md:w-auto px-6 py-3 bg-blue-600 text-white rounded-full text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition duration-200"
             >
               <span v-if="createLoading" class="flex items-center">
                 <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@
       
       <!-- Test Referral Code -->
       <div class="bg-white rounded-lg shadow p-6 mb-8 transform transition-all duration-300 hover:shadow-lg">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Use Referral Code</h2>
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Use Referral Code</h2>
         <p class="text-gray-600 mb-4">
           Enter a referral code to test it and see if it's valid.
         </p>
@@ -121,7 +121,7 @@
             <input 
               id="referralCode" 
               v-model="referralCode" 
-              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              class="w-full px-4 py-3 border border-gray-300 rounded-md outline-none text-sm focus:ring-blue-500 focus:border-blue-500 transition duration-200"
               placeholder="Enter referral code"
             />
           </div>
@@ -131,7 +131,7 @@
             <input 
               id="userName" 
               v-model="userName" 
-              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              class="w-full px-4 py-3 border border-gray-300 rounded-md outline-none text-sm focus:ring-blue-500 focus:border-blue-500 transition duration-200"
               placeholder="Enter your name"
             />
           </div>
@@ -140,7 +140,7 @@
             <button 
               @click="handleUseReferral" 
               :disabled="updateLoading || !referralCode || !userName"
-              class="w-full md:w-auto px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition duration-200"
+              class="w-full md:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-full text-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition duration-200"
             >
               <span v-if="updateLoading" class="flex items-center">
                 <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -157,14 +157,14 @@
       
       <!-- Management Actions -->
       <div class="bg-white rounded-lg shadow p-6 mb-8 transform transition-all duration-300 hover:shadow-lg">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Manage Referral Codes</h2>
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Manage Referral Codes</h2>
         
-        <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex flex-col md:flex-row gap-4 pt-10">
           <div class="flex-1">
             <button 
               @click="refreshReferralCodes" 
               :disabled="fetchReferralCodesLoading"
-              class="w-full px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 transition duration-200"
+              class="w-full px-6 py-3 bg-indigo-600 text-white font-medium rounded-full hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 transition duration-200"
             >
               <span v-if="fetchReferralCodesLoading" class="flex items-center justify-center">
                 <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -181,7 +181,7 @@
             <button 
               @click="fetchUsersForSelectedCode" 
               :disabled="fetchReferralCodeUsersLoading || !selectedReferralCode"
-              class="w-full px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 transition duration-200"
+              class="w-full px-6 py-3 bg-green-600 text-white font-medium rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 transition duration-200"
             >
               <span v-if="fetchReferralCodeUsersLoading" class="flex items-center justify-center">
                 <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -199,7 +199,7 @@
       <!-- Referrals List -->
       <div class="bg-white rounded-lg shadow overflow-hidden transform transition-all duration-300 hover:shadow-lg">
         <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-xl font-semibold text-gray-800">Your Referral Codes</h2>
+          <h2 class="text-lg font-semibold text-gray-800">Your Referral Codes</h2>
         </div>
         
         <div class="overflow-x-auto">
@@ -229,12 +229,12 @@
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="bg-white divide-y divide-gray-50">
               <template v-if="referralCodes.length > 0">
                 <tr 
                   v-for="referral in referralCodes" 
                   :key="referral.id"
-                  :class="{'bg-blue-50': selectedReferralCode === referral.id}"
+                  :class="{'bg-green-100': selectedReferralCode === referral.id}"
                   class="transition-all duration-200 hover:bg-gray-50 cursor-pointer"
                   @click="selectReferralCode(referral.id)"
                 >
@@ -261,7 +261,7 @@
                     {{ formatDate(referral.createdAt) }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <button 
+                    <button v-if="referral.status === 'active'"
                       @click.stop="deactivateCode(referral.id)"
                       :disabled="deactivateLoading && deactivatingId === referral.id"
                       class="px-3 py-1 text-xs bg-red-100 text-red-800 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition duration-200"
@@ -271,6 +271,20 @@
                       </span>
                       <span v-else>
                         Deactivate
+                      </span>
+                    </button>
+                    <!-- :disabled="deactivateLoading && deactivatingId === referral.id" -->
+                    <button 
+                      v-else
+                      @click.stop="deactivateCode(referral.id)"
+                      disabled
+                      class="px-3 py-1 text-xs bg-green-100 disabled:cursor-not-allowed disabled:opacity-50 text-green-800 rounded-md hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition duration-200"
+                    >
+                      <span v-if="deactivateLoading && deactivatingId === referral.id">
+                        Activating...
+                      </span>
+                      <span v-else>
+                       Activate
                       </span>
                     </button>
                   </td>
