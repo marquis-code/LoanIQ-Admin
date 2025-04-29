@@ -7,5 +7,7 @@ export const wealth_managers_api = {
   $_assign_wealth_managers_to_investment: (investmentId: string, payload: any) => {
     let url = `/investment/assign-wealth-manager/${investmentId}`;
     return GATEWAY_ENDPOINT.post(url, payload);
-  }
+  },
 };
+
+// investments-assigned-to-wealth-manager/:id

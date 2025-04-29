@@ -60,6 +60,13 @@ export const investment_api = {
   $_approve_reject_create_investment: (taskId: string, payload: any) => {
     let url = `/investment/creation/${taskId}/approve`;
     return GATEWAY_ENDPOINT.post(url, payload);
-  }
-  
+  },
+  $_fetch_wealth_managers_investment: (id: string | any) => {
+    let url = `/investment/wealth-manager-investments/${id}`;
+    return GATEWAY_ENDPOINT.get(url);
+  },
+  $_get_investment_assigned_to_wealth_managers: (id: string | Record<string,any>) => {
+    let url = `/investment/investments-assigned-to-wealth-manager/${id}`;
+    return GATEWAY_ENDPOINT.get(url);
+  },
 };

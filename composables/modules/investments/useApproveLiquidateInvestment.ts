@@ -5,13 +5,15 @@ export const useApproveRejectLiquidateInvestment = () => {
     const approvalResult = ref<any>(null);
     const { $_approve_reject_liquidate_investment } = investment_api;
   
-    const approveRejectLiquidateInvestment = async (investmentId: string, status: any) => {
+    const approveRejectLiquidateInvestment = async (investmentId: string, payload: any) => {
       loading.value = true;
+      const payloadObj = { action: payload.action, comment: payload.comment }
       try {
-        const res = await $_approve_reject_liquidate_investment(investmentId, { status: status.status === 'completed' ? 'approved' : 'rejected' }) as any
+        const res = await $_approve_reject_liquidate_investment(investmentId, payloadObj) as any
         if (res.type !== 'ERROR') {
           approvalResult.value = res?.data?.result;
         }
+        return res.data
       } catch (error) {
         console.error('Error approving/rejecting investment liquidation:', error);
       } finally {

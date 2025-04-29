@@ -235,7 +235,7 @@
                         <Edit class="h-5 w-5" />
                       </button> -->
                       <NuxtLink
-                       :to="`/wealth-managers/${manager.id}/investments`"
+                       :to="`/dashboard/wealth-managers/${manager.id}/investments`"
                         class="text-gray-500 hover:text-teal-600 transition-colors duration-200"
                       >
                         View Investments
@@ -1285,9 +1285,9 @@
   })
   
   // Lifecycle hooks
-  onMounted(() => {
-    fetchManagers()
-  })
+  // onMounted(() => {
+  //   fetchManagers()
+  // })
   </script>
   
   <style scoped>

@@ -142,7 +142,7 @@
             alt="Your Company"
           />
         </div>
-        <nav class="flex flex-1 flex-col">
+        <nav v-if="user.roleId === 'super-admin'" class="flex flex-1 flex-col">
           <ul role="list" class="flex flex-1 flex-col gap-y-7">
             <li>
               <ul role="list" class="-mx-2 space-y-1">
@@ -405,6 +405,25 @@
             </li>
           </ul>
         </nav>
+
+        <div v-if="user.roleId === 'wealth-manager'">
+          <button
+            class="group w-full disabled:cursor-not-allowed disabled:opacity-25 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+          >
+            <Users class="h-6 w-6 shrink-0" />
+            Wealth Manager
+          </button>
+
+          <div class="-mx-6 mt-auto">
+              <button
+                @click="openLogoutModal = true"
+                class="flex items-center w-full gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-white hover:bg-gray-800"
+              >
+                <LogOut class="h-5 w-5" />
+                <span>Logout</span>
+              </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -454,6 +473,7 @@
 
 <script setup lang="ts">
 const isOpen = ref(false);
+import { useUser } from "@/composables/auth/user";
 import { usePermissions } from "@/composables/core/usePermissions";
 import {
   Briefcase,
@@ -482,8 +502,7 @@ import {
   ClipboardDocumentListIcon,
 } from "@heroicons/vue/24/outline";
 const { showToast } = useCustomToast();
-import { useUser } from "@/composables/auth/user";
-const { permissions } = useUser();
+const { permissions, user } = useUser();
 const router = useRouter();
 
 const userDropdownOpen = ref(false);

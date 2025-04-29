@@ -18,9 +18,9 @@ export const auth_api = {
     return GATEWAY_ENDPOINT.post(url, credential);
   },
   $_change_default_password: (credential: {
-    userId: string;
-    oldPassword: string;
-    newPassword: string;
+    userId: any;
+    oldPassword: string | Record<string,any>;
+    newPassword: string | Record<string,any>;
   }) => {
     const url = "/auth/change-password";
     return GATEWAY_ENDPOINT.post(url, credential);

@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { investment_api } from "@/api_factory/modules/investment";
 import { useCustomToast } from "@/composables/core/useCustomToast";
-import router from "#app/plugins/router";
+// import router from "#app/plugins/router";
 
 export const useTopupInvestment = () => {
   const { showToast } = useCustomToast();
@@ -15,6 +15,7 @@ export const useTopupInvestment = () => {
   const topupInvestment = async (investmentId: string) => {
     loading.value = true;
     const route = useRoute()
+    const router = useRouter()
     
     try {
       const response = await investment_api.$_topup_investment(route.params.id, payload.value);
@@ -26,7 +27,7 @@ export const useTopupInvestment = () => {
           toastType: "success",
           duration: 3000,
         });
-        router.push(`/investments`);
+        router.push(`/dashboard/investment-mgt/clients`);
         return response.data;
       } else {
         showToast({

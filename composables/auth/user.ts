@@ -68,21 +68,23 @@ export const useUser = () => {
     localStorageData.token.value = token;
   };
   const createUser = (user: any) => {
+    const { permission, token, refreshToken, ...rest } = user
     localStorageData.token.value = user?.token;
     localStorageData.permissions.value = user?.permission;
-    localStorageData.user.value = user?.admin;
-    runtimeData.user.value = user?.admin;
+    localStorageData.user.value = rest;
+    runtimeData.user.value = rest;
     runtimeData.token.value = user?.token;
     runtimeData.permissions.value = user?.permission;
   };
 
   const updateUser = (user: any) => {
-    runtimeData.user.value = user?.admin;
-    runtimeData.permissions.value = user?.permissions;
+    const { permission, token, refreshToken, ...rest } = user
+    runtimeData.user.value = rest;
+    runtimeData.permissions.value = user?.permission;
     localStorage.setItem('user', JSON.stringify(user.admin));
-    localStorageData.user.value = user.admin;
-    localStorage.setItem('permissions', JSON.stringify(user.permissions));
-    localStorageData.permissions.value = user?.permissions;
+    localStorageData.user.value = rest;
+    localStorage.setItem('permissions', JSON.stringify(user.permission));
+    localStorageData.permissions.value = user?.permission;
   };
 
   // const updatePermissions = (data: any) => {
@@ -103,8 +105,8 @@ export const useUser = () => {
   const updateUserData = (data: any) => {
     // Check if the data contains permissions
     if (data?.permissions) {
-      runtimeData.permissions.value = data?.permissions;
-      localStorage.setItem('permissions', JSON.stringify(data?.permissions));
+      runtimeData.permissions.value = data?.permission;
+      localStorage.setItem('permissions', JSON.stringify(data?.permission));
     }
   
     // Merge the profile data (excluding permissions)

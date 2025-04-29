@@ -5,13 +5,15 @@ export const useUpdateRolloverStatus = () => {
     const approvalResult = ref<any>(null);
     const { $_approve_reject_rollover_investment } = investment_api;
   
-    const updateRolloverStatus = async (actionId: string, status: any) => {
+    const updateRolloverStatus = async (actionId: string, payload: any) => {
       loading.value = true;
+      const payloadObj = { action: payload.action, comment: payload.comment }
       try {
-        const res = await $_approve_reject_rollover_investment(actionId, { status: status.status === 'completed' ? 'approved' : 'rejected' }) as any
+        const res = await $_approve_reject_rollover_investment(actionId, payloadObj) as any
         if (res.type !== 'ERROR') {
           approvalResult.value = res?.data?.result;
         }
+        return res.data
       } catch (error) {
         console.error('Error approving/rejecting ollover:', error);
       } finally {

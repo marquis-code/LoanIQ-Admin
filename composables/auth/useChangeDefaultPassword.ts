@@ -3,17 +3,19 @@ import { useCustomToast } from "@/composables/core/useCustomToast";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 
+const credential = {
+  oldPassword: ref("") as any,
+  newPassword: ref("") as any,
+  userId: ref("") as any,
+};
+
 export const useChangeDefaultPassword = () => {
-  const Router = useRouter();
+  const router = useRouter();
   const loading = ref(false);
   const errorMessage = ref("");
   const { showToast } = useCustomToast();
+  const route = useRoute()
 
-  const credential = {
-    oldPassword: ref(""),
-    newPassword: ref(""),
-    userId: ref(""),
-  };
 
   const changeDefaultPassword = async () => {
     if (
@@ -46,7 +48,7 @@ export const useChangeDefaultPassword = () => {
       const res = (await auth_api.$_change_default_password({
         oldPassword: credential.oldPassword.value,
         newPassword: credential.newPassword.value,
-        userId: credential.userId.value,
+        userId: credential.userId.value || route.query.userId,
       })) as any;
 
       loading.value = false;
@@ -59,7 +61,7 @@ export const useChangeDefaultPassword = () => {
           duration: 3000,
         });
 
-        Router.push("/");
+        router.push("/");
       } else {
         showToast({
           title: "Error",
@@ -79,5 +81,11 @@ export const useChangeDefaultPassword = () => {
     }
   };
 
-  return { credential, changeDefaultPassword, loading, errorMessage };
+  const setPayload = (data:any) => {
+    credential.newPassword.value = data.newPassword
+    credential.oldPassword.value = data.oldPassword
+    credential.userId.value = credential.userId.value || route.query.userId
+  }
+
+  return { credential,setPayload, changeDefaultPassword, loading, errorMessage };
 };
