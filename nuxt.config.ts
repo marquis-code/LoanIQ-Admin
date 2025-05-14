@@ -15,4 +15,9 @@ export default defineNuxtConfig({
   tailwindcss: {
     cssPath: "@/assets/css/main.css",
   },
+    // Server configuration to set port to 3030
+    server: {
+      port: 3030,
+      host: '0.0.0.0' // This makes the server accessible from all network interfaces
+    },
 });
