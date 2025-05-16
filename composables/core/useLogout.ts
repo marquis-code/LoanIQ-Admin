@@ -13,9 +13,9 @@ export const logOut = () => {
       cancelButtonText: "Nah, Just kidding",
     }).then((result) => {
       if (result.value) {
-        localStorage.clear();
-        router.push('/login')
-        window.location.href = "/login"
+        // localStorage.clear();
+        // router.push('/login')
+        // window.location.href = "/login"
       } else {
         Swal.fire("Cancelled", "Action was cancelled", "info");
       }

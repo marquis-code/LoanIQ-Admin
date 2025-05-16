@@ -14,15 +14,15 @@ export function useInactivity(timeout = 600000) { // default to 10 minutes (600,
   // Function to check if the user is inactive
   const checkInactivity = () => {
     if (Date.now() - lastActivity.value > timeout) {
-      handleLogout();
+      // handleLogout();
     }
   };
 
   // Function to log out the user
   const handleLogout = () => {
     // Clear any user data or tokens here
-    localStorage.removeItem('userToken'); // Adjust based on how you're storing user data
-    router.push('/login'); // Redirect to login page
+    // localStorage.removeItem('userToken'); // Adjust based on how you're storing user data
+    // router.push('/login'); // Redirect to login page
   };
 
   // Set up event listeners to detect user activity

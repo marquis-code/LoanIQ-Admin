@@ -1,24 +1,6 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-    <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 shadow-md">
-      <div class="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-primary"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect><path d="m9 14 2 2 4-4"></path></svg>
-            Tasks Management
-          </h1>
-          <div class="flex items-center space-x-3">
-            <button class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-            </button>
-            <div class="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center font-semibold">
-              AD
-            </div>
-          </div>
-        </div>
-      </div>
-    </header>
+
 
     <!-- Main Content -->
     <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">

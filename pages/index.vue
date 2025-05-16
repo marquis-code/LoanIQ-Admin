@@ -11,7 +11,7 @@
         <div>
           <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
           <div class="mt-2">
-            <input v-model="credential.email.value" id="email" name="email" type="email" autocomplete="email" required class="w-full px-4 py-4  bg-[#F4F5F7] outline-none border-[0.5px] border-[#F4F5F7] rounded-md focus:outline-none focus:border-green-500">
+            <input v-model="credential.email.value" id="email" name="email" type="email" autocomplete="email" required class="w-full border px-4 py-3  bg-[#F4F5F7] outline-none  rounded-md focus:outline-none focus:border-green-500">
           </div>
         </div>
   
@@ -24,7 +24,7 @@
           </div>
           <div class="mt-2 relative">
             <input v-model="credential.passcode.value" :type="showPassword ? 'text' : 'password'"
-            id="password" class="w-full px-4 py-4  bg-[#F4F5F7] outline-none border-[0.5px] border-[#F4F5F7] rounded-md focus:outline-none focus:border-green-500">
+            id="password" class="w-full px-4 py-3  bg-[#F4F5F7] outline-none  rounded-md border focus:outline-none focus:border-green-500">
             <div
             @click="toggleShowPassword"
             class="absolute inset-y-0 right-4 top-1 flex items-center cursor-pointer"

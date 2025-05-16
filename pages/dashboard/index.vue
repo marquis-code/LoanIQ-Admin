@@ -457,7 +457,7 @@ const formatNumber = (value: number): string => {
 
 definePageMeta({
   layout: 'admin-dashboard',
-  middleware: 'auth'
+  // middleware: 'auth'
 })
 
 const handleViewInvestment = (investment: any) => {
