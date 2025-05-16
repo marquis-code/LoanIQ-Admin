@@ -46,7 +46,7 @@ export const useSubmitAccountNumberRequest = () => {
 
     const setPayload = (data: any) => {
         payload.value.otp = data.otp
-        payload.value.userId = userObj.userId
+        payload.value.userId = data.userId
         payload.value.trackingId = userObj.trackingId
     }
 

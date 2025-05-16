@@ -515,8 +515,8 @@ function toggleUserDropdown() {
 const openLogoutModal = ref(false);
 
 const handleLogout = async () => {
-  // localStorage.clear();
-  // window.location.href = "/";
+  localStorage.clear();
+  window.location.href = "/";
   showToast({
     title: "Success",
     message: "You have been logged out successfully",

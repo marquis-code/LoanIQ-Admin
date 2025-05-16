@@ -10,7 +10,7 @@ export const useGenerateAccountNumber = () => {
         loading.value = true;
         try {
             const response = await users_api.$_generate_account_number(id) as any
-            if (response.statusText === "OK") {
+            if (response?.data?.status === "success") {
                 showToast({
                     title: "Success",
                     message: response?.data?.message,

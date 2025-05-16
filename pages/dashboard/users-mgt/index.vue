@@ -1,11 +1,5 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-4">
-    <!-- Backdrop overlay for dropdowns - positioned BEHIND the dropdown -->
-    <div 
-      v-if="openActionMenu !== null" 
-      class="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-30"
-      @click="openActionMenu = null"
-    ></div>
     
     <section class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div class="mb-4 md:mb-6 animate-fadeIn">
@@ -255,7 +249,7 @@
       >
         <div
           v-if="openActionMenu !== null && dropdownPosition" 
-          class="action-dropdown fixed bg-white rounded-md shadow-xl ring-1 ring-black ring-opacity-5 z-50 w-48"
+          class="action-dropdown fixed bg-white rounded-md shadow-xl ring-1 ring-black ring-opacity-5 z-[100] w-48"
           :style="dropdownPosition"
         >
           <div class="py-1 divide-y divide-gray-100">
@@ -604,7 +598,7 @@
               enter-from="opacity-0 scale-95"
               enter-to="opacity-100 scale-100"
               leave="duration-200 ease-in"
-              leave-from="opacity-100 scale-100"
+              leave-from="opacity-100"
               leave-to="opacity-0 scale-95"
             >
               <DialogPanel class="w-full max-w-md bg-white p-6 rounded-xl shadow-xl">
@@ -1162,12 +1156,12 @@ const updateDropdownPosition = (userId: string) => {
 
   // Calculate position for dropdown - position it to the right of the button
   const top = rect.top + window.scrollY
-  const left = rect.right + 10 // 10px to the right of the button
+  const right = window.innerWidth - rect.right - 10 // Position from right edge
 
-  // Set position
+  // Set position - using right alignment to prevent overflow
   dropdownPosition.value = {
     top: `${top}px`,
-    left: `${left}px`
+    right: `${right}px`
   }
 }
 
@@ -1553,9 +1547,10 @@ const submitOtp = async () => {
   
   try {
     const otpCode = otpDigits.value.join('')
+    console.log(selectedUser.value, 'selected user here')
     
     // Set the payload for the account number request
-    setPayload({ otp: otpCode })
+    setPayload({ otp: otpCode, userId: selectedUser?.value?.id })
     
     // Submit the account number request
     await submitAccountNumberRequest()
@@ -1859,6 +1854,9 @@ definePageMeta({
   cursor: default;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 
 .action-dropdown button, 
