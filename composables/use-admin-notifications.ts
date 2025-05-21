@@ -1,6 +1,7 @@
 import { io, type Socket } from "socket.io-client"
 import { ref, onUnmounted, computed } from "vue"
 import { useUser } from "@/composables/auth/user";
+import { useCustomToast } from "@/composables/core/useCustomToast"
 
 const { getDecryptedAuthData } = useUser()
 const decryptedData = getDecryptedAuthData();
@@ -13,6 +14,8 @@ export interface AdminNotification {
   timestamp: string
   read: boolean
 }
+
+const { showToast } = useCustomToast()
 
 export const useAdminNotifications = (adminId?: string) => {
   const socket = ref<Socket | null>(null)
@@ -75,6 +78,13 @@ export const useAdminNotifications = (adminId?: string) => {
     // Listen specifically for admin notifications
     socket.value.on("admin-notification", (data) => {
       console.log("[AdminNotifications] Received admin notification:", data)
+
+      showToast({
+        title: "Success",
+        message: data.message || "New notification received",
+        toastType: "success",
+        duration: 3000,
+      })
       
       // Process the notification and add it to our list
       const notification: AdminNotification = {
