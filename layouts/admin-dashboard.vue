@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- {{decryptedUser?.adminDTO?.roleId}} -->
     <div
       v-if="isOpen"
       class="relative z-50 xl:hidden"
@@ -143,7 +144,7 @@
           />
         </div>
         <!-- v-if="user.roleId === 'super-admin'" -->
-        <nav  class="flex flex-1 flex-col">
+        <nav v-if="decryptedData?.adminDTO?.roleId === 'super-admin'" class="flex flex-1 flex-col">
           <ul role="list" class="flex flex-1 flex-col gap-y-7">
             <li>
               <ul role="list" class="-mx-2 space-y-1">
@@ -405,7 +406,7 @@
           </ul>
         </nav>
 
-        <div v-if="user.roleId === 'wealth-manager'">
+        <div v-if="decryptedData?.adminDTO?.roleId === 'wealth-manager'">
           <button
             class="group w-full disabled:cursor-not-allowed disabled:opacity-25 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
           >
@@ -456,6 +457,8 @@
           </form>
         </div> -->
       </div>
+
+      <!-- {{decryptedData?.adminDTO?.roleId}} -->
       <slot />
       <VerificationSidebar v-model="isVerificationOpen" />
     </div>
@@ -502,8 +505,21 @@ import {
   ClipboardDocumentListIcon,
 } from "@heroicons/vue/24/outline";
 const { showToast } = useCustomToast();
-const { getDecryptedAuthData, user } = useUser()
-const { permission: permissions } = getDecryptedAuthData()
+const { getDecryptedAuthData, user, decryptedUser } = useUser()
+// const { permission: permissions } = getDecryptedAuthData()
+
+const decryptedData = getDecryptedAuthData();
+const permissions = ref([]);
+
+// Safely assign permissions if they exist
+if (decryptedData && decryptedData.permission) {
+  permissions.value = decryptedData.permission;
+}
+
+// else if (authObj.value && authObj.value.permission) {
+//   permissions.value = authObj.value.permission;
+// }
+
 const router = useRouter();
 
 const userDropdownOpen = ref(false);

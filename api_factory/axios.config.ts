@@ -29,8 +29,8 @@ const getAuthData = () => {
 
 // Function to log out user
 const logOut = () => {
-  // localStorage.removeItem('auth-data')
-  // window.location.href = '/login' // Redirect to login page
+  localStorage.removeItem('auth-data')
+  window.location.href = '/' // Redirect to login page
 }
 
 export const GATEWAY_ENDPOINT = axios.create({
@@ -128,6 +128,10 @@ instanceArray.forEach((instance) => {
     },
     (err: any) => {
       console.log(err, 'config error')
+      if(err.response.data.message = "Unauthorized access"){
+        logOut()
+      }
+
       if (typeof err.response === "undefined") {
         showToast({
           title: "Error",
@@ -135,7 +139,7 @@ instanceArray.forEach((instance) => {
           toastType: "error",
           duration: 3000,
         })
-        // logOut()
+        logOut()
         return {
           type: "ERROR",
           ...err.response,
