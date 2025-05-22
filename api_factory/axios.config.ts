@@ -128,23 +128,23 @@ instanceArray.forEach((instance) => {
     },
     (err: any) => {
       console.log(err, 'config error')
-      if(err.response.data.message = "Unauthorized access"){
-        logOut()
-      }
+      // if(err.response.data.message = "Unauthorized access"){
+      //   logOut()
+      // }
 
-      if (typeof err.response === "undefined") {
-        showToast({
-          title: "Error",
-          message: "kindly check your network connection",
-          toastType: "error",
-          duration: 3000,
-        })
-        logOut()
-        return {
-          type: "ERROR",
-          ...err.response,
-        }
-      }
+      // if (typeof err.response === "undefined") {
+      //   showToast({
+      //     title: "Error",
+      //     message: "kindly check your network connection",
+      //     toastType: "error",
+      //     duration: 3000,
+      //   })
+      //   logOut()
+      //   return {
+      //     type: "ERROR",
+      //     ...err.response,
+      //   }
+      // }
 
       // Handle error responses
       if (err.response?.status === 401) {
