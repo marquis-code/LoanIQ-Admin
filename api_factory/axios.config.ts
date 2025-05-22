@@ -164,9 +164,21 @@ instanceArray.forEach((instance) => {
         router.push('/')
         window.location.href = "/"
       } else if(err.response?.status === 400) {
-        window.localStorage.clear()
-        router.push('/')
-        window.location.href = "/"
+        // window.localStorage.clear()
+        // router.push('/')
+        // window.location.href = "/"
+        if (err.response.data.message) {
+          showToast({
+            title: "Error",
+            message: err?.response?.data?.message || err?.response?.data?.error || "An error occurred",
+            toastType: "error",
+            duration: 3000,
+          })
+        }
+        return {
+          type: "ERROR",
+          ...err.response,
+        }
       } else if (statusCodeStartsWith(err.response.status, 4)) {
         if (err.response.data.message) {
           showToast({

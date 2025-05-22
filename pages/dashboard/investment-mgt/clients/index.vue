@@ -1124,7 +1124,7 @@
   <script setup lang="ts">
   import { useCSVDownload } from '@/composables/useCSVDownload'
   import { useLiquidateInvestment } from "@/composables/modules/investments/useLiquidateInvestment"
-  import { formatCurrency } from "@/utils/formatter"
+  import { useCurrencyFormatter } from "@/utils/formatter"
   import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
   import {
     Dialog,
@@ -1135,6 +1135,7 @@
   } from '@headlessui/vue'
   const { isDownloading, progress, downloadPaginatedCSV } = useCSVDownload()
   const { liquidateInvestment, setLiquidatePayload, loading: processing } = useLiquidateInvestment()
+  // const { formatCurrency } = useCurrencyFormatter()
   import {
     Plus,
     ArrowUpDown,

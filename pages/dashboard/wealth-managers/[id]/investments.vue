@@ -621,7 +621,7 @@
 import { useCSVDownload } from '@/composables/useCSVDownload'
 import { useFetchInvestmentsAssignedToWeaalthManagers } from "@/composables/modules/investments/useFetchInvestmentsAssignedToWealthManagers"
 import { useFetchWealthManagerInvestments } from "@/composables/modules/investments/useFetchWealthManagerInvestment"
-import { formatCurrency } from "@/utils/formatter"
+import { useCurrencyFormatter } from "@/utils/formatter"
 import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import {
   Dialog,
@@ -632,6 +632,7 @@ import {
 } from '@headlessui/vue'
 const { isDownloading, progress, downloadPaginatedCSV } = useCSVDownload()
 const { investmentsList, loading } = useFetchWealthManagerInvestments()
+const { formatCurrency } = useCurrencyFormatter()
 const { assignedInvestmentsList, loading: fetching } = useFetchInvestmentsAssignedToWeaalthManagers()
 import {
   Plus,

@@ -1,7 +1,15 @@
-export function formatCurrency(amount: number): string {
-    return new Intl.NumberFormat("en-NG", {
-      style: "currency",
-      currency: "NGN",
-    }).format(amount)
-  }
+// composables/useCurrencyFormatter.ts
+export const useCurrencyFormatter = (locale = 'en-NG', currency = 'NGN') => {
+    const formatCurrency = (amount: number | null | undefined): string => {
+      if (amount === null || amount === undefined) return '';
+      return new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency,
+      }).format(amount);
+    };
+  
+    return {
+      formatCurrency,
+    };
+  };
   

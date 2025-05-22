@@ -4,6 +4,7 @@
         <div class="header-content">
           <div class="logo-section">
             <slot name="logo">
+              <!-- <button>Toggle</button> -->
               <h1 class="logo">Admin Dashboard</h1>
             </slot>
           </div>

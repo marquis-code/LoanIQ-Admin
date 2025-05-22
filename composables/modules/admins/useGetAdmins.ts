@@ -17,9 +17,9 @@ export const useGetAdmins = () => {
     loading.value = true;
     const response = (await $_get_admins(metadata.value)) as any;
     console.log(response, 'res')
-    if (response.statusText === "OK") {
+    if (response.status === 200 || response.status === 201) {
       const { page, pageSize, total, pages } = response?.data?.data || {};
-      admins.value = response?.data?.data?.admins || [];
+      admins.value = response?.data?.data?.admins;
       metadata.value = { page, pageSize, total, pages };
       // showToast({
       //   title: "Success",

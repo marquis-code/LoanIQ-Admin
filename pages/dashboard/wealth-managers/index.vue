@@ -105,7 +105,7 @@
         </div>
   
         <!-- Empty State -->
-        <div v-else-if="wealthManagersList.length === 0" class="flex flex-col items-center justify-center py-20">
+        <div v-else-if="!wealthManagersList?.length" class="flex flex-col items-center justify-center py-20">
           <div class="rounded-full bg-gray-100 p-6 mb-4">
             <Users class="h-12 w-12 text-gray-400" />
           </div>
@@ -126,8 +126,8 @@
         <!-- Table Content -->
         <div v-else>
           <!-- Desktop Table -->
-          <div class="hidden md:block">
-            <table class="min-w-full divide-y divide-gray-200">
+          <div class="md:block overflow-x-auto">
+            <table class="min-w-full overflow-x-auto divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -142,27 +142,12 @@
                   <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Created At
                   </th>
-                  <!-- <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contact
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Clients
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    AUM
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Performance
-                  </th>
-                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th> -->
                   <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
+              <tbody class="bg-white divide-y divide-gray-200 overflow-x-auto">
                 <tr 
                   v-for="(manager, index) in wealthManagersList" 
                   :key="manager.id"
@@ -172,19 +157,6 @@
                 >
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div class="font-medium text-gray-900">{{ manager.firstName }}</div>
-                    <!-- <div class="flex items-center">
-                      <div class="h-10 w-10 flex-shrink-0">
-                        <img
-                          :src="manager.avatar || '/placeholder.svg?height=40&width=40'"
-                          :alt="`${manager.firstName} ${manager.lastName}`"
-                          class="h-10 w-10 rounded-full object-cover"
-                        />
-                      </div>
-                      <div class="ml-4">
-                        <div class="font-medium text-gray-900">{{ manager.firstName }} {{ manager.lastName }}</div>
-                        <div class="text-sm text-gray-500">{{ manager.title }}</div>
-                      </div>
-                    </div> -->
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div class="font-medium text-gray-900">{{ manager.lastName }}</div>
@@ -195,58 +167,14 @@
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900">{{ manager?.createdAt }}</div>
                   </td>
-                  <!-- <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">{{ manager.clientCount }}</div>
-                    <div class="text-sm text-gray-500">{{ manager.clientChange > 0 ? '+' : '' }}{{ manager.clientChange }} this month</div>
-                  </td>
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-900">{{ formatCurrency(manager.aum) }}</div>
-                    <div class="text-sm" :class="manager.aumChange > 0 ? 'text-green-600' : 'text-red-600'">
-                      {{ manager.aumChange > 0 ? '+' : '' }}{{ manager.aumChange }}%
-                    </div>
-                  </td> -->
-                  <!-- <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                      <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div 
-                          class="h-2.5 rounded-full transition-all duration-1000" 
-                          :class="getPerformanceColor(manager.performance)"
-                          :style="{ width: `${manager.performance}%` }"
-                        ></div>
-                      </div>
-                      <span class="ml-2 text-sm text-gray-900">{{ manager.performance }}%</span>
-                    </div>
-                  </td> -->
-                  <!-- <td class="px-6 py-4 whitespace-nowrap">
-                    <span
-                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                      :class="getStatusClass(manager.status)"
-                    >
-                      {{ manager.status }}
-                    </span>
-                  </td> -->
                   <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div class="flex justify-end space-x-2">
-                      <!-- <button
-                        @click="openEditModal(manager)"
-                        class="text-gray-500 hover:text-teal-600 transition-colors duration-200"
-                        title="Edit"
-                      >
-                        <Edit class="h-5 w-5" />
-                      </button> -->
                       <NuxtLink
                        :to="`/dashboard/wealth-managers/${manager.id}/investments`"
                         class="text-gray-500 hover:text-teal-600 transition-colors duration-200"
                       >
                         View Investments
                       </NuxtLink>
-                      <!-- <button
-                        @click="confirmDelete(manager)"
-                        class="text-gray-500 hover:text-red-600 transition-colors duration-200"
-                        title="Delete"
-                      >
-                        <Trash2 class="h-5 w-5" />
-                      </button> -->
                     </div>
                   </td>
                 </tr>
