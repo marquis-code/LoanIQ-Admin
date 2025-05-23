@@ -1,70 +1,3 @@
-<!-- <template>
-<main>
-  <div class="flex min-h-full flex-col justify-center px-6 pt-24 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <img class="mx-auto h-10 w-auto" src="@/assets/img/logo.png" alt="Your Company">
-      <h2 class="mt-4 text-center text-xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
-    </div>
-  
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form @submit.prevent="login" class="space-y-6">
-        <div>
-          <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
-          <div class="mt-2">
-            <input v-model="credential.email.value" id="email" name="email" type="email" autocomplete="email" required class="w-full border px-4 py-3  bg-[#F4F5F7] outline-none  rounded-md focus:outline-none focus:border-green-500">
-          </div>
-        </div>
-  
-        <div>
-          <div class="flex items-center justify-between">
-            <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
-            <div class="text-sm">
-              <NuxtLink to="/forgot-password" class="font-semibold text-[#2F6D67] hover:text-[#2F6D67]">Forgot password?</NuxtLink>
-            </div>
-          </div>
-          <div class="mt-2 relative">
-            <input v-model="credential.passcode.value" :type="showPassword ? 'text' : 'password'"
-            id="password" class="w-full px-4 py-3  bg-[#F4F5F7] outline-none  rounded-md border focus:outline-none focus:border-green-500">
-            <div
-            @click="toggleShowPassword"
-            class="absolute inset-y-0 right-4 top-1 flex items-center cursor-pointer"
-          >
-              <img  v-if="!showPassword" src="@/assets/icons/eyeClose.svg" alt="close" />
-              <img v-if="showPassword" src="@/assets/icons/eyeOpen.svg" alt="open"/>
-          </div>
-          </div>
-        </div>
-  
-        <div class="pt-10">
-          <button :disabled="loading" type="submit" class="flex disabled:cursor-not-allowed disabled:opacity-25 w-full justify-center rounded-md bg-[#2F6D67] px-3 py-3 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-[#2F6D67] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2F6D67]">{{ loading ? 'processing...' : 'Sign In' }}</button>
-        </div>
-      </form>
-    </div>
-  </div>
-  <CoreFullScreenLoader
-      :visible="loading"
-      text="Authenticating..."
-      logo="/path-to-your-logo.png"
-    />
-</main>
-</template>
-
-<script setup lang="ts">
-import { useLogin } from '@/composables/auth/login'
-const { credential, login, loading, isFormDisabled } = useLogin()
-
-const showPassword = ref(false);
-
-const toggleShowPassword = () => {
-  showPassword.value = !showPassword.value;
-};
-
-definePageMeta({
-  middleware: 'auth'
-})
-
-</script> -->
-
 <template>
   <main>
     <div class="flex flex-col items-center justify-center w-full h-screen">
@@ -105,7 +38,7 @@ definePageMeta({
             <div class="flex items-center justify-between">
               <label class="block text-[#7D8799] font-medium mb-1 text-sm" for="passcode">Enter Your six-digit passcode</label>
               <div class="text-sm">
-                <NuxtLink to="/recover-password" class="font-semibold text-[#2F6D67] hover:text-[#2F6D67]">Forgot password?</NuxtLink>
+                <NuxtLink to="/forgot-password" class="font-semibold text-[#2F6D67] hover:text-[#2F6D67]">Forgot password?</NuxtLink>
               </div>
             </div>
             <input 
@@ -186,15 +119,15 @@ definePageMeta({
           </div>
           <div class="pt-6">
             <button 
-              :disabled="loading || isFormDisabled || isAccountBlocked" 
+              :disabled="isLoading || isFormDisabled || isAccountBlocked" 
               type="submit" 
               class="w-full bg-[#2F6D67] text-white py-3.5 disabled:cursor-not-allowed disabled:opacity-25 rounded-md hover:bg-[#2F6D67] transition"
             >
-              {{ loading ? 'Processing...' : isAccountBlocked ? 'Account Blocked' : 'Login' }}
+              {{ isLoading ? 'Processing...' : isAccountBlocked ? 'Account Blocked' : 'Login' }}
             </button>
           </div>
         </form>
-        <div class="text-center mt-4">
+        <!-- <div class="text-center mt-4">
           <p class="text-[#687181] flex gap-x-2">
             Don't have an account? 
             <NuxtLink to="/signup" class="text-[#2F6D67] hover:underline">Sign up here</NuxtLink> 
@@ -202,7 +135,7 @@ definePageMeta({
               <path d="M7.5 4.86165L13.3333 10.695L7.5 16.5283" stroke="#2F6D67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </p>
-        </div>
+        </div> -->
       </div>
     </div>
     
@@ -359,9 +292,8 @@ definePageMeta({
     </Transition>
     
     <CoreFullScreenLoader
-      :visible="loading"
+      :visible="isLoading"
       text="Authenticating..."
-      logo="/path-to-your-logo.png"
     />
   </main>
 </template>
@@ -370,7 +302,7 @@ definePageMeta({
 import { ref, computed, watch, onMounted } from 'vue'
 // import { use_auth_login } from '@/composables/auth/login'
 import { useLogin } from '@/composables/auth/login'
-const { credential, login, loading, isFormDisabled } = useLogin()
+const { credential, login, loading: isLoading, isFormDisabled } = useLogin()
 // const { credential, login, loading, isFormDisabled } = use_auth_login()
 
 // Password visibility toggle

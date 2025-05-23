@@ -634,7 +634,7 @@ const handleAction = async (action: 'approve' | 'reject', task: Task) => {
         if(externalInvestmentUpdateResponse.status  === 'success'){
           operationSuccess = updateResult.value
           closeTaskDrawer()
-          window.location.reload()
+          // window.location.reload()
         }
         break
         
@@ -643,7 +643,8 @@ const handleAction = async (action: 'approve' | 'reject', task: Task) => {
         if(unflagInvestmentResponse.status  === 'success'){
           operationSuccess = updateResult.value
           closeTaskDrawer()
-          window.location.reload()
+          await fetchTasks()
+          // window.location.reload()
         }
         break
         
@@ -652,7 +653,7 @@ const handleAction = async (action: 'approve' | 'reject', task: Task) => {
                 if(liquidationRes.status  === 'success'){
           operationSuccess = updateResult.value
           closeTaskDrawer()
-          window.location.reload()
+          // window.location.reload()
         }
         break
 
@@ -661,7 +662,8 @@ const handleAction = async (action: 'approve' | 'reject', task: Task) => {
         if(investmentTopup.status  === 'success'){
           operationSuccess = updateResult.value
           closeTaskDrawer()
-          window.location.reload()
+          await fetchTasks()
+          // window.location.reload()
         }
         break
 
@@ -670,7 +672,8 @@ const handleAction = async (action: 'approve' | 'reject', task: Task) => {
                  if(investmentRollover.status  === 'success'){
           operationSuccess = updateResult.value
           closeTaskDrawer()
-          window.location.reload()
+          await fetchTasks()
+          // window.location.reload()
         }
         break
 
@@ -679,7 +682,8 @@ const handleAction = async (action: 'approve' | 'reject', task: Task) => {
         if(res.status  === 'success'){
           operationSuccess = updateResult.value
           closeTaskDrawer()
-          window.location.reload()
+          await fetchTasks()
+          // window.location.reload()
         }
         break
         

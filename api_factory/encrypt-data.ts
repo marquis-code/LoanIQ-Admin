@@ -114,87 +114,6 @@ export function isEncryptedData(data: any): boolean {
   }
 }
 
-// Function to decrypt response data
-// export function decryptData(encryptedData: string): any {
-//   try {
-//     // 1. Decode the base64 payload
-//     const decodedPayload = forge.util.decode64(encryptedData)
-//     const payload = JSON.parse(decodedPayload)
-
-//     // 2. Get the private key for decryption
-//     // const rootDirectory = path.resolve(__dirname, "../..")
-//     // const privateKeyPem = fs.readFileSync(rootDirectory + "/private_key.pem", "utf-8")
-//     const privateKey = forge.pki.privateKeyFromPem(DECRYPT_PUBLIC_KEY)
-
-//     // 3. Decrypt the AES key with RSA
-//     const encryptedKey = forge.util.decode64(payload.key)
-//     const aesKey = privateKey.decrypt(encryptedKey, "RSA-OAEP")
-
-//     // 4. Decrypt the data with AES-GCM
-//     const iv = forge.util.decode64(payload.iv)
-//     const encrypted = forge.util.decode64(payload.encrypted)
-//     const tag = forge.util.decode64(payload.tag)
-
-//     const decipher = forge.cipher.createDecipher("AES-GCM", aesKey)
-//     decipher.start({
-//       iv: iv,
-//       tag: forge.util.createBuffer(tag),
-//     })
-//     decipher.update(forge.util.createBuffer(encrypted))
-//     const result = decipher.finish()
-
-//     if (!result) {
-//       throw new Error("Authentication failed - invalid tag")
-//     }
-
-//     // 5. Parse the decrypted data
-//     const decryptedData = decipher.output.toString()
-//     return JSON.parse(decryptedData)
-//   } catch (error) {
-//     console.error("Decryption error:", error)
-//     throw new Error("Failed to decrypt data")
-//   }
-// }
-
-// export function decryptData(encryptedData: string): any {
-//   try {
-//     // 1. Decode the base64 payload
-//     const decodedPayload = forge.util.decode64(encryptedData)
-//     const payload = JSON.parse(decodedPayload)
-
-//     // 2. Get the private key for decryption
-//     // Use the hardcoded private key instead of reading from filesystem
-//     const privateKey = forge.pki.privateKeyFromPem(DECRYPT_PUBLIC_KEY)
-
-//     // 3. Decrypt the AES key with RSA
-//     const encryptedKey = forge.util.decode64(payload.key)
-//     const aesKey = privateKey.decrypt(encryptedKey, "RSA-OAEP")
-
-//     // 4. Decrypt the data with AES-GCM
-//     const iv = forge.util.decode64(payload.iv)
-//     const encrypted = forge.util.decode64(payload.encrypted)
-//     const tag = forge.util.decode64(payload.tag)
-
-//     const decipher = forge.cipher.createDecipher("AES-GCM", aesKey)
-//     decipher.start({
-//       iv: iv,
-//       tag: forge.util.createBuffer(tag),
-//     })
-//     decipher.update(forge.util.createBuffer(encrypted))
-//     const result = decipher.finish()
-
-//     if (!result) {
-//       throw new Error("Authentication failed - invalid tag")
-//     }
-
-//     // 5. Parse the decrypted data
-//     const decryptedData = decipher.output.toString()
-//     return JSON.parse(decryptedData)
-//   } catch (error) {
-//     console.error("Decryption error:", error)
-//     throw new Error("Failed to decrypt data")
-//   }
-// }
 
 export function decryptData(encryptedData: string): any {
   try {
@@ -257,15 +176,131 @@ const instanceArray = [
   GATEWAY_ENDPOINT_WITHOUT_VERSION_WITH_AUTH,
 ]
 
+// instanceArray.forEach((instance) => {
+//   // Request interceptor - handles encryption of outgoing data
+//   instance.interceptors.request.use(
+//     async (config: any) => {
+//       const { token } = useMemoizedUser()
+
+//       // Add authorization token if available
+//       if (token.value) {
+//         config.headers.Authorization = `Bearer ${token.value}`
+//       }
+
+//       // Only encrypt data for POST and PUT requests with JSON content
+//       if (
+//         config.data &&
+//         typeof config.data === "object" &&
+//         ["post", "put", "patch"].includes(config.method?.toLowerCase() || "") &&
+//         config.headers["Content-Type"] !== "multipart/form-data"
+//       ) {
+//         // Encrypt the data
+//         config.data = {
+//           data: encryptData(config.data),
+//         }
+//       }
+
+//       return config
+//     },
+//     (error) => {
+//       return Promise.reject(error)
+//     },
+//   )
+
+//   // Response interceptor - handles decryption of incoming data
+//   instance.interceptors.response.use(
+//     (response: CustomAxiosResponse) => {
+//       const { logOut } = useMemoizedUser()
+//       // Check if the response data needs to be decrypted
+//       if (response.data && response.data.data && isEncryptedData(response.data.data)) {
+//         try {
+//           // Decrypt the response data
+//           response.data = decryptData(response.data.data)
+//         } catch (error) {
+//           console.error("Failed to decrypt response:", error)
+//           // Return the original response if decryption fails
+//         }
+//       }
+//       return response
+//     },
+//     (err: any) => {
+//       const { logOut } = useMemoizedUser()
+//       const { showToast } = useCustomToast()
+//       if (typeof err.response === "undefined") {
+//         showToast({
+//           title: "Error",
+//           message: "kindly check your network connection",
+//           toastType: "error",
+//           duration: 3000,
+//         })
+//         logOut()
+//         return {
+//           type: "ERROR",
+//           ...err.response,
+//         }
+//       }
+
+//       // Handle error responses
+//       if (err.response?.status === 401) {
+//         logOut()
+//         showToast({
+//           title: "Error",
+//           message: err?.response?.data?.message || err?.response?.data?.error || "An error occurred",
+//           toastType: "error",
+//           duration: 3000,
+//         })
+//         return {
+//           type: "ERROR",
+//           ...err.response,
+//         }
+//       } else if (statusCodeStartsWith(err.response.status, 4)) {
+//         if (err.response.data.message) {
+//           showToast({
+//             title: "Error",
+//             message: err?.response?.data?.message || err?.response?.data?.error || "An error occurred",
+//             toastType: "error",
+//             duration: 3000,
+//           })
+//         }
+//         return {
+//           type: "ERROR",
+//           ...err.response,
+//         }
+//       } else if (err.response.status === 500) {
+//         showToast({
+//           title: "Error",
+//           message: err?.response?.data?.message || err?.response?.data?.error || "An error occurred",
+//           toastType: "error",
+//           duration: 3000,
+//         })
+//         return {
+//           type: "ERROR",
+//           ...err.response,
+//         }
+//       } else if (err.response.status === 409) {
+//         showToast({
+//           title: "Error",
+//           message: err?.response?.data?.message || err?.response?.data?.error || "An error occurred",
+//           toastType: "error",
+//           duration: 3000,
+//         })
+//       }
+
+//       return Promise.reject(err)
+//     },
+//   )
+// })
+
 instanceArray.forEach((instance) => {
   // Request interceptor - handles encryption of outgoing data
   instance.interceptors.request.use(
     async (config: any) => {
-      const { token } = useMemoizedUser()
-
+      // Get auth data from local storage and decrypt it
+      const { token } = getAuthData()
+      
       // Add authorization token if available
-      if (token.value) {
-        config.headers.Authorization = `Bearer ${token.value}`
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
       }
 
       // Only encrypt data for POST and PUT requests with JSON content
@@ -291,83 +326,41 @@ instanceArray.forEach((instance) => {
   // Response interceptor - handles decryption of incoming data
   instance.interceptors.response.use(
     (response: CustomAxiosResponse) => {
-      const { logOut } = useMemoizedUser()
-      // Check if the response data needs to be decrypted
-      if (response.data && response.data.data && isEncryptedData(response.data.data)) {
-        try {
-          // Decrypt the response data
-          response.data = decryptData(response.data.data)
-        } catch (error) {
-          console.error("Failed to decrypt response:", error)
-          // Return the original response if decryption fails
-        }
-      }
+      // Note: Decryption is handled on the server side
+      // We're not implementing client-side decryption since it would require the private key
       return response
     },
-    (err: any) => {
-      const { logOut } = useMemoizedUser()
-      const { showToast } = useCustomToast()
-      if (typeof err.response === "undefined") {
-        showToast({
-          title: "Error",
-          message: "kindly check your network connection",
-          toastType: "error",
-          duration: 3000,
-        })
+    (error: any) => {
+      console.error('API Error:', error)
+
+      const errorInfo = getErrorInfo(error)
+
+      // Handle logout for 403 errors only
+      if (errorInfo.shouldLogout) {
         logOut()
-        return {
-          type: "ERROR",
-          ...err.response,
-        }
+        return Promise.reject(error)
       }
 
-      // Handle error responses
-      if (err.response?.status === 401) {
-        logOut()
+      // Show toast notification if needed
+      if (errorInfo.shouldShowToast) {
         showToast({
           title: "Error",
-          message: err?.response?.data?.message || err?.response?.data?.error || "An error occurred",
-          toastType: "error",
-          duration: 3000,
-        })
-        return {
-          type: "ERROR",
-          ...err.response,
-        }
-      } else if (statusCodeStartsWith(err.response.status, 4)) {
-        if (err.response.data.message) {
-          showToast({
-            title: "Error",
-            message: err?.response?.data?.message || err?.response?.data?.error || "An error occurred",
-            toastType: "error",
-            duration: 3000,
-          })
-        }
-        return {
-          type: "ERROR",
-          ...err.response,
-        }
-      } else if (err.response.status === 500) {
-        showToast({
-          title: "Error",
-          message: err?.response?.data?.message || err?.response?.data?.error || "An error occurred",
-          toastType: "error",
-          duration: 3000,
-        })
-        return {
-          type: "ERROR",
-          ...err.response,
-        }
-      } else if (err.response.status === 409) {
-        showToast({
-          title: "Error",
-          message: err?.response?.data?.message || err?.response?.data?.error || "An error occurred",
+          message: errorInfo.message,
           toastType: "error",
           duration: 3000,
         })
       }
 
-      return Promise.reject(err)
+      // Return error response for further handling if needed
+      if (error.response) {
+        return {
+          type: "ERROR",
+          ...error.response,
+        }
+      }
+
+      // For network/CORS errors without response, reject the promise
+      return Promise.reject(error)
     },
   )
 })

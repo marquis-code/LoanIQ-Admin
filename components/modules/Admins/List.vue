@@ -59,7 +59,8 @@
                     </td>
                     <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                       <span
-                        class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">{{ admin?.block }}</span>
+                        :class="{'bg-red-100 text-red-700' : admin?.block, 'bg-green-100 text-green-700' : !admin?.block }"
+                        class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium">{{ admin?.block ? 'Suspended' : 'Active' }}</span>
                     </td>
                     <td class="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
                       <span

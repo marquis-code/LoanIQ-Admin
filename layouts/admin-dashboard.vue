@@ -435,10 +435,11 @@
         <button
           @click="isOpen = true"
           type="button"
-          class="-m-2.5 p-2.5 text-white xl:hidden"
+          class="-m-2.5 p-2.5 xl:hidden"
         >
           <span class="sr-only">Open sidebar</span>
-          <Menu class="h-5 w-5" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"></path></svg>
+          <!-- <Menu class="h-5 w-5" /> -->
         </button>
           <AdminHeader />
         <!-- <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
