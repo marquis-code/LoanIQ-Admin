@@ -12,11 +12,12 @@ const $GATEWAY_ENDPOINT_WITHOUT_VERSION = import.meta.env.VITE_BASE_URL as strin
 const $GATEWAY_ENDPOINT = import.meta.env.VITE_BASE_URL + "/v1"
 const $GATEWAY_ENDPOINT_V2 = import.meta.env.VITE_BASE_URL + "/v2"
 const $IMAGE_UPLOAD_ENDPOINT = import.meta.env.VITE_IMAGE_UPLOAD_BASE_URL as string
+const $X_API_KEY = import.meta.env.VITE_X_API_KEY as string
 
 export const GATEWAY_ENDPOINT = axios.create({
   baseURL: $GATEWAY_ENDPOINT,
   headers: {
-    "x-api-key": "bwt2r25gw1hw9WdGWSryW626Th2AHF836dGr",
+    "x-api-key": $X_API_KEY
   },
 })
 
@@ -27,14 +28,14 @@ export const GATEWAY_ENDPOINT_V2 = axios.create({
 export const GATEWAY_ENDPOINT_WITH_AUTH = axios.create({
   baseURL: $GATEWAY_ENDPOINT,
   headers: {
-    "x-api-key": "bwt2r25gw1hw9WdGWSryW626Th2AHF836dGr",
+    "x-api-key": $X_API_KEY
   },
 })
 
 export const GATEWAY_ENDPOINT_WITH_AUTH_FORM_DATA = axios.create({
   baseURL: $GATEWAY_ENDPOINT,
   headers: {
-    "x-api-key": "bwt2r25gw1hw9WdGWSryW626Th2AHF836dGr",
+    "x-api-key": $X_API_KEY,
     "Content-Type": "multipart/form-data",
   },
 })
@@ -46,7 +47,7 @@ export const GATEWAY_ENDPOINT_WITHOUT_VERSION = axios.create({
 export const GATEWAY_ENDPOINT_WITHOUT_VERSION_WITH_AUTH = axios.create({
   baseURL: $GATEWAY_ENDPOINT_WITHOUT_VERSION,
   headers: {
-    "x-api-key": "bwt2r25gw1hw9WdGWSryW626Th2AHF836dGr",
+    "x-api-key": $X_API_KEY
   },
 })
 
