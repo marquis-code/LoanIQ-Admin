@@ -3,8 +3,8 @@ import { ref, onUnmounted, computed } from "vue"
 import { useUser } from "@/composables/auth/user";
 import { useCustomToast } from "@/composables/core/useCustomToast"
 
-const { getDecryptedAuthData } = useUser()
-const decryptedData = getDecryptedAuthData();
+const { user } = useUser()
+// const decryptedData = getDecryptedAuthData();
 
 export interface AdminNotification {
   id: string
@@ -36,7 +36,7 @@ export const useAdminNotifications = (adminId?: string) => {
     // Initialize with the adminId in the query params
     // FIXED: Use the exact URL from the working example instead of VITE_BASE_URL
     socket.value = io('https://rave.loaniq.ng', {
-      query: { adminId: decryptedData?.adminDTO?.id },
+      query: { adminId: user?.value?.adminDTO?.id },
       transports: ['websocket'], // Only use websocket transport like in the working example
       autoConnect: true,
       reconnection: true,
@@ -50,7 +50,7 @@ export const useAdminNotifications = (adminId?: string) => {
       lastError.value = null
       
       // Join admin room if we have an adminId
-      const currentAdminId = decryptedData?.adminDTO?.id
+      const currentAdminId = user?.value?.adminDTO?.id
       if (currentAdminId && socket.value) {
         socket.value.emit('join-admin-room', currentAdminId)
         console.log(`[AdminNotifications] Joined admin room for ID: ${currentAdminId}`)
@@ -166,7 +166,7 @@ export const useAdminNotifications = (adminId?: string) => {
           title,
           message,
           type,
-          adminId: decryptedData?.adminDTO?.id
+          adminId: user?.value?.adminDTO?.id
         })
       })
       

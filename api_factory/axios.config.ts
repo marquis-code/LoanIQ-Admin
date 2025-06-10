@@ -1,6 +1,7 @@
 import axios, { type AxiosResponse } from "axios"
 import { useCustomToast } from "@/composables/core/useCustomToast"
 import { encryptData, decryptData } from "@/api_factory/encrypt-data"
+import { useUser } from "@/composables/auth/user";
 
 const $GATEWAY_ENDPOINT_WITHOUT_VERSION = import.meta.env.VITE_BASE_URL as string
 const $GATEWAY_ENDPOINT = import.meta.env.VITE_BASE_URL
@@ -192,7 +193,8 @@ instanceArray.forEach((instance) => {
   instance.interceptors.request.use(
     async (config: any) => {
       // Get auth data from local storage and decrypt it
-      const { token } = getAuthData()
+      // const { token } = useUser()
+      const token = localStorage.getItem('token')
       
       // Add authorization token if available
       if (token) {

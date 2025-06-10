@@ -31,13 +31,13 @@ export const useLogin = () => {
       })) as any;
       resObj.value = res
       console.log(res, 'res here');
-      const decrypted = decryptData(res?.data?.data);
-      console.log(decrypted, 'decrypted data here');
+      // const decrypted = decryptData(res?.data?.data);
+      // console.log(decrypted, 'decrypted data here');
   
-      if (decrypted) {
+      if (res?.data?.data) {
         if (res.status === 201 || res.status === 200) {
-          if (decrypted.statusCode === "CHANGE_DEFAULT_PASSWORD") {
-            router.push(`/change-default-password?userId=${decrypted?.userId}`);
+          if (res?.data?.data?.statusCode === "CHANGE_DEFAULT_PASSWORD") {
+            router.push(`/change-default-password?userId=${res?.data?.data?.userId}`);
           } else {
             useUser().createUser(res.data.data);
             showToast({
@@ -47,12 +47,13 @@ export const useLogin = () => {
               duration: 3000,
             });
   
-            if (decrypted?.adminDTO?.roleId === "wealth-manager") {
+            if (res?.data?.data?.adminDTO?.roleId === "wealth-manager") {
               router.push(
-                `/dashboard/wealth-managers/${decrypted?.adminDTO?.id}/investments`
+                `/dashboard/wealth-managers/${res?.data?.data?.adminDTO?.id}/investments`
               );
             } else {
               router.push("/dashboard");
+              window.location.href = "/dashboard"
             }
           }
         }

@@ -5,15 +5,16 @@ export const usePermissions = () => {
   const { getDecryptedAuthData, authObj } = useUser();
   
   // Get decrypted data first
-  const decryptedData = getDecryptedAuthData();
+  // const user.value = getDecryptedAuthData();
+  const { user } = useUser()
   
   // Create a ref to store permissions
   const permissionsList = ref([]);
   
   // Safely extract permissions from decrypted data
-  if (decryptedData && decryptedData.permission) {
-    permissionsList.value = decryptedData.permission;
-  } else if (authObj.value && authObj.value.permission) {
+  if (user.value && user.value.permission) {
+    permissionsList.value = user.value.permission;
+  } else if (user.value && user.value.permission) {
     // Fallback to authObj if it has permissions
     permissionsList.value = authObj.value.permission;
   }
